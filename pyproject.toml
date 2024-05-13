@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "tesi"
+version = "0.1.0"
+description = ""
+authors = ["PeppeOsmio <bosius00@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.10"
+numpy = "^1.26.4"
+pandas = "^2.2.2"
+jupyter = "^1.0.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
