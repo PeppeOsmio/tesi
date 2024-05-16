@@ -77,10 +77,10 @@ def process_sheet_of_year(output_path: str, xlsx_path: str, year: Literal["2012"
 
 
     for depth, df in field_70_dict.items():
-        df.to_csv(os.path.join(output_path, f'field_70_{depth.replace(" ", "_")}.csv'))
+        df.to_csv(os.path.join(output_path, f'{year}_field_70_{depth.replace(" ", "_")}.csv'))
 
     for depth, df in field_71_dict.items():
-        df.to_csv(os.path.join(output_path, f'field_71_{depth.replace(" ", "_")}.csv'))
+        df.to_csv(os.path.join(output_path, f'{year}_field_71_{depth.replace(" ", "_")}.csv'))
 
 for year in ("2012", "2016", "2017"):
     process_sheet_of_year(output_path=OUTPUT_PATH, xlsx_path=XLSX_PATH, year=year)
