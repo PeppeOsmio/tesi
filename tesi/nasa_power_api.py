@@ -4,11 +4,27 @@ import json
 import asyncio
 
 
+CLIMATE_PARAMETERS = [
+    "T2M",
+    "T2M_MAX",
+    "T2M_MIN",
+    "PRECTOTCORR",
+    "ALLSKY_SFC_SW_DWN",
+    "CLRSKY_SFC_SW_DWN",
+    "RH2M",
+    "WS2M",
+    "PS",
+    "QV2M",
+    "DISPH",
+]
+
+
 async def get_nasa_power_climate_data(
     lat: float, lon: float, start_year: int, end_year: int
 ) -> pd.DataFrame:
     """Gets historical monthly climate data for given latitude/longitude from NASA POWER.
     https://power.larc.nasa.gov/#resources
+    https://power.larc.nasa.gov/api/pages/?urls.primaryName=Monthly%20%26%20Annual
 
     1. T2M: Average Temperature at 2 meters
         Description: This is the average air temperature measured at a height of 2 meters above the ground.
@@ -69,26 +85,13 @@ async def get_nasa_power_climate_data(
     """
     url = "https://power.larc.nasa.gov/api/temporal/monthly/point"
 
-    parameters_to_get = [
-        "T2M",
-        "T2M_MAX",
-        "T2M_MIN",
-        "PRECTOTCORR",
-        "ALLSKY_SFC_SW_DWN",
-        "CLRSKY_SFC_SW_DWN",
-        "RH2M",
-        "WS2M",
-        "PS",
-        "QV2M",
-        "DISPH",
-    ]
     params = {
         "latitude": lat,
         "longitude": lon,
         "start": start_year,
         "end": end_year,
         "community": "ag",
-        "parameters": ",".join(parameters_to_get),
+        "parameters": ",".join(CLIMATE_PARAMETERS),
         "format": "JSON",
     }
 
@@ -107,12 +110,18 @@ async def get_nasa_power_climate_data(
 
     # Estrazione dei dati e conversione in DataFrame
     records = []
-    for yearmonth in data["properties"]["parameter"]["T2M"]:
+    for yearmonth in data["properties"]["parameter"]["T2M"].keys():
+        year = int(yearmonth[:4])
+        month = int(yearmonth[4:])
+        if month == 13:
+            # this the year average we don't need it
+            continue
         record = {
-            "year": int(yearmonth[:4]),
-            "month": int(yearmonth[4:]),
+            "month": f"{year}",
+            "year": year,
+            "month_of_year": month,
         }
-        for parameter in parameters_to_get:
+        for parameter in CLIMATE_PARAMETERS:
             record.update(
                 {parameter: data["properties"]["parameter"][parameter][yearmonth]}
             )

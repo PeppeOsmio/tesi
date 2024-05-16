@@ -13,6 +13,10 @@ jupyter = "^1.0.0"
 openpyxl = "^3.1.2"
 httpx = "^0.27.0"
 aiohttp = "^3.9.5"
+matplotlib = "^3.9.0"
+cdsapi = "^0.7.0"
+xarray = "^2024.5.0"
+netcdf4 = "^1.6.5"
 
 
 [build-system]
