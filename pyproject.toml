@@ -18,6 +18,11 @@ cdsapi = "^0.7.0"
 xarray = "^2024.5.0"
 netcdf4 = "^1.6.5"
 scikit-learn = "^1.4.2"
+sqlalchemy = "^2.0.30"
+asyncpg = "^0.29.0"
+alembic = "^1.13.1"
+pydantic = "^2.7.1"
+asgiref = "^3.8.1"
 
 
 [build-system]

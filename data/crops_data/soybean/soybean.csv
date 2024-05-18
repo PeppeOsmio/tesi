@@ -1,0 +1,584 @@
+,index,country,location,latitude,longitude,soil,pH,crop,sowing_year,sowing_month,harvest_year,harvest_month,yield_ct,yield_nt,P,E,PB,Tave,Tmax,Tmin,ST
+0,173,Argentina,"Buenos Aires province, Partido de Esteban Echeverría",-34.84,-58.47,Mollisol soil, ,soybean,1998,11,1999,4,2500.0,1500.0,631.9,607.016,24.884,22.65,27.86424,9.55986,Clay loam
+1,264,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2005,11,2005,4,2800.0,2500.0,672.3,632.229,40.071,23.25,28.56637,11.96635,Silt loam
+2,265,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2005,11,2005,4,3500.0,2700.0,672.3,632.229,40.071,23.25,28.56637,11.96635,Silt loam
+3,266,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2006,11,2006,4,2800.0,2420.0,902.0,610.986,291.014,23.53333,29.39312,12.52937,Silt loam
+4,267,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2006,11,2006,4,3200.0,2650.0,902.0,610.986,291.014,23.53333,29.39312,12.52937,Silt loam
+5,268,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2007,11,2007,4,2760.0,2400.0,547.2,649.417,-102.217,23.5,29.72175,11.01831,Silt loam
+6,269,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2007,11,2007,4,3000.0,2600.0,547.2,649.417,-102.217,23.5,29.72175,11.01831,Silt loam
+7,270,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2005,11,2005,4,3300.0,2700.0,672.3,632.229,40.071,23.25,28.56637,11.96635,Silt loam
+8,271,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2005,11,2005,4,2650.0,2500.0,672.3,632.229,40.071,23.25,28.56637,11.96635,Silt loam
+9,272,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2006,11,2006,4,3000.0,2650.0,902.0,610.986,291.014,23.53333,29.39312,12.52937,Silt loam
+10,273,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2006,11,2006,4,2560.0,2420.0,902.0,610.986,291.014,23.53333,29.39312,12.52937,Silt loam
+11,274,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2007,11,2007,4,2920.0,2600.0,547.2,649.417,-102.217,23.5,29.72175,11.01831,Silt loam
+12,275,Argentina,Pampas,-34.45,-58.67," fine clayey, illitic, thermic Typical Argiudol;",6,soybean,2007,11,2007,4,2500.0,2400.0,547.2,649.417,-102.217,23.5,29.72175,11.01831,Silt loam
+13,3424,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1987,11,1987,5,1762.0,2720.0,819.2,655.218,163.982,23.28571,28.06956,12.96529,Loam
+14,3425,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1988,11,1988,5,1455.0,1438.0,1326.0,642.159,683.841,23.68571,27.45484,13.98427,Loam
+15,3426,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1989,11,1989,5,1503.0,1990.0,1257.0,657.124,599.876,23.4,28.32189,11.8418,Loam
+16,3427,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1990,11,1990,5,1229.0,2617.0,602.3,708.181,-105.881,25.02857,29.77963,12.68969,Loam
+17,3428,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1991,11,1991,5,649.0,988.0,910.1,635.654,274.446,23.5,27.59438,11.4541,Loam
+18,3429,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1992,11,1992,5,2714.0,3309.0,580.1,693.223,-113.123,23.71429,28.63458,11.79549,Loam
+19,3430,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1993,11,1993,5,779.0,1192.0,568.3,646.187,-77.887,23.17143,30.13818,8.29359,Loam
+20,3431,Australia,"NSW, Grafton",-29.75,152.92,silt loam, ,soybean,1994,11,1994,5,2348.0,2802.0,708.5,674.353,34.147,23.71429,28.69493,15.19034,Loam
+21,166,Bolivia,Santa Cruz,-17.85,-63.0,Typic Haplustalf, ,soybean,1989,11,1990,5,2150.0,2090.0,1043.0,792.601,250.399,28.38571,32.43272,17.13706,Clay loam
+22,167,Bolivia,Santa Cruz,-17.85,-63.0,Typic Haplustalf, ,soybean,1990,11,1991,5,2710.0,2340.0,1063.3,771.358,291.942,29.24286,31.17334,19.53539,Clay loam
+23,168,Bolivia,Santa Cruz,-17.85,-63.0,Typic Haplustalf, ,soybean,1991,11,1992,5,2510.0,2460.0,1035.8,733.253,302.547,28.41429,30.36019,18.70055,Clay loam
+24,287,Brazil,Lages,-27.78,-50.3,silty clay,4.5 to 5.1,soybean,2013,11,2014,4,3230.0,2980.0,994.9,634.678,360.222,22.91667,27.469,12.71711,Clay
+25,288,Brazil,Lages,-27.78,-50.3,silty clay,4.5 to 5.1,soybean,2014,11,2015,4,3070.0,2270.0,1220.1,617.722,602.378,22.71667,26.71177,12.57553,Clay
+26,924,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1989,11,1989,4,1609.0,1227.0,1216.9,733.759,483.141,26.2,30.94824,17.92394,Clay
+27,925,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1989,11,1989,4,1686.0,1072.0,1216.9,733.759,483.141,26.2,30.94824,17.92394,Clay
+28,926,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1990,11,1990,4,2081.0,2081.0,836.0,722.981,113.019,26.26667,30.57746,17.32327,Clay
+29,927,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1990,11,1990,4,2132.0,2009.0,836.0,722.981,113.019,26.26667,30.57746,17.32327,Clay
+30,928,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1991,11,1991,4,1872.0,1954.0,1574.3,706.494,867.806,25.96667,31.36874,16.4265,Clay
+31,929,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1992,11,1992,4,2634.0,2462.0,1140.7,724.716,415.984,26.03333,31.1975,17.27341,Clay
+32,930,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1992,11,1992,4,2512.0,2163.0,1140.7,724.716,415.984,26.03333,31.1975,17.27341,Clay
+33,931,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1993,11,1993,4,2684.0,2928.0,1142.4,722.926,419.474,26.78333,31.35442,17.70844,Clay
+34,932,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1993,11,1993,4,2853.0,2977.0,1142.4,722.926,419.474,26.78333,31.35442,17.70844,Clay
+35,933,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1994,11,1994,4,2824.0,3139.0,1127.4,705.97,421.43,26.3,30.80348,15.64812,Clay
+36,934,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1995,11,1995,4,2925.0,3874.0,905.4,722.013,183.387,26.01667,30.05792,17.68686,Clay
+37,935,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1995,11,1995,4,3019.0,3319.0,905.4,722.013,183.387,26.01667,30.05792,17.68686,Clay
+38,936,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1996,11,1996,4,3018.0,3782.0,1283.8,683.274,600.526,26.13333,29.58086,16.00595,Clay
+39,937,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1996,11,1996,4,3433.0,3922.0,1283.8,683.274,600.526,26.13333,29.58086,16.00595,Clay
+40,938,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1997,11,1997,4,3183.0,3396.0,1326.6,684.994,641.606,26.53333,30.23105,18.10389,Clay
+41,939,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1997,11,1997,4,3427.0,3389.0,1326.6,684.994,641.606,26.53333,30.23105,18.10389,Clay
+42,940,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1998,11,1998,4,2569.0,2153.0,883.2,728.03,155.17,26.08333,29.34542,16.69589,Clay
+43,941,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1999,11,1999,4,3429.0,3856.0,677.9,727.297,-49.397,25.41667,30.02567,16.95299,Clay
+44,942,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,1999,11,1999,4,3189.0,3560.0,677.9,727.297,-49.397,25.41667,30.02567,16.95299,Clay
+45,943,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2000,11,2000,4,1663.0,3403.0,1086.0,730.731,355.269,26.38333,30.17106,18.94748,Clay
+46,944,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2000,11,2000,4,1624.0,3188.0,1086.0,730.731,355.269,26.38333,30.17106,18.94748,Clay
+47,945,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2001,11,2001,4,2811.0,3375.0,1205.4,735.595,469.805,27.56667,33.28301,19.07521,Clay
+48,946,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2001,11,2001,4,3143.0,3640.0,1205.4,735.595,469.805,27.56667,33.28301,19.07521,Clay
+49,947,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2002,11,2002,4,2815.0,3310.0,1003.4,727.617,275.783,27.03333,31.52832,17.43721,Clay
+50,948,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2003,11,2003,4,2518.0,3330.0,978.4,725.768,252.632,26.28333,30.87809,18.3943,Clay
+51,949,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2003,11,2003,4,3021.0,3770.0,978.4,725.768,252.632,26.28333,30.87809,18.3943,Clay
+52,950,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2004,11,2004,4,1565.0,2662.0,901.2,704.55,196.65,27.1,30.65749,19.15702,Clay
+53,951,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2004,11,2004,4,1947.0,2743.0,901.2,704.55,196.65,27.1,30.65749,19.15702,Clay
+54,952,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2005,11,2005,4,1471.0,2650.0,855.3,731.322,123.978,26.38333,30.31555,17.65344,Clay
+55,953,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2005,11,2005,4,2125.0,2569.0,855.3,731.322,123.978,26.38333,30.31555,17.65344,Clay
+56,954,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2006,11,2006,4,1815.0,3346.0,1277.0,716.387,560.613,27.0,30.74439,19.56731,Clay
+57,955,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2007,11,2007,4,2336.0,3585.0,1230.7,700.486,530.214,25.85,31.07671,17.75579,Clay
+58,956,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2007,11,2007,4,3152.0,3448.0,1230.7,700.486,530.214,25.85,31.07671,17.75579,Clay
+59,957,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2008,11,2008,4,1502.0,3421.0,929.4,728.701,200.699,26.6,32.14787,17.35024,Clay
+60,958,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2008,11,2008,4,2000.0,3610.0,929.4,728.701,200.699,26.6,32.14787,17.35024,Clay
+61,959,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2009,11,2009,4,2130.0,3835.0,1407.5,682.595,724.904,26.3,31.79579,17.36135,Clay
+62,960,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2009,11,2009,4,2871.0,4005.0,1407.5,682.595,724.904,26.3,31.79579,17.36135,Clay
+63,961,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2010,11,2010,4,2592.0,3355.0,1073.4,705.208,368.192,25.66667,31.14505,17.61165,Clay
+64,962,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2011,11,2011,4,2767.0,3112.0,825.7,760.089,65.611,26.31667,32.86046,17.39611,Clay
+65,963,Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-23.18,-51.18,Eutroferric Red Latosol,5.5,soybean,2011,11,2011,4,2875.0,3225.0,825.7,760.089,65.611,26.31667,32.86046,17.39611,Clay
+66,4315,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1994,6,1994,10,2893.0,2858.0,236.8,305.006,-68.206,12.08,22.09153,2.08856,Clay
+67,4316,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1994,6,1994,10,3128.0,2800.0,236.8,305.006,-68.206,12.08,22.09153,2.08856,Clay
+68,4317,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1995,6,1995,10,2223.0,1903.0,230.5,307.938,-77.438,11.96,23.96254,-1.04606,Clay
+69,4318,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1995,6,1995,10,2050.0,1718.0,230.5,307.938,-77.438,11.96,23.96254,-1.04606,Clay
+70,4319,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1996,6,1996,10,2500.0,2777.0,223.6,334.06,-110.46,12.0,22.94786,-1.13212,Clay
+71,4320,Canada,"Ontario, Alvinston",51.33,-85.33,clay, ,soybean,1996,6,1996,10,2533.0,2327.0,223.6,334.06,-110.46,12.0,22.94786,-1.13212,Clay
+72,4321,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1994,6,1994,10,3100.0,3493.0,236.8,305.006,-68.206,12.08,22.09153,2.08856,Clay
+73,4322,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1994,6,1994,10,3363.0,3300.0,236.8,305.006,-68.206,12.08,22.09153,2.08856,Clay
+74,4323,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1995,6,1995,10,4040.0,4108.0,230.5,307.938,-77.438,11.96,23.96254,-1.04606,Clay
+75,4324,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1995,6,1995,10,4145.0,3963.0,230.5,307.938,-77.438,11.96,23.96254,-1.04606,Clay
+76,4325,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1996,6,1996,10,3693.0,3840.0,223.6,334.06,-110.46,12.0,22.94786,-1.13212,Clay
+77,4326,Canada,"Ontario, Fingal",51.33,-85.33,silty clay loam, ,soybean,1996,6,1996,10,3570.0,3458.0,223.6,334.06,-110.46,12.0,22.94786,-1.13212,Clay
+78,2314,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2001,6,2001,10,1548.0,990.0,371.9,383.272,-11.372,17.16,28.28293,5.07566,Clay loam
+79,2315,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2002,6,2002,10,3731.0,3490.0,422.5,397.046,25.454,16.66,27.46194,1.59899,Clay loam
+80,2316,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2003,6,2003,10,2741.0,2893.0,442.3,383.608,58.692,16.72,26.2323,2.87614,Clay loam
+81,2317,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2004,6,2004,10,2221.0,2500.0,425.8,363.247,62.553,16.14,25.85472,3.73618,Clay loam
+82,2318,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2005,6,2005,10,2893.0,2767.0,473.3,402.775,70.525,18.16,27.47704,5.5502,Clay loam
+83,2319,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2006,6,2006,10,1244.0,1193.0,566.4,365.463,200.937,16.22,27.61564,3.09557,Clay loam
+84,2320,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2007,6,2007,10,4099.0,3553.0,417.7,396.106,21.594,17.02,25.75909,5.55982,Clay loam
+85,2321,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2008,6,2008,10,3782.0,3921.0,442.5,359.319,83.181,16.22,25.3593,2.61062,Clay loam
+86,2322,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2009,6,2009,10,3768.0,4391.0,481.1,350.989,130.111,15.44,25.05208,2.83079,Clay loam
+87,2323,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2010,6,2010,10,2475.0,2728.0,551.1,357.224,193.876,16.72,28.01735,3.45621,Clay loam
+88,2324,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2011,6,2011,10,3629.0,3706.0,367.7,390.363,-22.663,17.68,27.28399,4.96371,Clay loam
+89,2325,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2012,6,2012,10,2157.0,1827.0,348.3,387.727,-39.427,17.36,29.56315,4.00415,Clay loam
+90,2326,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2013,6,2013,10,2665.0,2716.0,442.8,362.281,80.519,16.34,27.06917,4.05366,Clay loam
+91,2327,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2014,6,2014,10,3147.0,2881.0,496.8,353.734,143.066,16.58,25.28544,5.12498,Clay loam
+92,2328,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2015,6,2015,10,2424.0,1358.0,415.4,382.778,32.622,16.7,26.78852,1.95296,Clay loam
+93,2329,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2001,6,2001,10,1396.0,1231.0,371.9,383.272,-11.372,17.16,28.28293,5.07566,Clay loam
+94,2330,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2002,6,2002,10,3388.0,3122.0,422.5,397.046,25.454,16.66,27.46194,1.59899,Clay loam
+95,2331,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2003,6,2003,10,2792.0,2906.0,442.3,383.608,58.692,16.72,26.2323,2.87614,Clay loam
+96,2332,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2004,6,2004,10,2500.0,2538.0,425.8,363.247,62.553,16.14,25.85472,3.73618,Clay loam
+97,2333,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2005,6,2005,10,2970.0,2208.0,473.3,402.775,70.525,18.16,27.47704,5.5502,Clay loam
+98,2334,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2006,6,2006,10,1244.0,1256.0,566.4,365.463,200.937,16.22,27.61564,3.09557,Clay loam
+99,2335,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2007,6,2007,10,3820.0,4239.0,417.7,396.106,21.594,17.02,25.75909,5.55982,Clay loam
+100,2336,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2008,6,2008,10,4480.0,4251.0,442.5,359.319,83.181,16.22,25.3593,2.61062,Clay loam
+101,2337,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2009,6,2009,10,4226.0,4112.0,481.1,350.989,130.111,15.44,25.05208,2.83079,Clay loam
+102,2338,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2010,6,2010,10,2779.0,2779.0,551.1,357.224,193.876,16.72,28.01735,3.45621,Clay loam
+103,2339,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2011,6,2011,10,3515.0,2995.0,367.7,390.363,-22.663,17.68,27.28399,4.96371,Clay loam
+104,2340,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2012,6,2012,10,2437.0,1891.0,348.3,387.727,-39.427,17.36,29.56315,4.00415,Clay loam
+105,2341,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2013,6,2013,10,3249.0,3261.0,442.8,362.281,80.519,16.34,27.06917,4.05366,Clay loam
+106,2342,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2014,6,2014,10,3249.0,3084.0,496.8,353.734,143.066,16.58,25.28544,5.12498,Clay loam
+107,2343,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2015,6,2015,10,2881.0,1561.0,415.4,382.778,32.622,16.7,26.78852,1.95296,Clay loam
+108,2344,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2001,6,2001,10,1409.0,1396.0,371.9,383.272,-11.372,17.16,28.28293,5.07566,Clay loam
+109,2345,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2002,6,2002,10,3959.0,2957.0,422.5,397.046,25.454,16.66,27.46194,1.59899,Clay loam
+110,2346,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2003,6,2003,10,2919.0,3020.0,442.3,383.608,58.692,16.72,26.2323,2.87614,Clay loam
+111,2347,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2004,6,2004,10,2335.0,2056.0,425.8,363.247,62.553,16.14,25.85472,3.73618,Clay loam
+112,2348,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2005,6,2005,10,3135.0,2500.0,473.3,402.775,70.525,18.16,27.47704,5.5502,Clay loam
+113,2349,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2006,6,2006,10,1256.0,1282.0,566.4,365.463,200.937,16.22,27.61564,3.09557,Clay loam
+114,2350,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2007,6,2007,10,3756.0,3655.0,417.7,396.106,21.594,17.02,25.75909,5.55982,Clay loam
+115,2351,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2008,6,2008,10,4454.0,4416.0,442.5,359.319,83.181,16.22,25.3593,2.61062,Clay loam
+116,2352,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2009,6,2009,10,3972.0,3274.0,481.1,350.989,130.111,15.44,25.05208,2.83079,Clay loam
+117,2353,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2010,6,2010,10,2868.0,2779.0,551.1,357.224,193.876,16.72,28.01735,3.45621,Clay loam
+118,2354,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2011,6,2011,10,4010.0,3401.0,367.7,390.363,-22.663,17.68,27.28399,4.96371,Clay loam
+119,2355,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2012,6,2012,10,2335.0,1294.0,348.3,387.727,-39.427,17.36,29.56315,4.00415,Clay loam
+120,2356,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2013,6,2013,10,2893.0,2855.0,442.8,362.281,80.519,16.34,27.06917,4.05366,Clay loam
+121,2357,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2014,6,2014,10,2250.0,3388.0,496.8,353.734,143.066,16.58,25.28544,5.12498,Clay loam
+122,2358,Canada,Ottwa,45.37,-75.72,sandy loam,6.8,soybean,2015,6,2015,10,2843.0,2272.0,415.4,382.778,32.622,16.7,26.78852,1.95296,Clay loam
+123,2236,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,1995,6,1995,10,3730.0,3360.0,517.2,426.136,91.064,17.14,27.26004,6.13498,Loam
+124,2237,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,1997,6,1997,10,3200.0,2440.0,399.1,391.985,7.115,15.96,26.11125,1.7455,Loam
+125,2238,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,1999,6,1999,10,2800.0,2880.0,492.2,401.839,90.361,17.1,27.20437,2.04433,Loam
+126,2239,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,2001,6,2001,10,1040.0,1060.0,363.7,405.46,-41.76,17.44,28.03758,4.98223,Loam
+127,2240,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,2003,6,2003,10,3120.0,2560.0,535.3,402.78,132.52,16.84,25.99166,2.8238,Loam
+128,2241,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,2005,6,2005,10,2980.0,2730.0,660.7,419.003,241.697,18.08,26.90974,5.71532,Loam
+129,2242,Canada,"Quebec, L'Acadie Experimental farm",45.3,-73.35,clay loam,6.3,soybean,2007,6,2007,10,1990.0,1390.0,442.3,409.818,32.482,17.18,25.33835,5.88931,Loam
+130,2811,Canada,"Quebec, L'Acadie Experimental farm",42.02,-93.75,humic gleysol,6.3,soybean,2005,5,2005,10,2900.0,2700.0,573.4,561.393,12.007,19.71667,30.13879,5.57738,Loam
+131,2812,Canada,"Quebec, L'Acadie Experimental farm",42.02,-93.75,humic gleysol,6.3,soybean,2005,5,2005,10,2900.0,2600.0,573.4,561.393,12.007,19.71667,30.13879,5.57738,Loam
+132,2813,Canada,"Quebec, L'Acadie Experimental farm",42.02,-93.75,humic gleysol,6.3,soybean,2005,5,2005,10,3100.0,2400.0,573.4,561.393,12.007,19.71667,30.13879,5.57738,Loam
+133,43,Canada,"Quebec, Ste. Anne de Bellevue",45.42,-73.93,clay loam, ,soybean,2002,6,2002,10,2420.0,2220.0,427.2,411.484,15.716,16.62,26.54872,0.79462,Loam
+134,44,Canada,"Quebec, Ste. Anne de Bellevue",45.42,-73.93,clay loam, ,soybean,2003,6,2003,10,3300.0,3150.0,510.0,399.759,110.241,16.88,26.13306,2.31443,Loam
+135,4098,Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",45.47,-73.75,sandy loam,6.1,soybean,2000,6,2000,10,2605.0,2646.0,356.1,361.941,-5.841,15.48,24.47484,3.65757,Loam
+136,4099,Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",45.47,-73.75,sandy loam,6.1,soybean,2001,6,2001,10,1510.0,1316.0,363.7,405.46,-41.76,17.44,28.03758,4.98223,Loam
+137,4100,Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",45.47,-73.75,sandy loam,6.1,soybean,2002,6,2002,10,1839.0,1624.0,430.7,410.35,20.35,16.9,27.16554,1.73544,Loam
+138,4101,Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",45.47,-73.75,sandy loam,6.1,soybean,2003,6,2003,10,1732.0,480.0,535.3,402.78,132.52,16.84,25.99166,2.8238,Loam
+139,4102,Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",45.47,-73.75,sandy loam,6.1,soybean,2004,6,2004,10,2635.0,2717.0,382.8,392.835,-10.035,16.16,25.6944,2.79841,Loam
+140,1264,Canada,"Woodslee, Ontario",42.21,-87.75,clay loam,6.1,soybean,2002,5,2002,10,808.0,776.0,409.5,587.988,-178.488,20.0,30.39363,6.64358,Loam
+141,1265,Canada,"Woodslee, Ontario",42.21,-87.75,clay loam,6.1,soybean,2003,5,2003,10,753.0,776.0,544.2,566.389,-22.189,18.75,28.31725,6.22023,Loam
+142,1266,Canada,"Woodslee, Ontario",42.21,-87.75,clay loam,6.1,soybean,2004,5,2004,10,1255.0,1294.0,493.3,558.828,-65.528,19.23333,27.2077,7.76557,Loam
+143,1267,Canada,"Woodslee, Ontario",42.21,-87.75,clay loam,6.1,soybean,2005,5,2005,10,1161.0,1161.0,214.8,603.2,-388.4,20.88333,29.92166,8.25245,Loam
+144,1268,Canada,"Woodslee, Ontario",42.21,-87.75,clay loam,6.1,soybean,2006,5,2006,10,1341.0,1208.0,617.3,562.948,54.352,19.3,29.61583,5.59492,Loam
+145,1937,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2001,3,2001,8,1990.0,1730.0,320.8,489.299,-168.499,17.8,29.09027,2.10085,Loam
+146,1938,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2003,3,2003,8,1010.0,780.0,546.2,479.811,66.389,16.71667,28.3571,1.87061,Loam
+147,1939,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2005,3,2005,8,1170.0,1250.0,408.3,486.98,-78.679,17.96667,29.6094,1.26928,Loam
+148,1940,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2007,3,2007,8,970.0,1070.0,382.9,501.467,-118.567,17.61667,27.68238,2.36357,Loam
+149,1941,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2001,3,2001,8,2010.0,2110.0,320.8,489.299,-168.499,17.8,29.09027,2.10085,Loam
+150,1942,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2003,3,2003,8,1240.0,1180.0,546.2,479.811,66.389,16.71667,28.3571,1.87061,Loam
+151,1943,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2005,3,2005,8,2070.0,1500.0,408.3,486.98,-78.679,17.96667,29.6094,1.26928,Loam
+152,1944,China,Lanzhou,35.65,107.85,sandy loam,,soybean,2007,3,2007,8,1400.0,1790.0,382.9,501.467,-118.567,17.61667,27.68238,2.36357,Loam
+153,4282,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2001,3,2001,8,1987.0,2105.0,320.8,489.299,-168.499,17.8,29.09027,2.10085,Loam
+154,4283,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2002,3,2002,8,557.0,365.0,395.3,526.433,-131.133,17.66667,28.86081,3.28446,Loam
+155,4284,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2003,3,2003,8,1012.0,1179.0,546.2,479.811,66.389,16.71667,28.3571,1.87061,Loam
+156,4285,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2004,3,2004,8,566.0,1245.0,312.5,505.656,-193.156,17.93333,28.30306,3.01697,Loam
+157,4286,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2005,3,2005,8,1167.0,1497.0,408.3,486.98,-78.679,17.96667,29.6094,1.26928,Loam
+158,4287,China,"Xifeng, Qingyang City",35.67,107.87,Los Orthic Entisols,,soybean,2007,3,2007,8,972.0,1785.0,382.9,501.467,-118.567,17.61667,27.68238,2.36357,Loam
+159,1717,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,1996,5,1996,10,1980.0,1450.0,633.1,402.741,230.359,17.25,25.31161,7.77108,Loam
+160,1718,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,1999,5,1999,10,1110.0,420.0,501.9,435.842,66.058,18.98333,26.16028,7.3197,Loam
+161,1719,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,2001,5,2001,10,3050.0,2000.0,444.5,438.684,5.816,19.03333,28.58094,9.11404,Loam
+162,1720,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,2004,5,2004,10,1150.0,510.0,454.5,429.143,25.357,18.11667,27.81227,8.8751,Loam
+163,1721,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,2005,5,2005,10,3340.0,2120.0,533.8,406.432,127.368,17.96667,27.02367,7.08833,Loam
+164,1722,Croatia,Daruvar,45.55,17.03,Sandy loam (Stagnic Luvisol),4.21,soybean,2009,5,2009,10,3770.0,2260.0,430.6,447.856,-17.256,19.4,29.77188,7.15334,Loam
+165,251,Croatia,Stagnosols,45.93,17.02,Pseudogley,,soybean,2009,5,2009,10,3536.0,2269.0,386.9,447.43,-60.53,17.48333,29.11276,7.30111,Loam
+166,847,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2006,5,2006,10,2620.0,2320.0,388.3,392.97,-4.67,16.8,29.22562,5.26492,Clay loam
+167,848,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2006,5,2006,10,2400.0,1980.0,388.3,392.97,-4.67,16.8,29.22562,5.26492,Clay loam
+168,849,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2007,5,2007,10,2180.0,1820.0,404.1,393.023,11.077,17.25,29.12768,5.31198,Clay loam
+169,850,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2007,5,2007,10,2320.0,1670.0,404.1,393.023,11.077,17.25,29.12768,5.31198,Clay loam
+170,851,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2008,5,2008,10,2980.0,2680.0,395.4,383.22,12.18,16.4,26.84308,6.4504,Clay loam
+171,852,Czech Republic,Milhostov ,48.76,21.92, ,6.3 to 6.6,soybean,2008,5,2008,10,3110.0,2160.0,395.4,383.22,12.18,16.4,26.84308,6.4504,Clay loam
+172,1244,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2015,5,2015,10,879.0,1776.0,236.9,370.652,-133.752,15.33333,29.408,4.86872,Sandy loam
+173,1245,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,879.0,616.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+174,1246,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,879.0,2180.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+175,1247,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2017,5,2017,10,5628.0,3447.0,439.7,352.641,87.059,15.88333,24.17579,8.84684,Sandy loam
+176,1248,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2017,5,2017,10,5628.0,4837.0,439.7,352.641,87.059,15.88333,24.17579,8.84684,Sandy loam
+177,1249,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,866.0,619.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+178,1250,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,866.0,2165.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+179,1251,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,1814.0,2247.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+180,1252,Germany,Muncheberg,52.52,15.12,sandy loam and loamy sand,,soybean,2016,5,2016,10,1814.0,3495.0,274.8,358.821,-84.021,16.26667,24.79844,6.3537,Sandy loam
+181,97,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,1503.0,1617.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+182,98,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,1440.0,1513.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+183,99,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,2413.0,2523.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+184,100,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,2393.0,2480.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+185,101,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,1943.0,1980.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+186,102,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,1933.0,1943.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+187,103,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,2380.0,2360.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+188,104,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2006,7,2006,11,2460.0,2417.0,401.4999962,446.7680882,-45.268,27.15999947,35.09450211,13.0708079,Loam
+189,105,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2127.0,2239.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+190,106,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2389.0,2490.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+191,107,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,1860.0,1932.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+192,108,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2346.0,2383.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+193,109,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2449.0,2487.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+194,110,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2423.0,2460.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+195,111,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,2133.0,2161.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+196,112,India,"Ludhiana, Punjab Agricultural Research Farm",30.9,75.8,loamy sand, ,soybean,2007,7,2007,11,1845.0,1917.0,187.9000039,457.7381161,-269.838,26.94000015,35.81613061,11.17205607,Loam
+197,2892,India,"New Delhi (Indian Agricultural Research Institute, Pusa, New Delhi)",28.63,77.15,sandy loam,7.5,soybean,2007,7,2007,11,1150.0,960.0,332.2,405.21,-73.01,28.16,35.90859,13.09516,Loam
+198,2893,India,"New Delhi (Indian Agricultural Research Institute, Pusa, New Delhi)",28.63,77.15,sandy loam,7.5,soybean,2007,7,2007,11,930.0,760.0,332.2,405.21,-73.01,28.16,35.90859,13.09516,Loam
+199,2826,Italy,Fruili Venezia Giulia,46.05,13.35,loam,,soybean,2015,5,2015,10,3000.0,3500.0,1286.9,347.987,938.913,17.21667,32.12651,9.56359,Loam
+200,2827,Italy,Fruili Venezia Giulia,46.05,13.35,loam,,soybean,2016,5,2016,10,3200.0,2300.0,1341.4,349.618,991.782,16.55,30.87231,8.98263,Loam
+201,867,Italy,Piacenza,45.0,9.7,silty clay loam,6.8,soybean,2015,5,2015,10,3300.0,3870.0,109.6,462.867,-353.267,16.28333,27.16997,8.9787,Loam
+202,868,Italy,Piacenza,45.0,9.7,silty clay loam,6.8,soybean,2015,5,2015,10,3300.0,3220.0,109.6,462.867,-353.267,16.28333,27.16997,8.9787,Loam
+203,2825,Italy,Veneto,45.63,12.76,sandy clay loam,,soybean,2014,5,2014,10,3200.0,1900.0,559.0,398.032,160.968,20.1,27.99059,13.36361,Sandy loam
+204,2828,Italy,Veneto,45.63,12.76,sandy clay loam,,soybean,2016,5,2016,10,3800.0,3800.0,618.4,438.928,179.472,20.5,31.19998,11.26348,Sandy loam
+205,1769,Japan,Fukushima,37.72,140.38, , ,soybean,2002,6,2002,9,2078.0,1966.0,625.8,344.494,281.306,21.975,29.27514,14.09053,Loam
+206,1770,Japan,Fukushima,37.72,140.38, , ,soybean,2003,6,2003,9,2533.0,2360.0,642.0,303.287,338.713,20.925,26.68226,15.89678,Loam
+207,1771,Japan,Fukushima,37.72,140.38, , ,soybean,2002,6,2002,9,2295.0,1842.0,625.8,344.494,281.306,21.975,29.27514,14.09053,Loam
+208,1772,Japan,Fukushima,37.72,140.38, , ,soybean,2001,6,2001,9,203.0,1465.0,610.2,349.155,261.045,21.9,30.13194,15.48094,Loam
+209,1773,Japan,Fukushima,37.72,140.38, , ,soybean,2001,6,2001,9,2271.0,2380.0,610.2,349.155,261.045,21.9,30.13194,15.48094,Loam
+210,1774,Japan,Fukushima,37.72,140.38, , ,soybean,2003,6,2003,9,3568.0,1340.0,642.0,303.287,338.713,20.925,26.68226,15.89678,Loam
+211,1489,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2001,6,2001,9,3550.0,3080.0,778.5,398.068,380.432,22.35,32.71185,18.2688,Loam
+212,1490,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2002,6,2002,9,2980.0,2880.0,397.8,408.766,-10.966,22.65,32.05212,17.80066,Loam
+213,1491,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2000,6,2000,9,2650.0,2500.0,575.6,416.194,159.406,22.9,33.76871,18.44931,Loam
+214,1492,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2001,6,2001,9,6940.0,6090.0,778.5,398.068,380.432,22.35,32.71185,18.2688,Loam
+215,1493,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2002,6,2002,9,6880.0,5850.0,397.8,408.766,-10.966,22.65,32.05212,17.80066,Loam
+216,1494,Japan,"Shiga Prefecture, Hikone",35.25,136.22,clay,7.02,soybean,2000,6,2000,9,6160.0,5680.0,575.6,416.194,159.406,22.9,33.76871,18.44931,Loam
+217,3809,Japan,Tsukuba,36.02,140.1,Andosol,6.1 to 6.3,soybean,1984,6,1984,9,2490.0,2830.0,362.9,387.115,-24.215,25.15,32.17027,19.15679,Clay loam
+218,3810,Japan,Tsukuba,36.02,140.1,Andosol,6.1 to 6.3,soybean,1990,6,1990,9,2160.0,1880.0,571.6,395.082,176.518,25.65,32.38834,20.51427,Clay loam
+219,3811,Japan,Tsukuba,36.02,140.1,Andosol,6.1 to 6.3,soybean,1984,6,1984,9,4300.0,4940.0,362.9,387.115,-24.215,25.15,32.17027,19.15679,Clay loam
+220,3812,Japan,Tsukuba,36.02,140.1,Andosol,6.1 to 6.3,soybean,1990,6,1990,9,4790.0,5260.0,571.6,395.082,176.518,25.65,32.38834,20.51427,Clay loam
+221,438,Turkey,"Adana, Cukorova University Ag Experiment Station",37.0,35.35,clay, ,soybean,2008,4,2008,8,4320.0,4170.0,40.9,717.116,-676.216,24.28,33.85254,13.79313,Clay loam
+222,777,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1981,6,1981,11,1988.0,2187.0,237.7,551.758,-314.058,22.58333,34.36662,7.45529,Clay
+223,778,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1981,6,1981,11,2589.0,2154.0,237.7,551.758,-314.058,22.58333,34.36662,7.45529,Clay
+224,779,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1981,6,1981,11,2886.0,1609.0,237.7,551.758,-314.058,22.58333,34.36662,7.45529,Clay
+225,780,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1982,6,1982,11,2026.0,2783.0,509.9,533.898,-23.998,22.58333,32.90654,9.46603,Clay
+226,781,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1982,6,1982,11,2799.0,3133.0,509.9,533.898,-23.998,22.58333,32.90654,9.46603,Clay
+227,782,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1982,6,1982,11,2851.0,2763.0,509.9,533.898,-23.998,22.58333,32.90654,9.46603,Clay
+228,783,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1983,6,1983,11,690.0,2210.0,558.2,540.231,17.969,22.13333,34.89804,6.10874,Clay
+229,784,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1983,6,1983,11,1605.0,2380.0,558.2,540.231,17.969,22.13333,34.89804,6.10874,Clay
+230,785,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1983,6,1983,11,1930.0,1833.0,558.2,540.231,17.969,22.13333,34.89804,6.10874,Clay
+231,786,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1984,6,1984,11,1870.0,2970.0,564.4,531.256,33.144,22.25,32.88844,4.97133,Clay
+232,787,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1984,6,1984,11,1867.0,2360.0,564.4,531.256,33.144,22.25,32.88844,4.97133,Clay
+233,788,USA,"Alabama, Sand Mountain Substation",32.32,-86.9,sandy loam,6,soybean,1984,6,1984,11,1960.0,2450.0,564.4,531.256,33.144,22.25,32.88844,4.97133,Clay
+234,4012,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1991,6,1991,11,2281.0,2634.0,394.0,498.555,-104.555,20.75,32.42423,1.73471,Loam
+235,4013,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1991,6,1991,11,2715.0,2830.0,394.0,498.555,-104.555,20.75,32.42423,1.73471,Loam
+236,4014,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1991,6,1991,11,2281.0,2085.0,394.0,498.555,-104.555,20.75,32.42423,1.73471,Loam
+237,4015,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1991,6,1991,11,2815.0,2525.0,394.0,498.555,-104.555,20.75,32.42423,1.73471,Loam
+238,4016,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1993,6,1993,11,1983.0,2018.0,483.4,530.454,-47.054,20.53333,35.02888,2.76552,Loam
+239,4017,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1993,6,1993,11,1730.0,1669.0,483.4,530.454,-47.054,20.53333,35.02888,2.76552,Loam
+240,4018,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1993,6,1993,11,1730.0,1630.0,483.4,530.454,-47.054,20.53333,35.02888,2.76552,Loam
+241,4019,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1993,6,1993,11,1983.0,1850.0,483.4,530.454,-47.054,20.53333,35.02888,2.76552,Loam
+242,4020,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1994,6,1994,11,2680.0,2756.0,782.9,465.504,317.396,20.6,30.85223,5.99667,Loam
+243,4021,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1994,6,1994,11,2680.0,2703.0,782.9,465.504,317.396,20.6,30.85223,5.99667,Loam
+244,4022,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1994,6,1994,11,3702.0,3134.0,782.9,465.504,317.396,20.6,30.85223,5.99667,Loam
+245,4023,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1994,6,1994,11,3702.0,3021.0,782.9,465.504,317.396,20.6,30.85223,5.99667,Loam
+246,4024,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1995,6,1995,11,3104.0,3448.0,884.2,513.111,371.089,19.98333,33.63775,0.96998,Loam
+247,4025,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1995,6,1995,11,3328.0,3689.0,884.2,513.111,371.089,19.98333,33.63775,0.96998,Loam
+248,4026,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1995,6,1995,11,3328.0,3429.0,884.2,513.111,371.089,19.98333,33.63775,0.96998,Loam
+249,4027,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1995,6,1995,11,3104.0,3164.0,884.2,513.111,371.089,19.98333,33.63775,0.96998,Loam
+250,4028,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1996,6,1996,11,2176.0,2465.0,697.1,501.529,195.571,19.78333,31.13493,3.5017,Loam
+251,4029,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1996,6,1996,11,2176.0,2350.0,697.1,501.529,195.571,19.78333,31.13493,3.5017,Loam
+252,4030,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1996,6,1996,11,2630.0,2621.0,697.1,501.529,195.571,19.78333,31.13493,3.5017,Loam
+253,4031,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1996,6,1996,11,2630.0,2488.0,697.1,501.529,195.571,19.78333,31.13493,3.5017,Loam
+254,4032,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1997,6,1997,11,2256.0,2719.0,813.0,484.696,328.304,19.51667,32.00902,2.62302,Loam
+255,4033,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1997,6,1997,11,2256.0,2642.0,813.0,484.696,328.304,19.51667,32.00902,2.62302,Loam
+256,4034,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1997,6,1997,11,2877.0,3118.0,813.0,484.696,328.304,19.51667,32.00902,2.62302,Loam
+257,4035,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1997,6,1997,11,2877.0,3103.0,813.0,484.696,328.304,19.51667,32.00902,2.62302,Loam
+258,4036,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1998,6,1998,11,1628.0,1750.0,512.9,535.899,-22.999,22.03333,32.34329,5.17953,Loam
+259,4037,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1998,6,1998,11,1912.0,1962.0,512.9,535.899,-22.999,22.03333,32.34329,5.17953,Loam
+260,4038,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1998,6,1998,11,1628.0,1646.0,512.9,535.899,-22.999,22.03333,32.34329,5.17953,Loam
+261,4039,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,1998,6,1998,11,1912.0,1618.0,512.9,535.899,-22.999,22.03333,32.34329,5.17953,Loam
+262,4040,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,2001,6,2001,11,2583.0,3470.0,754.5,496.409,258.091,20.43333,31.09053,3.89723,Loam
+263,4041,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,2001,6,2001,11,2583.0,3103.0,754.5,496.409,258.091,20.43333,31.09053,3.89723,Loam
+264,4042,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,2001,6,2001,11,2752.0,2869.0,754.5,496.409,258.091,20.43333,31.09053,3.89723,Loam
+265,4043,USA,"Alabama, Sand Mountain Substation",34.3,-86.02,sandy loam, ,soybean,2001,6,2001,11,2752.0,2833.0,754.5,496.409,258.091,20.43333,31.09053,3.89723,Loam
+266,615,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2009,6,2009,10,3400.0,3400.0,432.7,416.38,16.32,16.7,27.67404,1.58032,Loam
+267,616,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2010,6,2010,10,4100.0,4200.0,504.6,462.95,41.65,19.22,31.19048,4.68988,Loam
+268,617,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2011,6,2011,10,3900.0,3900.0,331.7,475.495,-143.795,19.24,32.08086,4.95583,Loam
+269,618,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2012,6,2012,10,3200.0,3800.0,76.4,486.952,-410.552,20.16,35.93618,1.86219,Loam
+270,619,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2013,6,2013,10,4500.0,4500.0,395.4,459.911,-64.511,18.64,29.71417,3.20035,Loam
+271,620,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2009,6,2009,10,3300.0,3300.0,432.7,416.38,16.32,16.7,27.67404,1.58032,Loam
+272,621,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2010,6,2010,10,3800.0,3900.0,504.6,462.95,41.65,19.22,31.19048,4.68988,Loam
+273,622,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2011,6,2011,10,3500.0,3400.0,331.7,475.495,-143.795,19.24,32.08086,4.95583,Loam
+274,623,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2012,6,2012,10,3400.0,3500.0,76.4,486.952,-410.552,20.16,35.93618,1.86219,Loam
+275,624,USA,"Arlington, Wisconsin",43.3,-98.33,silt loam,,soybean,2013,6,2013,10,3500.0,3600.0,395.4,459.911,-64.511,18.64,29.71417,3.20035,Loam
+276,3,USA,"Bossier City, Louisiana",32.42,-93.64,sandy loam,6.6,soybean,2016,6,2016,10,3005.0,2943.0,511.9000053,546.6868881,-34.787,26.15999985,35.3316296,14.98488395,Loam
+277,4,USA,"Bossier City, Louisiana",32.42,-93.64,sandy loam,6.6,soybean,2017,6,2017,10,3062.0,2670.0,475.0999966,511.4026107,-36.303,24.96000023,34.27268933,13.00351149,Loam
+278,3842,USA,"Florida, Gainesville",29.69,-82.32,available, ,soybean,1984,6,1984,10,1340.0,1200.0,693.0,560.58,132.42,25.76,31.98847,17.11312,Loam
+279,606,USA,"Hoytville, Ohio",41.48,-84.15,Silty clay loam,,soybean,2009,5,2009,10,3600.0,3800.0,468.9,478.09,-9.19,17.66667,27.15856,4.54438,Loam
+280,607,USA,"Hoytville, Ohio",41.48,-84.15,Silty clay loam,,soybean,2011,5,2011,10,4400.0,4500.0,713.1,511.433,201.667,19.18333,32.73076,5.32257,Loam
+281,608,USA,"Hoytville, Ohio",41.48,-84.15,Silty clay loam,,soybean,2012,5,2012,10,3900.0,4200.0,334.7,540.813,-206.113,19.9,32.64844,5.4728,Loam
+282,609,USA,"Hoytville, Ohio",41.48,-84.15,Silty clay loam,,soybean,2013,5,2013,10,2700.0,3600.0,478.9,503.78,-24.88,19.01667,27.76024,5.64082,Loam
+283,199,USA,Illinois,40.92,-90.72,available,5.8 to 6,soybean,2012,5,2012,10,4404.0,4239.0,447.6,559.736,-112.136,20.8,34.64616,4.47773,Loam
+284,200,USA,Illinois,40.92,-90.72,available,5.8 to 6,soybean,2013,5,2013,10,4018.0,3853.0,327.5,532.572,-205.072,20.36667,29.63297,5.49323,Loam
+285,201,USA,Illinois,40.92,-90.72,available,5.8 to 6,soybean,2014,5,2014,10,4239.0,3908.0,707.4,511.805,195.595,19.48333,28.84338,6.25713,Loam
+286,202,USA,Illinois,40.92,-90.72,available,5.8 to 6,soybean,2015,5,2015,10,5284.0,4789.0,717.9,509.583,208.317,20.45,29.30252,7.53122,Loam
+287,203,USA,Illinois,40.92,-90.72,available,6.9 to 7.3,soybean,2012,5,2012,10,4285.0,3798.0,447.6,559.736,-112.136,20.8,34.64616,4.47773,Loam
+288,204,USA,Illinois,40.92,-90.72,available,6.9 to 7.3,soybean,2013,5,2013,10,3578.0,3523.0,327.5,532.572,-205.072,20.36667,29.63297,5.49323,Loam
+289,205,USA,Illinois,40.92,-90.72,available,6.9 to 7.3,soybean,2014,5,2014,10,4239.0,3963.0,707.4,511.805,195.595,19.48333,28.84338,6.25713,Loam
+290,206,USA,Illinois,40.92,-90.72,available,6.9 to 7.3,soybean,2015,5,2015,10,4789.0,4459.0,717.9,509.583,208.317,20.45,29.30252,7.53122,Loam
+291,2560,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1994,5,1994,10,2185.0,2124.0,474.4,543.728,-69.328,19.63333,30.07007,7.84272,Loam
+292,2561,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1994,5,1994,10,3299.0,3120.0,474.4,543.728,-69.328,19.63333,30.07007,7.84272,Loam
+293,2562,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1996,5,1996,10,3098.0,3240.0,531.6,534.665,-3.065,19.7,29.80985,6.36663,Loam
+294,2563,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1996,5,1996,10,2309.0,2320.0,531.6,534.665,-3.065,19.7,29.80985,6.36663,Loam
+295,2564,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1998,5,1998,10,2852.0,2839.0,650.3,538.17,112.13,21.01667,29.38872,7.777,Loam
+296,2565,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1998,5,1998,10,2130.0,2108.0,650.3,538.17,112.13,21.01667,29.38872,7.777,Loam
+297,2566,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1999,5,1999,10,3045.0,2951.0,520.3,555.246,-34.946,20.01667,31.96114,5.5474,Loam
+298,2567,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,1999,5,1999,10,2578.0,2476.0,520.3,555.246,-34.946,20.01667,31.96114,5.5474,Loam
+299,2568,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,2000,5,2000,10,1936.0,1754.0,579.4,531.883,47.517,20.35,29.50839,8.16002,Loam
+300,2569,USA,Illinois,40.1,-88.9,silty clay loam,6.6,soybean,2000,5,2000,10,2271.0,1877.0,579.4,531.883,47.517,20.35,29.50839,8.16002,Loam
+301,2708,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,1990,5,1990,10,2620.0,2370.0,606.7,577.798,28.902,21.15,32.29261,6.1964,Loam
+302,2709,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,1994,5,1994,10,1490.0,2870.0,389.4,581.113,-191.713,20.83333,31.33563,8.95939,Loam
+303,2710,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,1996,5,1996,10,2430.0,2630.0,679.7,595.439,84.261,21.35,30.85126,8.58438,Loam
+304,2711,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,1998,5,1998,10,2750.0,2630.0,692.5,611.225,81.275,23.1,30.33976,8.91915,Loam
+305,2712,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2000,5,2000,10,2320.0,2320.0,512.9,610.471,-97.571,22.18333,30.88516,9.42183,Loam
+306,2713,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2002,5,2002,10,1980.0,2370.0,607.0,589.602,17.398,22.53333,32.48678,9.35364,Loam
+307,2714,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2006,5,2006,10,3100.0,3170.0,908.9,577.9,331.0,20.7,30.8876,7.14616,Loam
+308,2715,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2008,5,2008,10,3040.0,2840.0,457.4,591.043,-133.643,21.41667,30.3538,7.92716,Loam
+309,2716,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2010,5,2010,10,2880.0,2940.0,451.6,632.408,-180.808,22.8,32.52816,7.1618,Loam
+310,2717,USA,"Illinois, Dixon Springs Ag Research Center",37.47,-88.75,silt loam, ,soybean,2012,5,2012,10,1820.0,2650.0,569.5,607.856,-38.356,22.46667,33.23981,8.13023,Loam
+311,3420,USA,"Indiana, Lafayette",40.42,-86.87,available, ,soybean,2003,5,2003,10,2580.0,2560.0,822.5000229,500.0239174,322.476,18.64999994,28.91500756,5.395620531,Loam
+312,3421,USA,"Indiana, Lafayette",40.42,-86.87,available, ,soybean,2005,5,2005,10,3620.0,3770.0,511.3,531.315,-20.015,20.05,29.00681,7.15509,Loam
+313,3422,USA,"Indiana, Lafayette",40.42,-86.87,available, ,soybean,2006,5,2006,10,4050.0,4420.0,636.8,506.424,130.376,18.53333,30.00738,4.73855,Loam
+314,3423,USA,"Indiana, Lafayette",40.42,-86.87,available, ,soybean,2007,5,2007,10,4190.0,4330.0,422.8,536.291,-113.491,20.68333,32.01782,10.67236,Loam
+315,4064,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1980,5,1980,10,3656.0,3481.0,491.5,525.367,-33.867,19.56667,31.61784,5.29972,Loam
+316,4065,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1980,5,1980,10,3649.0,3326.0,491.5,525.367,-33.867,19.56667,31.61784,5.29972,Loam
+317,4066,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1981,5,1981,10,3306.0,3252.0,775.7,488.06,287.64,18.38333,28.71078,5.11918,Loam
+318,4067,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1981,5,1981,10,3340.0,3199.0,775.7,488.06,287.64,18.38333,28.71078,5.11918,Loam
+319,4068,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1982,5,1982,10,3730.0,3353.0,543.1,505.33,37.77,18.78333,29.55469,7.80008,Loam
+320,4069,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1982,5,1982,10,4079.0,3609.0,543.1,505.33,37.77,18.78333,29.55469,7.80008,Loam
+321,4070,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1983,5,1983,10,3857.0,3414.0,518.4,535.338,-16.938,19.98333,33.26619,8.35621,Loam
+322,4071,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1983,5,1983,10,4059.0,3427.0,518.4,535.338,-16.938,19.98333,33.26619,8.35621,Loam
+323,4072,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1984,5,1984,10,3783.0,2997.0,525.6,497.216,28.384,19.18333,30.8165,9.15767,Loam
+324,4073,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1984,5,1984,10,3837.0,2715.0,525.6,497.216,28.384,19.18333,30.8165,9.15767,Loam
+325,4074,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1987,5,1987,10,3051.0,3084.0,561.1,540.171,20.929,19.55,30.23676,1.81497,Loam
+326,4075,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1987,5,1987,10,3474.0,3313.0,561.1,540.171,20.929,19.55,30.23676,1.81497,Loam
+327,4076,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1988,5,1988,10,2406.0,2533.0,335.4,546.436,-211.036,19.68333,32.4931,2.44523,Loam
+328,4077,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1988,5,1988,10,3011.0,2305.0,335.4,546.436,-211.036,19.68333,32.4931,2.44523,Loam
+329,4078,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1989,5,1989,10,2412.0,3158.0,604.2,507.199,97.001,18.6,29.51555,5.9568,Loam
+330,4079,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1989,5,1989,10,2984.0,2869.0,604.2,507.199,97.001,18.6,29.51555,5.9568,Loam
+331,4080,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1990,5,1990,10,3508.0,3481.0,719.1,490.112,228.988,18.5,28.35973,5.22823,Loam
+332,4081,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1990,5,1990,10,3454.0,3414.0,719.1,490.112,228.988,18.5,28.35973,5.22823,Loam
+333,4082,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1991,5,1991,10,3091.0,3723.0,404.1,543.628,-139.528,20.65,30.93442,7.87919,Loam
+334,4083,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1991,5,1991,10,3528.0,3871.0,404.1,543.628,-139.528,20.65,30.93442,7.87919,Loam
+335,4084,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1993,5,1993,10,4059.0,4173.0,880.2,494.027,386.173,18.56667,29.32043,4.41404,Loam
+336,4085,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1993,5,1993,10,3703.0,3474.0,880.2,494.027,386.173,18.56667,29.32043,4.41404,Loam
+337,4086,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1994,5,1994,10,3501.0,3488.0,414.8,525.415,-110.615,18.63333,29.7984,7.28592,Loam
+338,4087,USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",40.47,-86.98,silty clay loam, ,soybean,1994,5,1994,10,3205.0,3078.0,414.8,525.415,-110.615,18.63333,29.7984,7.28592,Loam
+339,2799,USA,"Iowa, Ames",42.03,-93.62,available,6.6 to 6.8,soybean,2004,5,2004,10,2822.0,2554.0,607.2,500.912,106.288,18.06667,26.38556,5.33935,Loam
+340,1682,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",45.53,18.73, silty clay loam,6.53,soybean,1980,5,1980,10,3500.0,3400.0,435.9,395.293,40.607,16.96667,26.23392,6.54462,Loam
+341,1683,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,1990,5,1990,10,3480.0,3320.0,755.2,517.464,237.736,19.08333,28.4439,4.42841,Loam
+342,1684,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,1994,5,1994,10,4260.0,3820.0,537.1,530.731,6.369,19.0,28.13734,7.24214,Loam
+343,1685,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,1996,5,1996,10,4180.0,3970.0,538.8,486.87,51.93,18.11667,27.60596,5.86383,Loam
+344,1686,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,1998,5,1998,10,3550.0,3440.0,748.5,541.339,207.161,20.15,28.6768,6.19587,Loam
+345,1687,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,2000,5,2000,10,3100.0,2800.0,347.9,535.868,-187.968,19.81667,28.72965,7.02579,Loam
+346,1688,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,2002,5,2002,10,3170.0,3290.0,447.3,549.174,-101.874,19.25,30.55226,2.8713,Loam
+347,1689,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,2004,5,2004,10,3640.0,3450.0,607.2,500.912,106.288,18.06667,26.38556,5.33935,Loam
+348,1690,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75, silty clay loam,6.53,soybean,2006,5,2006,10,3450.0,3380.0,447.3,532.482,-85.182,19.26667,30.21955,3.80808,Loam
+349,3329,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,1999,5,1999,10,3700.0,3900.0,530.2,543.476,-13.276,18.98333,31.00905,3.25557,Loam
+350,3330,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,1999,5,1999,10,4000.0,3600.0,530.2,543.476,-13.276,18.98333,31.00905,3.25557,Loam
+351,3331,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2000,5,2000,10,3900.0,3600.0,347.9,535.868,-187.968,19.81667,28.72965,7.02579,Loam
+352,3332,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2000,5,2000,10,3800.0,3300.0,347.9,535.868,-187.968,19.81667,28.72965,7.02579,Loam
+353,3333,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2001,5,2001,10,3700.0,3800.0,445.2,535.055,-89.855,19.2,30.0553,4.95569,Loam
+354,3334,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2001,5,2001,10,3400.0,3200.0,445.2,535.055,-89.855,19.2,30.0553,4.95569,Loam
+355,3335,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2002,5,2002,10,4400.0,4200.0,447.3,549.174,-101.874,19.25,30.55226,2.8713,Loam
+356,3336,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam,6.7,soybean,2002,5,2002,10,4100.0,3800.0,447.3,549.174,-101.874,19.25,30.55226,2.8713,Loam
+357,3337,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam, ,soybean,2003,5,2003,10,3400.0,3089.0,429.0,541.629,-112.629,18.58333,29.48987,4.37156,Loam
+358,3338,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam, ,soybean,2004,5,2004,10,4334.0,4998.0,607.2,500.912,106.288,18.06667,26.38556,5.33935,Loam
+359,3339,USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",42.02,-93.75,silty clay loam, ,soybean,2005,5,2005,10,5444.0,4967.0,573.4,561.393,12.007,19.71667,30.13879,5.57738,Loam
+360,55,USA,"Iowa, Nashua",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1996,5,1996,10,3571.0,3529.0,532.6,463.279,69.321,17.43333,27.33077,3.66085,Loam
+361,56,USA,"Iowa, Nashua",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1996,5,1996,10,3688.0,3529.0,532.6,463.279,69.321,17.43333,27.33077,3.66085,Loam
+362,57,USA,"Iowa, Nashua",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1997,5,1997,10,2873.0,2844.0,457.5,494.706,-37.206,18.18333,28.0141,4.40098,Loam
+363,58,USA,"Iowa, Nashua",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1997,5,1997,10,2849.0,2844.0,457.5,494.706,-37.206,18.18333,28.0141,4.40098,Loam
+364,1674,USA,"Iowa, Nashua",43.02,-82.12,loam, ,soybean,1980,6,1980,10,2900.0,2600.0,426.8,393.015,33.785,16.92,26.68592,5.31773,Clay
+365,1675,USA,"Iowa, Nashua",42.02,-93.75,loam, ,soybean,1981,5,1981,10,1600.0,1800.0,550.9,490.997,59.903,18.71667,28.17155,5.35148,Loam
+366,1676,USA,"Iowa, Nashua",43.02,-82.12,loam, ,soybean,1982,6,1982,10,2800.0,2600.0,330.2,386.196,-55.996,16.9,27.0774,6.1899,Clay
+367,1677,USA,"Iowa, Nashua",43.02,-82.12,loam, ,soybean,1983,6,1983,10,3000.0,3000.0,358.4,439.565,-81.165,18.58,28.7614,6.49381,Clay
+368,1678,USA,"Iowa, Nashua",43.02,-82.12,loam, ,soybean,1984,6,1984,10,2600.0,2500.0,413.1,412.817,0.283,18.14,27.2625,8.00521,Clay
+369,1679,USA,"Iowa, Nashua",43.02,-82.12,loam, ,soybean,1987,6,1987,10,2900.0,2800.0,465.7,413.779,51.921,17.9,28.78088,3.34002,Clay
+370,1680,USA,"Iowa, Nashua",43.0,-92.5,loam, ,soybean,1988,5,1988,10,2100.0,2000.0,402.0,554.296,-152.296,19.71667,31.54964,-0.20791,Loam
+371,1681,USA,"Iowa, Nashua",43.0,-92.5,loam, ,soybean,1989,5,1989,10,2600.0,2800.0,374.4,503.274,-128.874,18.46667,30.74134,3.73351,Loam
+372,59,USA,"Iowa, Nashua (Northeast Research and Demonstration Farm)",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1995,5,1995,10,2281.0,2404.0,438.1,502.598,-64.498,18.35,30.40158,3.53012,Loam
+373,60,USA,"Iowa, Nashua (Northeast Research and Demonstration Farm)",42.94,-92.57,"Kenyon (fine-loamy, mixed, mesic Typic Hapludoll)", ,soybean,1995,5,1995,10,2240.0,2404.0,438.1,502.598,-64.498,18.35,30.40158,3.53012,Loam
+374,2620,USA,"Jackson, Tennessee",35.62,-88.83,silt loam,,soybean,2015,6,2015,11,3472.0,3283.0,649.7,508.3,141.4,21.61667,32.93875,8.11716,Loam
+375,2621,USA,"Jackson, Tennessee",35.62,-88.83,silt loam,,soybean,2015,6,2015,11,3469.0,3157.0,649.7,508.3,141.4,21.61667,32.93875,8.11716,Loam
+376,2614,USA,"Kansas, Garden City (Southwest Reseach-Extension Center)",37.99,-100.82,silt loam,7.8,soybean,1993,6,1993,10,1460.0,1370.0,311.7,469.59,-157.89,20.02,31.78592,3.43443,Sandy loam
+377,2615,USA,"Kansas, Garden City (Southwest Reseach-Extension Center)",37.99,-100.82,silt loam,7.8,soybean,1994,6,1994,10,960.0,1430.0,367.4,491.834,-124.434,21.82,33.81494,5.66872,Sandy loam
+378,2616,USA,"Kansas, Garden City (Southwest Reseach-Extension Center)",37.99,-100.82,silt loam,7.8,soybean,1995,6,1995,10,1240.0,1590.0,271.0,469.366,-198.366,20.86,34.49125,2.97303,Sandy loam
+379,678,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1994,6,1994,10,3096.0,2969.0,366.5,423.982,-57.482,21.02,29.90718,8.49378,Loam
+380,679,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1995,6,1995,10,1332.0,1464.0,354.4,427.559,-73.159,22.12,32.04708,8.69636,Loam
+381,680,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1996,6,1996,10,3048.0,3268.0,302.7,422.665,-119.965,21.04,28.49253,8.39427,Loam
+382,681,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1997,6,1997,10,2562.0,2708.0,338.7,409.816,-71.116,21.22,30.28013,7.77843,Loam
+383,682,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1998,6,1998,10,951.0,992.0,345.9,440.918,-95.018,21.78,29.92385,8.76711,Loam
+384,683,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,1999,6,1999,10,925.0,892.0,219.2,439.053,-219.853,21.84,32.11286,7.69194,Loam
+385,684,USA,"Kentucky, Princeton",37.87,-84.25,silt loam,NT 6.5 CT 6.2,soybean,2000,6,2000,10,2574.0,2736.0,382.5,431.468,-48.968,20.98,28.42663,8.91625,Loam
+386,428,USA,"Maryland, Beltsville ",39.08,-76.65,silt loam, ,soybean,2001,6,2001,11,4240.0,4310.0,446.6,510.595,-63.995,19.13333,29.46641,4.38719,Sandy clay loam
+387,429,USA,"Maryland, Beltsville ",39.08,-76.65,silt loam, ,soybean,2002,6,2002,11,2050.0,1750.0,526.1,495.654,30.446,19.91667,31.59027,2.5357,Sandy clay loam
+388,430,USA,"Maryland, Beltsville ",39.08,-76.65,silt loam, ,soybean,2003,6,2003,11,3390.0,4050.0,876.1,461.629,414.471,19.46667,29.59638,5.02537,Sandy clay loam
+389,431,USA,"Maryland, Beltsville ",39.08,-76.65,silt loam, ,soybean,2004,6,2004,11,3630.0,4030.0,687.6,444.965,242.635,19.2,29.26216,4.28236,Sandy clay loam
+390,432,USA,"Maryland, Beltsville ",39.08,-76.65,silt loam, ,soybean,2005,6,2005,11,4160.0,4350.0,488.1,488.327,-0.227,20.4,30.5935,3.3773,Sandy clay loam
+391,1334,USA,"Michigan, KBS LTER",42.4,-85.4, Hapludalfs of the Kalamazoo, ,soybean,1997,5,1997,10,1370.0,1480.0,498.6,479.439,19.161,16.48333,27.56648,5.10322,Loam
+392,1335,USA,"Michigan, KBS LTER",42.4,-85.4, Hapludalfs of the Kalamazoo, ,soybean,2000,5,2000,10,1670.0,1640.0,669.4,494.078,175.322,17.06667,26.15148,6.48768,Loam
+393,1336,USA,"Michigan, KBS LTER",42.4,-85.4, Hapludalfs of the Kalamazoo, ,soybean,2003,5,2003,10,1500.0,1920.0,488.5,501.416,-12.916,16.56667,28.04398,3.72558,Loam
+394,1113,USA,"Michigan, KBS LTER",42.4,-85.4,Loam, ,soybean,1990,5,1990,10,2859.0,2957.0,610.9,493.419,117.481,17.51667,26.92951,5.23138,Loam
+395,1114,USA,"Michigan, KBS LTER",42.4,-85.4,Loam, ,soybean,1994,5,1994,10,3001.0,2848.0,506.1,515.802,-9.702,17.8,27.87378,6.3973,Loam
+396,1115,USA,"Michigan, KBS LTER",42.4,-85.4,Loam, ,soybean,1997,5,1997,10,1522.0,2048.0,498.6,479.439,19.161,16.48333,27.56648,5.10322,Loam
+397,1116,USA,"Michigan, KBS LTER",42.4,-85.4,Loam, ,soybean,2000,5,2000,10,2662.0,2935.0,669.4,494.078,175.322,17.06667,26.15148,6.48768,Loam
+398,1031,USA,"Michigan, KBS LTER",44.35,-85.58,silt loam or sand loam, ,soybean,1994,5,1994,10,3010.0,2860.0,441.0,482.936,-41.936,15.35,26.31093,4.89815,Sandy loam
+399,1032,USA,"Michigan, KBS LTER",44.35,-85.58,silt loam or sand loam, ,soybean,1997,5,1997,10,1510.0,2040.0,422.5,445.305,-22.805,14.4,26.93364,3.10404,Sandy loam
+400,1033,USA,"Michigan, KBS LTER",44.35,-85.58,silt loam or sand loam, ,soybean,2000,5,2000,10,2660.0,2920.0,474.4,458.427,15.973,15.65,25.54588,4.34885,Sandy loam
+401,1034,USA,"Michigan, KBS LTER",44.35,-85.58,silt loam or sand loam, ,soybean,2003,5,2003,10,1620.0,1870.0,466.3,472.668,-6.368,14.88333,25.81871,2.25784,Sandy loam
+402,1035,USA,"Michigan, KBS LTER",44.35,-85.58,silt loam or sand loam, ,soybean,2006,5,2006,10,2870.0,3600.0,616.1,478.747,137.353,15.51667,27.71552,1.70593,Sandy loam
+403,451,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1993,5,1993,10,1986.0,1663.0,880.2,432.765,447.435,15.93333,26.13366,1.92474,Loam
+404,452,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1993,5,1993,10,1817.0,1663.0,880.2,432.765,447.435,15.93333,26.13366,1.92474,Loam
+405,453,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1993,5,1993,10,1562.0,1663.0,880.2,432.765,447.435,15.93333,26.13366,1.92474,Loam
+406,454,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1995,5,1995,10,1562.0,2181.0,562.9,509.709,53.191,17.4,29.0991,3.30428,Loam
+407,455,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1995,5,1995,10,1676.0,2181.0,562.9,509.709,53.191,17.4,29.0991,3.30428,Loam
+408,456,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,1995,5,1995,10,1945.0,2181.0,562.9,509.709,53.191,17.4,29.0991,3.30428,Loam
+409,457,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,1762.0,2310.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+410,458,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2129.0,2365.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+411,459,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2270.0,2497.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+412,460,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2097.0,2291.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+413,461,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2066.0,2155.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+414,462,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2189.0,2198.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+415,463,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2493.0,2228.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+416,464,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,2060.0,1805.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+417,465,USA,"Minnesota, New Richland",43.87,-93.51,clay loam,7.8,soybean,2005,5,2005,10,1732.0,1477.0,619.1000023,532.1334628,86.967,18.28333314,28.66276895,4.959999823,Loam
+418,466,USA,"Minnesota, Waseca",44.09,-93.54,clay loam,7,soybean,2001,5,2001,10,2391.0,2130.0,552.5,509.841,42.659,16.86667,28.02682,3.35599,Loam
+419,467,USA,"Minnesota, Waseca",44.09,-93.54,clay loam,7,soybean,2003,5,2003,10,1922.0,1487.0,409.0,517.141,-108.141,17.35,27.97213,4.07632,Loam
+420,468,USA,"Minnesota, Waseca",44.09,-93.54,clay loam,7,soybean,2002,5,2002,10,1568.0,1492.0,634.0,528.041,105.959,16.93333,29.05312,0.78165,Loam
+421,469,USA,"Minnesota, Waseca",44.09,-93.54,clay loam,7,soybean,2004,5,2004,10,1943.0,1560.0,855.4,465.954,389.446,16.8,26.24791,5.21191,Loam
+422,591,USA,"Monmouth, Illinois",45.92,-90.72,silty clay loam and silt loam,,soybean,2009,6,2009,10,5200.0,5400.0,392.5,328.536,63.964,14.06,23.43671,0.0865,Loam
+423,592,USA,"Monmouth, Illinois",45.92,-90.72,silty clay loam and silt loam,,soybean,2010,6,2010,10,5400.0,5400.0,816.0,347.118,468.882,15.94,26.70268,1.98889,Loam
+424,593,USA,"Monmouth, Illinois",45.92,-90.72,silty clay loam and silt loam,,soybean,2011,6,2011,10,4800.0,4800.0,405.0,368.026,36.974,16.12,28.21365,3.10129,Loam
+425,594,USA,"Monmouth, Illinois",45.92,-90.72,silty clay loam and silt loam,,soybean,2012,6,2012,10,4400.0,4300.0,395.8,387.889,7.911,15.54,29.93984,0.77554,Loam
+426,595,USA,"Monmouth, Illinois",45.92,-90.72,silty clay loam and silt loam,,soybean,2013,6,2013,10,4100.0,3900.0,455.5,359.026,96.474,15.4,26.83132,2.19167,Loam
+427,601,USA,"Nashua, Iowa",42.95,-92.53,loam,,soybean,2009,5,2009,10,3700.0,3500.0,773.8,460.628,313.172,16.65,25.75493,2.34993,Loam
+428,602,USA,"Nashua, Iowa",42.95,-92.53,loam,,soybean,2010,5,2010,10,4300.0,3700.0,683.7,496.799,186.901,18.86667,28.9411,3.83533,Loam
+429,603,USA,"Nashua, Iowa",42.95,-92.53,loam,,soybean,2011,5,2011,10,4300.0,4100.0,451.9,497.046,-45.146,18.16667,30.66593,4.51232,Loam
+430,604,USA,"Nashua, Iowa",42.95,-92.53,loam,,soybean,2012,5,2012,10,3500.0,3300.0,324.8,549.141,-224.341,18.81667,33.06065,2.87329,Loam
+431,605,USA,"Nashua, Iowa",42.95,-92.53,loam,,soybean,2013,5,2013,10,4200.0,4000.0,675.6,494.83,180.77,17.95,28.69841,3.66189,Loam
+432,4188,USA,"Nebraska, ARDC",40.83,-96.47,silty clay loam, ,soybean,2006,5,2006,10,2890.0,2700.0,491.5,566.88,-75.38,20.03333,33.41097,4.21101,Loam
+433,4189,USA,"Nebraska, ARDC",40.83,-96.47,silty clay loam, ,soybean,2008,5,2008,10,2600.0,2360.0,719.8,559.641,160.159,19.46667,31.84285,5.75183,Loam
+434,4139,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1987,5,1987,10,2410.0,2270.0,619.2,579.474,39.726,20.5,33.02875,1.94775,Loam
+435,4140,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1987,5,1987,10,2630.0,2430.0,619.2,579.474,39.726,20.5,33.02875,1.94775,Loam
+436,4141,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1988,5,1988,10,2460.0,2840.0,411.2,580.728,-169.528,21.43333,33.24197,3.26011,Loam
+437,4142,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1988,5,1988,10,2570.0,2470.0,411.2,580.728,-169.528,21.43333,33.24197,3.26011,Loam
+438,4143,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1989,5,1989,10,2270.0,2050.0,636.9,535.245,101.655,19.71667,31.8859,4.8187,Loam
+439,4144,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1989,5,1989,10,2130.0,1910.0,636.9,535.245,101.655,19.71667,31.8859,4.8187,Loam
+440,4145,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1990,5,1990,10,1930.0,1340.0,569.0,554.804,14.196,20.45,31.07792,4.70649,Loam
+441,4146,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1990,5,1990,10,2120.0,1350.0,569.0,554.804,14.196,20.45,31.07792,4.70649,Loam
+442,4147,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1991,5,1991,10,1890.0,2350.0,355.8,548.01,-192.21,20.76667,32.67062,4.19659,Loam
+443,4148,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1991,5,1991,10,2210.0,2170.0,355.8,548.01,-192.21,20.76667,32.67062,4.19659,Loam
+444,4149,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1993,5,1993,10,2130.0,2150.0,1027.5,504.866,522.634,18.36667,29.26888,4.1768,Loam
+445,4150,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1993,5,1993,10,2390.0,1530.0,1027.5,504.866,522.634,18.36667,29.26888,4.1768,Loam
+446,4151,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1994,5,1994,10,3120.0,3000.0,616.1,573.728,42.372,19.55,28.75747,5.77022,Loam
+447,4152,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1994,5,1994,10,2800.0,2630.0,616.1,573.728,42.372,19.55,28.75747,5.77022,Loam
+448,4153,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1995,5,1995,10,1330.0,1450.0,509.6,541.266,-31.666,19.35,33.61996,4.84391,Loam
+449,4154,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1995,5,1995,10,1460.0,1490.0,509.6,541.266,-31.666,19.35,33.61996,4.84391,Loam
+450,4155,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1996,5,1996,10,3080.0,2530.0,806.4,537.739,268.661,18.8,29.28899,5.86404,Loam
+451,4156,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1996,5,1996,10,2650.0,1770.0,806.4,537.739,268.661,18.8,29.28899,5.86404,Loam
+452,4157,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1997,5,1997,10,2870.0,2730.0,537.4,554.393,-16.993,19.51667,31.51285,5.7009,Loam
+453,4158,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1997,5,1997,10,2520.0,2330.0,537.4,554.393,-16.993,19.51667,31.51285,5.7009,Loam
+454,4159,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1998,5,1998,10,2740.0,3210.0,659.5,567.388,92.112,20.88333,30.79197,7.39909,Loam
+455,4160,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1998,5,1998,10,3170.0,3190.0,659.5,567.388,92.112,20.88333,30.79197,7.39909,Loam
+456,4161,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1999,5,1999,10,2600.0,3020.0,512.8,557.173,-44.373,19.7,32.74878,2.94235,Loam
+457,4162,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,1999,5,1999,10,3110.0,3130.0,512.8,557.173,-44.373,19.7,32.74878,2.94235,Loam
+458,4163,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,2000,5,2000,10,1380.0,2610.0,510.9,574.225,-63.325,21.08333,32.57732,6.57518,Loam
+459,4164,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,2000,5,2000,10,1000.0,1730.0,510.9,574.225,-63.325,21.08333,32.57732,6.57518,Loam
+460,4165,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,2001,5,2001,10,2580.0,2570.0,671.3,577.806,93.494,20.15,32.17956,5.23656,Loam
+461,4166,USA,"Nebraska, Lincoln",40.8,-96.67,silty clay loam, ,soybean,2001,5,2001,10,2280.0,2200.0,671.3,577.806,93.494,20.15,32.17956,5.23656,Loam
+462,707,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1983,5,1983,10,2375.0,2000.0,414.8,557.272,-142.472,21.1,35.10232,7.57683,Loam
+463,708,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1983,5,1983,10,2083.333333,2000.0,414.8,557.272,-142.472,21.1,35.10232,7.57683,Loam
+464,709,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1984,5,1984,10,1854.481481,2177.0,673.2,567.987,105.213,20.15,32.99246,6.17767,Loam
+465,710,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1984,5,1984,10,2015.740741,2177.0,673.2,567.987,105.213,20.15,32.99246,6.17767,Loam
+466,711,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1987,5,1987,10,3358.384615,3564.0,619.2,579.474,39.726,20.5,33.02875,1.94775,Loam
+467,712,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1987,5,1987,10,3289.846154,3564.0,619.2,579.474,39.726,20.5,33.02875,1.94775,Loam
+468,713,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1988,5,1988,10,2274.431373,2468.0,411.2,580.728,-169.528,21.43333,33.24197,3.26011,Loam
+469,714,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1988,5,1988,10,2419.607843,2468.0,411.2,580.728,-169.528,21.43333,33.24197,3.26011,Loam
+470,715,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1989,5,1989,10,2571.631579,3294.0,636.9,535.245,101.655,19.71667,31.8859,4.8187,Loam
+471,716,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1989,5,1989,10,2716.105263,3294.0,636.9,535.245,101.655,19.71667,31.8859,4.8187,Loam
+472,717,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1990,5,1990,10,2506.960784,2810.0,569.0,554.804,14.196,20.45,31.07792,4.70649,Loam
+473,718,USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",40.85,-96.47,silty clay loam, ,soybean,1990,5,1990,10,2810.0,2810.0,569.0,554.804,14.196,20.45,31.07792,4.70649,Loam
+474,2915,USA,"Nebraska, RMF",40.83,-96.47,silty clay loam,,soybean,2004,5,2004,10,3730.0,3550.0,457.2,544.124,-86.924,19.51667,28.90457,6.17753,Loam
+475,2916,USA,"Nebraska, RMF",40.83,-96.47,silty clay loam,,soybean,2004,5,2004,10,3570.0,3480.0,457.2,544.124,-86.924,19.51667,28.90457,6.17753,Loam
+476,2917,USA,"Nebraska, RMF",40.83,-96.47,silty clay loam,,soybean,2004,5,2004,10,4340.0,4180.0,457.2,544.124,-86.924,19.51667,28.90457,6.17753,Loam
+477,4190,USA,"Nebraska, RMF",40.83,-96.47,silty clay loam, ,soybean,2002,5,2002,10,2930.0,2850.0,622.3,572.324,49.976,20.1,33.75004,3.00529,Loam
+478,4191,USA,"Nebraska, RMF",40.83,-96.47,silty clay loam, ,soybean,2004,5,2004,10,2580.0,2580.0,457.2,544.124,-86.924,19.51667,28.90457,6.17753,Loam
+479,15,USA,"North Dakota, Carrington (NDSU Research Extension Center)",47.46,-99.12,available, ,soybean,1991,5,1991,10,2380.0,2620.0,347.1,476.438,-129.338,15.2,29.3754,-2.51616,Loam
+480,16,USA,"North Dakota, Carrington (NDSU Research Extension Center)",47.46,-99.12,available, ,soybean,1991,5,1991,10,2760.0,2570.0,347.1,476.438,-129.338,15.2,29.3754,-2.51616,Loam
+481,17,USA,"North Dakota, Carrington (NDSU Research Extension Center)",47.46,-99.12,available, ,soybean,1991,5,1991,10,2760.0,2520.0,347.1,476.438,-129.338,15.2,29.3754,-2.51616,Loam
+482,1840,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1988,5,1988,10,1800.0,1300.0,325.7,525.565,-199.865,19.56667,32.37502,1.95984,Loam
+483,1841,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1988,5,1988,10,1900.0,1200.0,325.7,525.565,-199.865,19.56667,32.37502,1.95984,Loam
+484,1842,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1988,5,1988,10,2100.0,1000.0,325.7,525.565,-199.865,19.56667,32.37502,1.95984,Loam
+485,1843,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1989,5,1989,10,1000.0,600.0,497.5,487.732,9.768,18.58333,29.48149,4.6794,Loam
+486,1844,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1989,5,1989,10,1300.0,600.0,497.5,487.732,9.768,18.58333,29.48149,4.6794,Loam
+487,1845,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1989,5,1989,10,1500.0,600.0,497.5,487.732,9.768,18.58333,29.48149,4.6794,Loam
+488,1846,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,2000.0,2700.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+489,1847,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,2100.0,2800.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+490,1848,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,3100.0,3600.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+491,1849,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,3100.0,3400.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+492,1850,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,2100.0,2100.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+493,1851,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1990,5,1990,10,2200.0,2200.0,783.6,472.676,310.924,18.26667,27.28989,5.17764,Loam
+494,1852,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,2300.0,2700.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+495,1853,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,2700.0,2900.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+496,1854,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,2800.0,3000.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+497,1855,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,2800.0,2800.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+498,1856,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,2900.0,2900.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+499,1857,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1991,5,1991,10,3100.0,2700.0,443.3,541.454,-98.154,20.7,29.91107,6.77148,Loam
+500,1858,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1993,5,1993,10,2600.0,2400.0,496.0,494.76,1.24,18.6,29.74277,3.48755,Loam
+501,1859,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1993,5,1993,10,2700.0,2400.0,496.0,494.76,1.24,18.6,29.74277,3.48755,Loam
+502,1860,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1993,5,1993,10,3100.0,2600.0,496.0,494.76,1.24,18.6,29.74277,3.48755,Loam
+503,1861,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1994,5,1994,10,4700.0,4400.0,410.0,514.757,-104.757,18.65,28.99088,5.61702,Loam
+504,1862,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1994,5,1994,10,4700.0,3900.0,410.0,514.757,-104.757,18.65,28.99088,5.61702,Loam
+505,1863,USA,"Ohio, Hoytville",41.22,-83.77, Hoytville series, ,soybean,1994,5,1994,10,5100.0,2500.0,410.0,514.757,-104.757,18.65,28.99088,5.61702,Loam
+506,1882,USA,"Ohio, Hoytville",41.22,-83.77, Mollic Ochraqualfs, ,soybean,1980,5,1980,10,3343.0,2473.0,524.4,509.634,14.766,19.48333,28.9121,4.39624,Loam
+507,1883,USA,"Ohio, Hoytville",41.22,-83.77, Mollic Ochraqualfs, ,soybean,1981,5,1981,10,2029.0,1797.0,645.8,472.593,173.207,17.81667,28.00059,3.78065,Loam
+508,1884,USA,"Ohio, Hoytville",41.22,-83.77, Mollic Ochraqualfs, ,soybean,1987,5,1987,10,2473.0,2357.0,549.5,522.775,26.725,19.71667,29.66955,1.7055,Loam
+509,912,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2000.0,2400.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+510,913,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2300.0,2600.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+511,914,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2200.0,2400.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+512,915,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2000.0,2400.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+513,916,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2300.0,2600.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+514,917,USA,"Ohio, Hoytville",41.22,-83.77,clay, ,soybean,1996,5,1996,10,2200.0,2400.0,570.3,483.998,86.302,18.6,28.25202,5.28297,Loam
+515,596,USA,"Perry, Illnois",39.8,-90.82,silt loam,,soybean,2009,5,2009,10,3400.0,3700.0,704.7,507.529,197.171,19.11667,28.68951,5.74631,Loam
+516,597,USA,"Perry, Illnois",39.8,-90.82,silt loam,,soybean,2010,5,2010,10,3300.0,4100.0,895.4,576.611,318.789,21.33333,31.31466,6.93685,Loam
+517,598,USA,"Perry, Illnois",39.8,-90.82,silt loam,,soybean,2011,5,2011,10,2600.0,2700.0,386.7,569.084,-182.384,20.98333,33.27053,6.80028,Loam
+518,599,USA,"Perry, Illnois",39.8,-90.82,silt loam,,soybean,2012,5,2012,10,2000.0,2100.0,379.2,589.94,-210.74,21.66667,36.0036,6.03471,Loam
+519,600,USA,"Perry, Illnois",39.8,-90.82,silt loam,,soybean,2013,5,2013,10,3300.0,3300.0,511.5,544.656,-33.156,20.68333,29.61581,6.62734,Loam
+520,3948,USA,Piedmont,36.38,-79.69,sandy clay loam,6.1,soybean,1984,6,1984,11,2830.0,2540.0,585.8,457.521,128.279,19.33333,29.51864,1.45893,Loam
+521,3949,USA,Piedmont,36.38,-79.69,sandy clay loam,6.1,soybean,1987,6,1987,11,2470.0,3080.0,555.4,481.357,74.043,19.98333,32.52586,4.07317,Loam
+522,3950,USA,Piedmont,36.38,-79.69,sandy clay loam,6.1,soybean,1988,6,1988,11,2140.0,2540.0,567.2,473.076,94.124,19.18333,32.2319,3.76706,Loam
+523,1356,USA,"South Carolina, Florence",34.3,-79.73,loamy sand, ,soybean,1998,6,1998,11,1750.0,1700.0,386.6,544.436,-157.836,23.26667,33.9445,7.67347,Loam
+524,1357,USA,"South Carolina, Florence",34.3,-79.73,loamy sand, ,soybean,1999,6,1999,11,2450.0,2430.0,685.3,498.545,186.755,22.45,34.0873,7.16273,Loam
+525,1358,USA,"South Carolina, Florence",34.3,-79.73,loamy sand, ,soybean,2000,6,2000,11,2600.0,2140.0,689.0,514.738,174.262,21.76667,31.90425,4.56606,Loam
+526,1359,USA,"South Carolina, Florence",34.3,-79.73,loamy sand, ,soybean,2001,6,2001,11,680.0,830.0,329.0,504.888,-175.888,22.41667,32.67227,7.80338,Loam
+527,730,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2002,6,2002,11,2844.0,3100.0,831.5,495.752,335.748,21.2,32.80869,2.7371,Loam
+528,731,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2003,6,2003,11,1394.0,1521.0,709.5,493.54,215.96,20.88333,31.71999,6.53102,Loam
+529,732,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2003,6,2003,11,2956.0,2765.0,709.5,493.54,215.96,20.88333,31.71999,6.53102,Loam
+530,733,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2004,6,2004,11,2595.0,3083.0,719.1,468.186,250.914,21.08333,30.88385,7.9503,Loam
+531,734,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2004,6,2004,11,3858.0,3809.0,719.1,468.186,250.914,21.08333,30.88385,7.9503,Loam
+532,735,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2005,6,2005,11,2783.0,3253.0,549.4,505.305,44.095,21.76667,33.63446,4.73965,Loam
+533,736,USA,"Tennessee, Jackson",35.63,-88.85,silt loam, ,soybean,2005,6,2005,11,3139.0,3291.0,549.4,505.305,44.095,21.76667,33.63446,4.73965,Loam
+534,737,USA,"Tennessee, Jackson (West Tennessee Research and Education Center?)",35.63,-88.85,silt loam, ,soybean,2002,6,2002,11,1069.0,1148.0,831.5,495.752,335.748,21.2,32.80869,2.7371,Loam
+535,3057,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1984,6,1984,10,2530.0,3060.0,458.6,519.268,-60.668,26.26,36.0931,17.82868,Loam
+536,3058,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1984,6,1984,10,3020.0,3120.0,458.6,519.268,-60.668,26.26,36.0931,17.82868,Loam
+537,3059,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1984,6,1984,10,3320.0,3110.0,458.6,519.268,-60.668,26.26,36.0931,17.82868,Loam
+538,3060,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1987,6,1987,10,2200.0,2960.0,251.6,538.005,-286.405,25.76,36.80729,13.65206,Loam
+539,3061,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1987,6,1987,10,2280.0,2660.0,251.6,538.005,-286.405,25.76,36.80729,13.65206,Loam
+540,3062,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1987,6,1987,10,2750.0,2380.0,251.6,538.005,-286.405,25.76,36.80729,13.65206,Loam
+541,3063,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1988,6,1988,10,830.0,1090.0,227.3,557.018,-329.718,26.68,37.83597,15.19385,Loam
+542,3064,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1988,6,1988,10,490.0,490.0,227.3,557.018,-329.718,26.68,37.83597,15.19385,Loam
+543,3065,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1988,6,1988,10,730.0,450.0,227.3,557.018,-329.718,26.68,37.83597,15.19385,Loam
+544,3066,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1989,6,1989,10,840.0,720.0,320.7,526.923,-206.223,25.46,34.97935,14.55608,Loam
+545,3067,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1989,6,1989,10,1380.0,850.0,320.7,526.923,-206.223,25.46,34.97935,14.55608,Loam
+546,3068,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1989,6,1989,10,1190.0,530.0,320.7,526.923,-206.223,25.46,34.97935,14.55608,Loam
+547,3069,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1991,6,1991,10,1490.0,1440.0,429.7,532.831,-103.131,26.04,36.01229,15.20783,Loam
+548,3070,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1991,6,1991,10,1780.0,1600.0,429.7,532.831,-103.131,26.04,36.01229,15.20783,Loam
+549,3071,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1991,6,1991,10,2350.0,1240.0,429.7,532.831,-103.131,26.04,36.01229,15.20783,Loam
+550,3072,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1993,6,1993,10,610.0,900.0,349.5,550.419,-200.919,26.5,37.54379,14.62492,Loam
+551,3073,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1993,6,1993,10,660.0,640.0,349.5,550.419,-200.919,26.5,37.54379,14.62492,Loam
+552,3074,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1993,6,1993,10,1200.0,820.0,349.5,550.419,-200.919,26.5,37.54379,14.62492,Loam
+553,3075,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1994,6,1994,10,1930.0,1860.0,447.7,546.277,-98.577,26.1,36.83152,15.98915,Loam
+554,3076,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1994,6,1994,10,1560.0,1420.0,447.7,546.277,-98.577,26.1,36.83152,15.98915,Loam
+555,3077,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1994,6,1994,10,1830.0,1030.0,447.7,546.277,-98.577,26.1,36.83152,15.98915,Loam
+556,3078,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1995,6,1995,10,2030.0,1620.0,400.9,573.894,-172.994,26.28,36.28187,14.89708,Loam
+557,3079,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1995,6,1995,10,2200.0,1560.0,400.9,573.894,-172.994,26.28,36.28187,14.89708,Loam
+558,3080,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1995,6,1995,10,1580.0,880.0,400.9,573.894,-172.994,26.28,36.28187,14.89708,Loam
+559,3081,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1996,6,1996,10,2240.0,1470.0,486.8,538.592,-51.792,26.52,37.95112,15.92049,Loam
+560,3082,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1997,6,1997,10,430.0,380.0,454.6,556.408,-101.808,26.4,35.71147,15.29566,Loam
+561,3083,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1997,6,1997,10,1000.0,560.0,454.6,556.408,-101.808,26.4,35.71147,15.29566,Loam
+562,3084,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1997,6,1997,10,760.0,300.0,454.6,556.408,-101.808,26.4,35.71147,15.29566,Loam
+563,3085,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1999,6,1999,10,400.0,800.0,237.2,560.851,-323.651,26.44,38.42095,12.34506,Loam
+564,3086,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1999,6,1999,10,400.0,590.0,237.2,560.851,-323.651,26.44,38.42095,12.34506,Loam
+565,3087,USA,"Texas, Burleson County (Brazos River floodplain)",30.54,-96.43,silty clay loam, ,soybean,1999,6,1999,10,660.0,640.0,237.2,560.851,-323.651,26.44,38.42095,12.34506,Loam
+566,2072,USA,"Wisconsin, Arena",43.18,-89.92, , ,soybean,1993,6,1993,10,3010.0,2010.0,766.0,347.202,418.798,16.76,27.0668,2.41443,Loam
+567,2073,USA,"Wisconsin, Arena",43.18,-89.92, , ,soybean,1994,6,1994,10,3140.0,2190.0,527.1,389.713,137.387,17.68,27.4853,5.79155,Loam
+568,218,USA,"Wisconsin, Arlington",43.3,-89.35,silt loam,6.7,soybean,2009,6,2009,10,3618.0,2505.0,448.2,350.139,98.061,16.12,25.14502,2.89311,Loam
+569,2435,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1993,6,1993,10,1677.0,1805.0,609.5,341.823,267.677,16.82,27.59575,2.14545,Loam
+570,2436,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1993,6,1993,10,1934.0,1909.0,609.5,341.823,267.677,16.82,27.59575,2.14545,Loam
+571,2437,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1993,6,1993,10,1979.0,1805.0,609.5,341.823,267.677,16.82,27.59575,2.14545,Loam
+572,2438,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1995,6,1995,10,2036.0,2297.0,409.0,401.186,7.814,19.16,30.04979,3.83426,Loam
+573,2439,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1995,6,1995,10,2028.0,1582.0,409.0,401.186,7.814,19.16,30.04979,3.83426,Loam
+574,2440,USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",43.3,-89.35,silt loam,5.8,soybean,1995,6,1995,10,2987.0,2088.0,409.0,401.186,7.814,19.16,30.04979,3.83426,Loam
+575,1783,USA,"Wisconsin, Janesville and Waunakee",43.95,-88.77,silt loam,6.2 to 6.6,soybean,1997,6,1997,10,2222.0,2680.0,415.3,384.232,31.068,17.02,26.41113,3.91025,Loam
+576,1784,USA,"Wisconsin, Janesville and Waunakee",43.95,-88.77,silt loam,6.2 to 6.6,soybean,1997,6,1997,10,2232.0,2573.0,415.3,384.232,31.068,17.02,26.41113,3.91025,Loam
+577,1785,USA,"Wisconsin, Janesville and Waunakee",43.95,-88.77,silt loam,6.2 to 6.6,soybean,1997,6,1997,10,2830.0,2884.0,415.3,384.232,31.068,17.02,26.41113,3.91025,Loam
+578,610,USA,"Wooster, Ohio",40.42,-83.25,silt loam,,soybean,2009,5,2009,10,4300.0,3300.0,498.6,472.837,25.763,18.16667,27.70464,4.34373,Loam
+579,611,USA,"Wooster, Ohio",40.42,-83.25,silt loam,,soybean,2010,5,2010,10,3300.0,3100.0,487.1,527.38,-40.28,20.1,30.3156,5.52771,Loam
+580,612,USA,"Wooster, Ohio",40.42,-83.25,silt loam,,soybean,2011,5,2011,10,4300.0,3800.0,647.8,510.915,136.885,19.05,32.46772,5.53272,Loam
+581,613,USA,"Wooster, Ohio",40.42,-83.25,silt loam,,soybean,2012,5,2012,10,3100.0,3200.0,464.4,536.397,-71.997,19.36667,32.85749,5.52775,Loam
+582,614,USA,"Wooster, Ohio",40.42,-83.25,silt loam,,soybean,2013,5,2013,10,3900.0,3700.0,465.0,503.426,-38.426,18.58333,28.37883,6.33503,Loam

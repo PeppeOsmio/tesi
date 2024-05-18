@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16.3
+    environment:
+      - POSTGRES_USER=g.bosa
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=db
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+  
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8080:8080
