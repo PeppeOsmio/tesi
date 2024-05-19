@@ -1,20 +1,18 @@
 import argparse
 import sys
 from typing import cast
+import pandas as pd
 import xarray
 
 
-def convert(source_file_path: str, dest_file_path: str, limit: int | None):
-    ds = xarray.load_dataset(source_file_path)
+def convert_nc_file_to_dataframe(source_file_path: str, limit: int | None) -> pd.DataFrame:
+    ds = xarray.open_dataset(source_file_path)
     df = ds.to_dataframe()
     ds = None
     if limit is not None:
         df = df[:limit]
-    df.reset_index()
-    if "time" in df.columns:
-        df.set_index("time", inplace=True)
-        df.sort_index()
-    df.to_csv(dest_file_path)
+    df.reset_index(inplace=True)
+    return df
 
 
 if __name__ == "__main__":

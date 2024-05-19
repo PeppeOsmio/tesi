@@ -1,8 +1,10 @@
 import os
 from typing import cast
 import pandas as pd
+import requests
+from io import StringIO
 
-columns = [
+all_columns = [
     "Author",
     "Journal",
     "Year",
@@ -64,51 +66,50 @@ columns_to_include: dict[str, str] = {
     "Location": "location",
     "Latitude": "latitude",
     "Longitude": "longitude",
-    "Soil information recorded in the paper": "soil",
-    "pH (surface layer)": "pH",
+    # "Soil information recorded in the paper": "soil",
+    "pH (surface layer)": "ph",
     "Crop": "crop",
     "Sowing year": "sowing_year",
     "Sowing month": "sowing_month",
     "Harvest year": "harvest_year",
     "Harvesting month": "harvest_month",
-    "Yield of CT": "yield_ct",
-    "Yield of NT": "yield_nt",
-    "P": "P",
-    "E": "E",
-    "PB": "PB",
-    "Tave": "Tave",
-    "Tmax": "Tmax",
-    "Tmin": "Tmin",
-    "ST": "ST",
+    # "Yield of CT": "yield_ct",
+    "Yield of NT": "yield",
+    # "P": "P",
+    # "E": "E",
+    # "PB": "PB",
+    # "Tave": "Tave",
+    # "Tmax": "Tmax",
+    # "Tmin": "Tmin",
+    # "ST": "ST",
 }
 
 
-def main():
+def download_crops_yield_data() -> pd.DataFrame:
     dest_folder = "data/crops_data"
 
     os.makedirs(dest_folder, exist_ok=True)
 
+    url = "https://figshare.com/ndownloader/files/26690678"
+
+    response = requests.get(url)
+
+    if response.status_code != 200:
+        raise Exception(f"Can't fetch crop database from {url}. Status {response.status_code}, details {response.text}")
+
     df = pd.read_csv(
-        "data/raw_data/Database.csv", usecols=list(columns_to_include.keys())
+        StringIO(initial_value=response.text), usecols=list(columns_to_include.keys())
     )
     df = df.filter(items=list(columns_to_include.keys())).rename(
         columns=columns_to_include
     )
 
-    crops = set(cast(list[str], df["crop"]))
+    df.sort_values(by=["crop", "country", "location"], ascending=[True, True, True])
 
-    for crop in crops:
-        crop_folder = os.path.join(dest_folder, crop)
-        os.makedirs(crop_folder, exist_ok=True)
-
-        crop_df = df[df["crop"] == crop]
-        crop_df = crop_df.sort_values(
-            by=["country", "location", "soil"], ascending=[True, True, True]
-        )
-        crop_df.reset_index(inplace=True)
-
-        crop_df.to_csv(os.path.join(crop_folder, f"{crop}.csv"))
+    df.reset_index(drop=True, inplace=True)
+    return df
 
 
 if __name__ == "__main__":
-    main()
+    df = download_crops_yield_data()
+    df[:100].to_csv("data/crops_example.csv")

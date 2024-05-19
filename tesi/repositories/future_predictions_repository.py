@@ -1,28 +1,36 @@
 import logging
 import os
+from geoalchemy2 import Geography
 import pandas as pd
 from asgiref.sync import sync_to_async
+from tesi.models import ClimateData
+from tesi.utility_scripts import crops_data, future_climate_data
+from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class FuturePredictionsRepository:
-    def __init__(self, predictions_folder: str) -> None:
+    def __init__(self, db_session: AsyncSession, predictions_folder: str) -> None:
         self.predictions_folder = predictions_folder
+        self.db_session = db_session
 
     @sync_to_async
-    def load_predictions_df(self) -> pd.DataFrame:
-        precipitations_csv = os.path.join(self.predictions_folder, "precipitations.csv")
-        temperature_at_surface_csv = os.path.join(self.predictions_folder, "temperature_at_surface.csv")
+    async def load_climate_data_into_db(self):
 
-        logging.info(f"Loading {precipitations_csv}")
-        precipitations_df = pd.read_csv(
-            os.path.join(self.predictions_folder, "precipitations.csv")
-        )
+        @sync_to_async
+        def func():
+            return crops_data.download_crops_yield_data()
 
-        logging.info(f"Loading {temperature_at_surface_csv}")
-        temperature_at_surface_df = pd.read_csv(
-            os.path.join(self.predictions_folder, "temperature_at_surface.csv")
-        )
+        crops_df = await func()
+        async with self.db_session as session:
+            processed = 0
+            STEP = 100
+            total = len(crops_df)
+            while processed < total:
+                rows = crops_df[processed : processed + STEP]
+                for i, row in rows.iterrows():
+                    climate_data = ClimateData(
+                        coordinates=f'POINT({row["latitude"], row["longitude"]})',
+                        month=row["month"]
+                    )
 
-        print(len(precipitations_df))
-        print(len(temperature_at_surface_df))
         return pd.DataFrame()
