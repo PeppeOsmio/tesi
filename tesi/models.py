@@ -20,14 +20,15 @@ class Months(IntEnum):
     DECEMBER = 12
 
 
-class ClimateData(Base):
-    __tablename__ = "climate_data"
+class FutureClimateData(Base):
+    __tablename__ = "future_climate_data"
     coordinates: Mapped[Geography] = mapped_column(
         Geography(geometry_type="POINT", srid=4326), primary_key=True
     )
+    year: Mapped[int]
     month: Mapped[Months] = mapped_column(primary_key=True)
     precipitations: Mapped[float]
     surface_temperature: Mapped[float]
 
 class CropData(Base):
-    
+    ...

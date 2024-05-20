@@ -101,3 +101,5 @@ def download_future_climate_data() -> pd.DataFrame:
 if __name__ == "__main__":
     df = download_future_climate_data()
     df[:100].to_csv("data/future_climate_example.csv")
+    os.makedirs("training_data", exist_ok=True)
+    df.to_csv("training_data/future_climate.csv")

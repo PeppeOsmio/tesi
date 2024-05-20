@@ -95,7 +95,9 @@ def download_crops_yield_data() -> pd.DataFrame:
     response = requests.get(url)
 
     if response.status_code != 200:
-        raise Exception(f"Can't fetch crop database from {url}. Status {response.status_code}, details {response.text}")
+        raise Exception(
+            f"Can't fetch crop database from {url}. Status {response.status_code}, details {response.text}"
+        )
 
     df = pd.read_csv(
         StringIO(initial_value=response.text), usecols=list(columns_to_include.keys())
@@ -103,6 +105,25 @@ def download_crops_yield_data() -> pd.DataFrame:
     df = df.filter(items=list(columns_to_include.keys())).rename(
         columns=columns_to_include
     )
+
+    df.dropna(
+        subset=[
+            "longitude",
+            "latitude",
+            "crop",
+            "yield",
+            "sowing_month",
+            "harvest_month",
+            "sowing_year",
+            "harvest_year",
+        ],
+        inplace=True,
+    )
+
+    df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
+    df["crop"] = df["crop"].str.replace(r"\.winter$", "", regex=True)
+    df["crop"] = df["crop"].str.replace(r"\.spring$", "", regex=True)
+    df["crop"] = df["crop"].str.replace(r"\.summer$", "", regex=True)
 
     df.sort_values(by=["crop", "country", "location"], ascending=[True, True, True])
 
@@ -113,3 +134,5 @@ def download_crops_yield_data() -> pd.DataFrame:
 if __name__ == "__main__":
     df = download_crops_yield_data()
     df[:100].to_csv("data/crops_example.csv")
+    os.makedirs("training_data", exist_ok=True)
+    df.to_csv("training_data/crops.csv")
