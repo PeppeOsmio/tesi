@@ -21,13 +21,81 @@ PAST_DATA_QUERY_COLUMNS = [
 ]
 
 
-PAST_DATA_RESPONSE_COLUMNS_MAPPING = {
-    "time": "time",
-    "stl1": "surface_temperature",
-    "tp": "total_precipitations",
-    "ssr": "surface_net_solar_radiation",
+ERA5_ONLY_PARAMETERS = [
+    "surface_latent_heat_flux",  # Surface latent heat flux (related to evaporation and transpiration)
+    "surface_sensible_heat_flux",  # Surface sensible heat flux
+    "soil_temperature_level_1",  # Soil temperature at the first level
+    "volumetric_soil_water_layer_1",  # Soil moisture content at the first level
+]
+
+ERA5_AND_CMIP5_PARAMETERS = [
+    "2m_temperature",  # Temperature at 2 meters
+    "total_precipitation",  # Total precipitation
+    "mean_sea_level_pressure",  # Mean sea level pressure
+    "surface_net_solar_radiation",  # Net solar radiation at the surface
+    "surface_pressure",  # Surface pressure
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+]
+
+ERA5_PARAMETERS = [*ERA5_ONLY_PARAMETERS, *ERA5_AND_CMIP5_PARAMETERS]
+
+ERA5_PARAMETERS_MAPPINGS = {
+    "t2m": "2m_temperature",  # Temperature at 2 meters
+    "tp": "total_precipitation",  # Total precipitation
+    "msl": "mean_sea_level_pressure",  # Mean sea level pressure
+    "ssr": "surface_net_solar_radiation",  # Net solar radiation at the surface
     "sp": "surface_pressure",
+    "slhf": "surface_latent_heat_flux",  # Surface latent heat flux (related to evaporation and transpiration)
+    "sshf": "surface_sensible_heat_flux",  # Surface sensible heat flux
+    "stl1": "soil_temperature_level_1",  # Soil temperature at the first level
+    "swvl1": "volumetric_soil_water_layer_1",  # Soil moisture content at the first level
+    "u10": "10m_u_component_of_wind",
+    "v10": "10m_v_component_of_wind",
+}
+
+CMIP5_PARAMETERS_MAPPINGS = {
+    "tas": "2m_temperature",  # Temperature at 2 meters
+    "pr": "total_precipitation",  # Total precipitation
+    "psl": "mean_sea_level_pressure",  # Mean sea level pressure
+    "rsds": "surface_net_solar_radiation",  # Net solar radiation at the surface
+    "ps": "surface_pressure",  # Surface pressure
+    "uas": "10m_u_component_of_wind",
+    "vas": "10m_v_component_of_wind",
+}
+
+
+ERA5_PARAMETERS_MAPPINGS = {
+    "t2m": "2m_temperature",
+    "tp": "total_precipitation",
+    "msl": "mean_sea_level_pressure",
+    "u10": "10m_u_component_of_wind",
+    "v10": "10m_v_component_of_wind",
+    "ssr": "surface_net_solar_radiation",
+    "str": "surface_net_longwave_radiation",
+    "sp": "surface_pressure",
+    "sshf": "surface_sensible_heat_flux",
+    "slhf": "surface_latent_heat_flux",
+    "lcc": "low_cloud_cover",
+    "mcc": "medium_cloud_cover",
+    "hcc": "high_cloud_cover",
+    "stl1": "soil_temperature_level_1",
     "swvl1": "volumetric_soil_water_layer_1",
+    "e": "evaporation",
+    "pev": "potential_evaporation",
+    "ro": "surface_runoff",
+    "sro": "sub_surface_runoff",
+}
+
+CMIP5_PARAMETERS_MAPPINGS = {
+    "tas": "2m_temperature",
+    "pr": "total_precipitation",
+    "psl": "mean_sea_level_pressure",
+    "ps": "surface_pressure",
+    "rsds": "surface_downwelling_shortwave_radiation",
+    "rlds": "surface_downwelling_longwave_radiation",
+    "uas": "10m_u_component_of_wind",
+    "vas": "10m_v_component_of_wind",
 }
 
 

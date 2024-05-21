@@ -1,2 +1,2 @@
 from .future_climate_data_repository import FutureClimateDataRepository
-from .dtos import PredictionDTO
+from .dtos import FutureClimateDataDTO
