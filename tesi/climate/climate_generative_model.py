@@ -3,7 +3,6 @@ import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
-from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 
 
@@ -36,8 +35,40 @@ def format_data(
     y_train_scaled_for_model = y_train_scaled[seq_length:]
     return np.array(x_train_scaled_with_past_months), y_train_scaled_for_model
 
+
 def generate_data(data_length: int, model: Sequential):
     pass
+
+
+def train_model(
+    model: Sequential,
+    features: list[str],
+    target: list[str],
+    past_climate_data: pd.DataFrame,
+    seq_length: int,
+) -> tuple[MinMaxScaler, MinMaxScaler]:
+    x = past_climate_data[features]
+    y = past_climate_data[target]
+
+    x_train, x_test, y_train, y_test = train_test_split(
+        x, y, test_size=0.2, shuffle=False
+    )
+
+    # Normalize the data
+    x_scaler = MinMaxScaler(feature_range=(0, 1))
+    y_scaler = MinMaxScaler(feature_range=(0, 1))
+    x_train_scaled = x_scaler.fit_transform(x_train)
+    x_test_scaled = x_scaler.transform(x_test)
+    y_train_scaled = y_scaler.fit_transform(y_train)
+    y_test_scaled = y_scaler.transform(y_test)
+
+    x_train_scaled_with_months, y_train_scaled_for_model = format_data(
+        seq_length=seq_length,
+        x_train_scaled=x_train_scaled,
+        y_train_scaled=y_train_scaled,
+    )
+    model.fit(x_train_scaled_with_months, y_train_scaled_for_model, epochs=50)
+    return x_scaler, y_scaler
 
 def main():
     # Load and preprocess data
@@ -58,34 +89,19 @@ def main():
         "volumetric_soil_water_layer_1",
     ]
     past_climate_data = pd.read_csv("training_data/past_climate_data.csv")
-    future_climate_data = pd.read_csv("training_data/future_climate_data.csv")
-    x = past_climate_data[features]
-    y = past_climate_data[target]
-
-    x_train, x_test, y_train, y_test = train_test_split(
-        x, y, test_size=0.2, shuffle=False
-    )
-
-    # Normalize the data
-    x_scaler = MinMaxScaler(feature_range=(0, 1))
-    y_scaler = MinMaxScaler(feature_range=(0, 1))
-    x_train_scaled = x_scaler.fit_transform(x_train)
-    x_test_scaled = x_scaler.transform(x_test)
-    y_train_scaled = y_scaler.fit_transform(y_train)
-    y_test_scaled = y_scaler.transform(y_test)
 
     SEQ_LENGTH = 12
-
-    x_train_scaled_with_months, y_train_scaled_for_model = format_data(
-        seq_length=SEQ_LENGTH,
-        x_train_scaled=x_train_scaled,
-        y_train_scaled=y_train_scaled,
-    )
 
     model = generate_model(
         features=len(features), target=len(target), seq_length=SEQ_LENGTH
     )
-    model.fit(x_train_scaled_with_months, y_train_scaled_for_model, epochs=50)
+    x_scaler, y_scaler = train_model(
+        model=model,
+        features=features,
+        target=target,
+        past_climate_data=past_climate_data,
+        seq_length=SEQ_LENGTH,
+    )
 
     seed_data = x_train_scaled_with_months[-1]
     scaled_seed_data = x_scaler.transform(seed_data)

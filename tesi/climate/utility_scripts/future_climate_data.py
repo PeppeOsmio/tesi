@@ -6,7 +6,9 @@ import cdsapi
 import zipfile
 
 import pandas as pd
-from tesi.utility_scripts import nc_to_csv
+from tesi.climate.utility_scripts import common
+
+RESPONSE_COLUMNS_MAPPING = {"lon": "longitude", "lat": "latitude"}
 
 
 def download_future_climate_data() -> pd.DataFrame:
@@ -63,14 +65,14 @@ def download_future_climate_data() -> pd.DataFrame:
         if not extracted_file.endswith(".nc"):
             continue
         if extracted_file.startswith("prAdjust"):
-            precipitations_df = nc_to_csv.convert_nc_file_to_dataframe(
+            precipitations_df = common.convert_nc_file_to_dataframe(
                 source_file_path=extracted_file_path, limit=None
             )
             precipitations_df.rename(
                 columns={"prAdjust_ymonmean": "total_precipitations"}, inplace=True
             )
         elif extracted_file.startswith("tasAdjust"):
-            temperature_at_surface_df = nc_to_csv.convert_nc_file_to_dataframe(
+            temperature_at_surface_df = common.convert_nc_file_to_dataframe(
                 source_file_path=extracted_file_path, limit=None
             )
             temperature_at_surface_df.rename(
@@ -82,19 +84,7 @@ def download_future_climate_data() -> pd.DataFrame:
     result_df["total_precipitations"] = precipitations_df["total_precipitations"]
     result_df.drop(columns=["x", "y", "height"], inplace=True)
 
-    result_df.rename(columns={"lon": "longitude", "lat": "latitude"}, inplace=True)
-
-    result_df["time"] = pd.to_datetime(result_df["time"])
-    result_df["year"] = result_df["time"].dt.year
-    result_df["month"] = result_df["time"].dt.month
-    result_df.drop(columns=["time"], inplace=True)
-    result_df.sort_values(by=["latitude", "longitude", "year", "month"])
-    result_df.reset_index(drop=True, inplace=True)
-    columns = [*result_df.columns]
-    columns.remove("year")
-    columns.remove("month")
-    columns = ["year", "month", *columns]
-    result_df = result_df[columns]
+    result_df = common.process_copernicus_climate_data(df=result_df, columns_mappings=RESPONSE_COLUMNS_MAPPING)
     return result_df
 
 

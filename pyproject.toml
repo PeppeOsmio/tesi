@@ -26,6 +26,7 @@ requests = "^2.31.0"
 pydantic-settings = "^2.2.1"
 geoalchemy2 = "^0.15.1"
 tensorflow = "^2.16.1"
+fastapi = "^0.111.0"
 
 
 [build-system]

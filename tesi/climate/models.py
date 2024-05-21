@@ -1,11 +1,10 @@
 from enum import IntEnum
-from sqlalchemy import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 from tesi.database.base import Base
 from geoalchemy2 import Geography
 
 
-class Months(IntEnum):
+class Month(IntEnum):
     JANUARY = 1
     FEBRUARY = 2
     MARCH = 3
@@ -26,9 +25,6 @@ class FutureClimateData(Base):
         Geography(geometry_type="POINT", srid=4326), primary_key=True
     )
     year: Mapped[int]
-    month: Mapped[Months] = mapped_column(primary_key=True)
+    month: Mapped[Month] = mapped_column(primary_key=True)
     precipitations: Mapped[float]
     surface_temperature: Mapped[float]
-
-class CropData(Base):
-    ...
