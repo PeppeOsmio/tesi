@@ -10,58 +10,68 @@ import pandas as pd
 from tesi.climate.utils import common
 from uuid import UUID
 
-FUTURE_DATA_RESPONSE_COLUMNS_MAPPING = {"lon": "longitude", "lat": "latitude"}
 
-PAST_DATA_QUERY_COLUMNS = [
-    "soil_temperature_level_1",
-    "total_precipitation",
-    "surface_net_solar_radiation",
+ERA5_PARAMETERS = [
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "precipitation_type",
+    "total_precipitation",  # this can be derived by <mean_precipitation_flux> / <days in month>
     "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",
+    # exclusive to ERA5 below
+    "total_cloud_cover",
+    "snowfall",
+    "2m_dewpoint_temperature",
+    "soil_temperature_level_1",
+    "surface_net_solar_radiation",
+    "surface_net_thermal_radiation",
     "volumetric_soil_water_layer_1",
 ]
 
-
-ERA5_ONLY_PARAMETERS = [
-    "surface_latent_heat_flux",  # Surface latent heat flux (related to evaporation and transpiration)
-    "surface_sensible_heat_flux",  # Surface sensible heat flux
-    "soil_temperature_level_1",  # Soil temperature at the first level
-    "volumetric_soil_water_layer_1",  # Soil moisture content at the first level
-]
-
-ERA5_AND_CMIP5_PARAMETERS = [
-    "2m_temperature",  # Temperature at 2 meters
-    "total_precipitation",  # Total precipitation
-    "mean_sea_level_pressure",  # Mean sea level pressure
-    "surface_net_solar_radiation",  # Net solar radiation at the surface
-    "surface_pressure",  # Surface pressure
+CMIP5_PARAMETERS = [
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "mean_precipitation_flux",
+    "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",
 ]
 
-ERA5_PARAMETERS = [*ERA5_ONLY_PARAMETERS, *ERA5_AND_CMIP5_PARAMETERS]
-
-ERA5_PARAMETERS_MAPPINGS = {
-    "t2m": "2m_temperature",  # Temperature at 2 meters
+ERA5_PARAMETERS_COLUMNS = {
+    "u10": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
+    "v10": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
+    "t2m": "2m_temperature",  # Temperature at 2 meters above the surface
+    "e": "evaporation",  # Evaporation
+    "ptype": "precipitation_type",  # Precipitation type (e.g., rain, snow)
     "tp": "total_precipitation",  # Total precipitation
-    "msl": "mean_sea_level_pressure",  # Mean sea level pressure
-    "ssr": "surface_net_solar_radiation",  # Net solar radiation at the surface
-    "sp": "surface_pressure",
-    "u10": "10m_u_component_of_wind",
-    "v10": "10m_v_component_of_wind",
-    "slhf": "surface_latent_heat_flux",  # Surface latent heat flux (related to evaporation and transpiration)
-    "sshf": "surface_sensible_heat_flux",  # Surface sensible heat flux
-    "stl1": "soil_temperature_level_1",  # Soil temperature at the first level
-    "swvl1": "volumetric_soil_water_layer_1",  # Soil moisture content at the first level
+    "sp": "surface_pressure",  # Surface pressure
+    "ssrd": "surface_solar_radiation_downwards",  # Surface solar radiation downwards
+    "strd": "surface_thermal_radiation_downwards",  # Surface thermal radiation downwards
+    # Exclusive to ERA5 below
+    "tcc": "total_cloud_cover",  # Total cloud cover
+    "sf": "snowfall",  # Snowfall
+    "d2m": "2m_dewpoint_temperature",  # Dewpoint temperature at 2 meters
+    "stl1": "soil_temperature_level_1",  # Soil temperature at level 1 (top layer)
+    "ssr": "surface_net_solar_radiation",  # Surface net solar radiation
+    "str": "surface_net_thermal_radiation",  # Surface net thermal radiation
+    "swvl1": "volumetric_soil_water_layer_1",  # Volumetric soil water content at layer 1
 }
 
+
 CMIP5_PARAMETERS_MAPPINGS = {
-    "tas": "2m_temperature",  # Temperature at 2 meters
-    "pr": "total_precipitation",  # Total precipitation
-    "psl": "mean_sea_level_pressure",  # Mean sea level pressure
-    "rsds": "surface_net_solar_radiation",  # Net solar radiation at the surface
+    "uas": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
+    "vas": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
+    "tas": "2m_temperature",  # Temperature at 2 meters above the surface
+    "evspsbl": "evaporation",  # Evaporation
+    "pr": "mean_precipitation_flux",  # Precipitation flux
     "ps": "surface_pressure",  # Surface pressure
-    "uas": "10m_u_component_of_wind",
-    "vas": "10m_v_component_of_wind",
+    "rsds": "surface_solar_radiation_downwards",  # Surface solar radiation downwards
+    "rlds": "surface_thermal_radiation_downwards",  # Surface thermal radiation downwards
 }
 
 
@@ -76,33 +86,36 @@ class CopernicusDataStoreAPI:
     def download_future_climate_data(self) -> pd.DataFrame:
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
+        Response headers:
+            time lat lon bnds average_DT average_T1 average_T2 <parameter abbreviation> time_bnds lat_bnds lon_bnds
+
         Returns:
             pd.DataFrame: _description_
         """
-        dest_dir = "tmp_future_climate"
+        dest_dir = "training_data"
 
         os.makedirs(dest_dir, exist_ok=True)
 
         zip_file = os.path.join(dest_dir, f"{random.randbytes(16).hex()}.zip")
 
         self.cds_client.retrieve(
-            "sis-hydrology-meteorology-derived-projections",
+            "projections-cmip5-monthly-single-levels",
             {
+                "ensemble_member": "r10i1p1",
                 "format": "zip",
-                "period": "2011_2040",
-                "ensemble_member": "r12i1p1",
-                "gcm": "ec_earth",
-                "rcm": "cclm4_8_17",
-                "experiment": "rcp_2_6",
-                "horizontal_resolution": "5_km",
-                "time_aggregation": "monthly_mean",
-                "variable_type": "absolute_values",
-                "processing_type": "bias_corrected",
                 "variable": [
-                    "2m_air_temperature",
-                    "precipitation",
+                    "10m_u_component_of_wind",
+                    "10m_v_component_of_wind",
+                    "2m_temperature",
+                    "evaporation",
+                    "mean_precipitation_flux",
+                    "surface_pressure",
+                    "surface_solar_radiation_downwards",
+                    "surface_thermal_radiation_downwards",
                 ],
-                "product_type": "climate_impact_indicators",
+                "experiment": "historical",
+                "model": "gfdl_cm2p1",
+                "period": "202601-203012",
             },
             zip_file,
         )
@@ -112,35 +125,38 @@ class CopernicusDataStoreAPI:
 
         os.remove(zip_file)
 
-        precipitations_df = pd.DataFrame()
-        temperature_at_surface_df = pd.DataFrame()
+        result_df = pd.DataFrame()
 
         for extracted_file in os.listdir(dest_dir):
             extracted_file_path = os.path.join(dest_dir, extracted_file)
             if not extracted_file.endswith(".nc"):
                 continue
-            if extracted_file.startswith("prAdjust"):
-                precipitations_df = common.convert_nc_file_to_dataframe(
-                    source_file_path=extracted_file_path, limit=None
-                )
-                precipitations_df.rename(
-                    columns={"prAdjust_ymonmean": "total_precipitations"}, inplace=True
-                )
-            elif extracted_file.startswith("tasAdjust"):
-                temperature_at_surface_df = common.convert_nc_file_to_dataframe(
-                    source_file_path=extracted_file_path, limit=None
-                )
-                temperature_at_surface_df.rename(
-                    columns={"tasAdjust_ymonmean": "surface_temperature"}, inplace=True
-                )
+            logging.info(f"Converting {extracted_file_path}")
+            df = common.convert_nc_file_to_dataframe(
+                source_file_path=extracted_file_path, limit=None
+            )
+            df.drop(
+                columns=[
+                    "bnds",
+                    "average_DT",
+                    "average_T1",
+                    "average_T2",
+                    "time_bnds",
+                    "lat_bnds",
+                    "lon_bnds",
+                ],
+                inplace=True
+            )
+            for key, value in CMIP5_PARAMETERS_MAPPINGS.items():
+                if key in df.columns:
+                    result_df[value] = df[key]
+                    break
             os.remove(extracted_file_path)
 
-        result_df = temperature_at_surface_df
-        result_df["total_precipitations"] = precipitations_df["total_precipitations"]
-        result_df.drop(columns=["x", "y", "height"], inplace=True)
+            result_df = pd.concat([result_df, df], axis=0)
 
         result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings=FUTURE_DATA_RESPONSE_COLUMNS_MAPPING
+            df=result_df, columns_mappings={"lon": "longitude", "lat": "latitude"}
         )
         return result_df
 
@@ -162,7 +178,7 @@ class CopernicusDataStoreAPI:
             {
                 "format": "netcdf",
                 "product_type": "monthly_averaged_reanalysis",
-                "variable": PAST_DATA_QUERY_COLUMNS,
+                "variable": ERA5_PARAMETERS,
                 "year": [str(current_year - 1), str(current_year)],
                 "month": [str(month).zfill(2) for month in range(1, 13)],
                 "time": "00:00",
@@ -180,7 +196,7 @@ class CopernicusDataStoreAPI:
         )
         os.remove(tmp_file_path)
         df = common.process_copernicus_climate_data(
-            df=df, columns_mappings=PAST_DATA_RESPONSE_COLUMNS_MAPPING
+            df=df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
 
         months_of_last_year_to_remove = range(1, current_month - 1)
@@ -214,7 +230,7 @@ class CopernicusDataStoreAPI:
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
                     "product_type": "monthly_averaged_reanalysis",
-                    "variable": PAST_DATA_QUERY_COLUMNS,
+                    "variable": ERA5_PARAMETERS,
                     "year": [
                         str(year) for year in range(actual_start, previous_start + 1)
                     ],
@@ -242,7 +258,7 @@ class CopernicusDataStoreAPI:
             os.removedirs(tmp_dir)
 
         result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings=PAST_DATA_RESPONSE_COLUMNS_MAPPING
+            df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
         result_df["surface_temperature"] = result_df["surface_temperature"] - 273.15
         return result_df
