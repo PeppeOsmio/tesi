@@ -21,13 +21,13 @@ ERA5_PARAMETERS = [
     "surface_pressure",
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
-    # exclusive to ERA5 below
-    "total_cloud_cover",
-    "snowfall",
-    "2m_dewpoint_temperature",
-    "soil_temperature_level_1",
     "surface_net_solar_radiation",
     "surface_net_thermal_radiation",
+    # exclusive to ERA5 below
+    "snowfall",
+    "total_cloud_cover",
+    "2m_dewpoint_temperature",
+    "soil_temperature_level_1",
     "volumetric_soil_water_layer_1",
 ]
 
@@ -103,16 +103,7 @@ class CopernicusDataStoreAPI:
             {
                 "ensemble_member": "r10i1p1",
                 "format": "zip",
-                "variable": [
-                    "10m_u_component_of_wind",
-                    "10m_v_component_of_wind",
-                    "2m_temperature",
-                    "evaporation",
-                    "mean_precipitation_flux",
-                    "surface_pressure",
-                    "surface_solar_radiation_downwards",
-                    "surface_thermal_radiation_downwards",
-                ],
+                "variable": CMIP5_PARAMETERS,
                 "experiment": "historical",
                 "model": "gfdl_cm2p1",
                 "period": "202601-203012",
@@ -145,19 +136,22 @@ class CopernicusDataStoreAPI:
                     "lat_bnds",
                     "lon_bnds",
                 ],
-                inplace=True
+                inplace=True,
             )
+            df.dropna(inplace=True)
             for key, value in CMIP5_PARAMETERS_MAPPINGS.items():
                 if key in df.columns:
                     result_df[value] = df[key]
+                    result_df.reset_index()
                     break
             os.remove(extracted_file_path)
-
-            result_df = pd.concat([result_df, df], axis=0)
+            if "time" not in result_df.columns:
+                result_df["time"] = df["time"]
 
         result_df = common.process_copernicus_climate_data(
             df=result_df, columns_mappings={"lon": "longitude", "lat": "latitude"}
         )
+
         return result_df
 
     def get_climate_data_of_last_12_months(
@@ -195,6 +189,8 @@ class CopernicusDataStoreAPI:
             source_file_path=tmp_file_path, limit=None
         )
         os.remove(tmp_file_path)
+
+        df.dropna(inplace=True)
         df = common.process_copernicus_climate_data(
             df=df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
@@ -264,7 +260,8 @@ class CopernicusDataStoreAPI:
         return result_df
 
 
-if __name__ == "__main__":
+def main():
+    logging.basicConfig(level=logging.INFO)
     cds_api = CopernicusDataStoreAPI(
         user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
     )
@@ -273,6 +270,7 @@ if __name__ == "__main__":
     df[:100].to_csv("data/future_climate_example.csv")
     os.makedirs("training_data", exist_ok=True)
     df.to_csv("training_data/future_climate.csv")
+    return
 
     result_df = cds_api.get_past_climate_data_since_1940(40.484638, 17.225732)
     result_df[:100].to_csv("data/past_climate_data_example.csv")
@@ -280,3 +278,7 @@ if __name__ == "__main__":
     result_df.to_csv("training_data/past_climate_data.csv")
     result_df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
     result_df.to_csv("data/climate_data_last_12_months_example.csv")
+
+
+if __name__ == "__main__":
+    main()

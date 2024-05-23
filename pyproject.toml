@@ -27,6 +27,7 @@ pydantic-settings = "^2.2.1"
 geoalchemy2 = "^0.15.1"
 tensorflow = "^2.16.1"
 fastapi = "^0.111.0"
+cftime = "^1.6.3"
 
 
 [build-system]

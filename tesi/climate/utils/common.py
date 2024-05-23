@@ -3,11 +3,17 @@ import sys
 from typing import cast
 import pandas as pd
 import xarray
+import cftime
 
 
 def convert_nc_file_to_dataframe(source_file_path: str, limit: int | None) -> pd.DataFrame:
     ds = xarray.open_dataset(source_file_path)
     df = ds.to_dataframe()
+    for column in df.columns:
+        if len(df) == 0:
+            break
+        if isinstance(df[column].iloc[0], cftime.datetime):
+            df[column] = pd.to_datetime(df[column].astype(str))
     ds = None
     if limit is not None:
         df = df[:limit]
