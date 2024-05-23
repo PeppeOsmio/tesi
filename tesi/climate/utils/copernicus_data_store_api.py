@@ -17,7 +17,7 @@ ERA5_PARAMETERS = [
     "2m_temperature",
     "evaporation",
     "precipitation_type",
-    "total_precipitation",  # this can be derived by <mean_precipitation_flux> / <days in month>
+    "total_precipitation",  # this can be derived by <mean_precipitation_flux> * <seconds in a day> / 1000 (to convert mm to m)
     "surface_pressure",
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
@@ -106,7 +106,7 @@ class CopernicusDataStoreAPI:
                 "variable": CMIP5_PARAMETERS,
                 "experiment": "historical",
                 "model": "gfdl_cm2p1",
-                "period": "202601-203012",
+                "period": ["202101-202512"],
             },
             zip_file,
         )
@@ -151,6 +151,11 @@ class CopernicusDataStoreAPI:
         result_df = common.process_copernicus_climate_data(
             df=result_df, columns_mappings={"lon": "longitude", "lat": "latitude"}
         )
+
+        # convert from mm/s (aggregated over 24 hours) to m
+        result_df["total_precipitation"] = (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
+        now = datetime.now(tz=timezone.utc)
+        result_df = result_df[(result_df.index.get_level_values('year') >= now.year) & (result_df.index.get_level_values('month') >= now.month)]
 
         return result_df
 
@@ -256,7 +261,7 @@ class CopernicusDataStoreAPI:
         result_df = common.process_copernicus_climate_data(
             df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
-        result_df["surface_temperature"] = result_df["surface_temperature"] - 273.15
+        # result_df["surface_temperature"] = result_df["surface_temperature"] - 273.15
         return result_df
 
 
@@ -270,7 +275,7 @@ def main():
     df[:100].to_csv("data/future_climate_example.csv")
     os.makedirs("training_data", exist_ok=True)
     df.to_csv("training_data/future_climate.csv")
-    return
+    print(df)
 
     result_df = cds_api.get_past_climate_data_since_1940(40.484638, 17.225732)
     result_df[:100].to_csv("data/past_climate_data_example.csv")

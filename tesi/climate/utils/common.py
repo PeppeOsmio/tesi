@@ -1,26 +1,27 @@
 import argparse
-import sys
 from typing import cast
 import pandas as pd
 import xarray
-import cftime
 
 
-def convert_nc_file_to_dataframe(source_file_path: str, limit: int | None) -> pd.DataFrame:
+def convert_nc_file_to_dataframe(
+    source_file_path: str, limit: int | None
+) -> pd.DataFrame:
     ds = xarray.open_dataset(source_file_path)
+    for name, index in ds.indexes.items():
+        if isinstance(index, xarray.CFTimeIndex):
+            ds[name] = index.to_datetimeindex()
     df = ds.to_dataframe()
-    for column in df.columns:
-        if len(df) == 0:
-            break
-        if isinstance(df[column].iloc[0], cftime.datetime):
-            df[column] = pd.to_datetime(df[column].astype(str))
     ds = None
     if limit is not None:
         df = df[:limit]
     df.reset_index(inplace=True)
     return df
 
-def process_copernicus_climate_data(df: pd.DataFrame, columns_mappings: dict[str, str]) -> pd.DataFrame:
+
+def process_copernicus_climate_data(
+    df: pd.DataFrame, columns_mappings: dict[str, str]
+) -> pd.DataFrame:
     df = df.rename(columns=columns_mappings)
 
     df["time"] = pd.to_datetime(df["time"])

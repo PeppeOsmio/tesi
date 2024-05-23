@@ -16,6 +16,7 @@ def get_future_climate_data_repository(
         db_session=db_session, training_data_folder=training_data_folder
     )
 
+
 def get_future_climate_data_repository(
     db_session: Annotated[AsyncSession, Depends(get_db_session)],
     training_data_folder: str,

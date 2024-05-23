@@ -1,28 +1,36 @@
 import os
 import pandas as pd
 from asgiref.sync import sync_to_async
-from sqlalchemy import select
+from sqlalchemy import delete, select
 from tesi.climate.dtos import FutureClimateDataDTO
 from tesi.climate.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2.functions import ST_X, ST_Y, ST_DistanceSphere
 
+from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
+
 
 class FutureClimateDataRepository:
-    def __init__(self, db_session: AsyncSession, training_data_folder: str) -> None:
-        self.training_data_folder = training_data_folder
+    def __init__(
+        self,
+        db_session: AsyncSession,
+        training_data_folder: str,
+        copernicus_data_store_api: CopernicusDataStoreAPI,
+    ) -> None:
         self.db_session = db_session
+        self.training_data_folder = training_data_folder
+        self.copernicus_data_store_api = copernicus_data_store_api
 
-    async def load_future_climate_data_into_db(self):
+    async def download_future_climate_data_into_db(self):
 
         @sync_to_async
         def func():
-            return pd.read_csv(
-                os.path.join(self.training_data_folder, "future_climate_data.csv")
-            )
+            return self.copernicus_data_store_api.download_future_climate_data()
 
         future_climate_df = await func()
         async with self.db_session as session:
+            stmt = delete(FutureClimateData)
+            await session.execute(stmt)
             processed = 0
             STEP = 100
             total = len(future_climate_df)
@@ -68,5 +76,5 @@ class FutureClimateDataRepository:
             latitude=latitude,
             longitude=longitude,
             precipitations=future_climate_data.precipitations,
-            surface_temperature=future_climate_data.surface_temperature
+            surface_temperature=future_climate_data.surface_temperature,
         )

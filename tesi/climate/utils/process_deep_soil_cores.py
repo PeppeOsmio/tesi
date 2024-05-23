@@ -8,7 +8,9 @@ OUTPUT_PATH = "data/processed_csvs/deep_soil_cores"
 Depth = Literal["0 to 15", "15 to 30", "30 to 60", "60 to 90", "90 to 120"]
 
 
-def process_sheet_of_year(output_path: str, xlsx_path: str, year: Literal["2012", "2016", "2017"]):
+def process_sheet_of_year(
+    output_path: str, xlsx_path: str, year: Literal["2012", "2016", "2017"]
+):
     os.makedirs(output_path, exist_ok=True)
 
     deep_soil_df = pd.read_excel(
@@ -75,12 +77,16 @@ def process_sheet_of_year(output_path: str, xlsx_path: str, year: Literal["2012"
             df = field_71_dict[depth]
             field_71_dict[depth] = pd.concat([df, row.to_frame().T], ignore_index=True)
 
-
     for depth, df in field_70_dict.items():
-        df.to_csv(os.path.join(output_path, f'{year}_field_70_{depth.replace(" ", "_")}.csv'))
+        df.to_csv(
+            os.path.join(output_path, f'{year}_field_70_{depth.replace(" ", "_")}.csv')
+        )
 
     for depth, df in field_71_dict.items():
-        df.to_csv(os.path.join(output_path, f'{year}_field_71_{depth.replace(" ", "_")}.csv'))
+        df.to_csv(
+            os.path.join(output_path, f'{year}_field_71_{depth.replace(" ", "_")}.csv')
+        )
+
 
 for year in ("2012", "2016", "2017"):
     process_sheet_of_year(output_path=OUTPUT_PATH, xlsx_path=XLSX_PATH, year=year)

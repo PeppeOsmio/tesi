@@ -3,7 +3,6 @@ from dataclasses import dataclass
 from tesi.climate.models import Month
 
 
-
 @dataclass
 class FutureClimateDataDTO:
     year: int

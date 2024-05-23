@@ -70,6 +70,7 @@ def train_model(
     model.fit(x_train_scaled_with_months, y_train_scaled_for_model, epochs=50)
     return x_scaler, y_scaler
 
+
 def main():
     # Load and preprocess data
     features = [
