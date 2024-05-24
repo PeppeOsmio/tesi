@@ -5,6 +5,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
+from tesi.climate.dtos import PastClimateDataDTO
 from tesi.climate.utils import copernicus_data_store_api
 from tesi.climate.di import (
     get_db_session,
@@ -52,11 +53,12 @@ def generate_model(features: int, target: int, seq_length: int) -> Sequential:
 def train_model(
     features: list[str],
     target: list[str],
-    past_climate_data: pd.DataFrame,
+    past_climate_data: list[PastClimateDataDTO],
     seq_length: int,
 ) -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
-    x = past_climate_data[features]
-    y = past_climate_data[target]
+    past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(past_climate_data)
+    x = past_climate_data_df[features]
+    y = past_climate_data_df[target]
 
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.2, shuffle=False
@@ -88,10 +90,10 @@ def main():
     TARANTO_LONGITUDE, TARANTO_LATITUDE = 40.484638, 17.225732
 
     target = list(
-        copernicus_data_store_api.ERA5_PARAMETERS
-        - copernicus_data_store_api.CMIP5_PARAMETERS
+        copernicus_data_store_api.ERA5_RESULT_COLUMNS
+        - copernicus_data_store_api.CMIP5_RESULT_COLUMNS
     )
-    features = list(copernicus_data_store_api.ERA5_PARAMETERS)
+    features = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
 
     @async_to_sync
     async def func_db():

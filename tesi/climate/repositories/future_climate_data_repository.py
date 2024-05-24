@@ -19,6 +19,10 @@ class FutureClimateDataRepository:
         self.db_session = db_session
         self.copernicus_data_store_api = copernicus_data_store_api
 
+    @staticmethod
+    def coordinates_to_string(longitude: float, latitude: float) -> str:
+        return f"{longitude}-{latitude}"
+
     def download_future_climate_data_into_db(self):
 
         future_climate_df = (
@@ -37,6 +41,9 @@ class FutureClimateDataRepository:
                     rows = future_climate_df[processed : processed + STEP]
                     for i, row in rows.iterrows():
                         future_climate_data = FutureClimateData(
+                            coordinates_str=FutureClimateDataRepository.coordinates_to_string(
+                                longitude=row["longitude"], latitude=row["latitude"]
+                            ),
                             coordinates=f'POINT({row["longitude"], row["latitude"]})',
                             year=row["year"],
                             month=row["month"],
@@ -75,8 +82,14 @@ class FutureClimateDataRepository:
         return FutureClimateDataDTO(
             year=future_climate_data.year,
             month=future_climate_data.month,
-            latitude=latitude,
             longitude=longitude,
-            precipitations=future_climate_data.precipitations,
-            surface_temperature=future_climate_data.surface_temperature,
+            latitude=latitude,
+            u_component_of_wind_10m=future_climate_data.u_component_of_wind_10m,
+            v_component_of_wind_10m=future_climate_data.v_component_of_wind_10m,
+            temperature_2m=future_climate_data.temperature_2m,
+            evaporation=future_climate_data.evaporation,
+            total_precipitation=future_climate_data.total_precipitation,
+            surface_pressure=future_climate_data.surface_pressure,
+            surface_solar_radiation_downwards=future_climate_data.surface_solar_radiation_downwards,
+            surface_thermal_radiation_downwards=future_climate_data.surface_thermal_radiation_downwards,
         )

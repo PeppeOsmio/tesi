@@ -9,7 +9,7 @@ from tesi.climate.utils import common
 from uuid import UUID
 
 
-ERA5_PARAMETERS = {
+__ERA5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -29,7 +29,7 @@ ERA5_PARAMETERS = {
     "volumetric_soil_water_layer_1",
 }
 
-CMIP5_PARAMETERS = {
+__CMIP5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -40,7 +40,7 @@ CMIP5_PARAMETERS = {
     "surface_thermal_radiation_downwards",
 }
 
-ERA5_PARAMETERS_COLUMNS = {
+__ERA5_PARAMETERS_COLUMNS = {
     "u10": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
     "v10": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
     "t2m": "2m_temperature",  # Temperature at 2 meters above the surface
@@ -61,7 +61,7 @@ ERA5_PARAMETERS_COLUMNS = {
 }
 
 
-CMIP5_PARAMETERS_MAPPINGS = {
+__CMIP5_PARAMETERS_MAPPINGS = {
     "uas": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
     "vas": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
     "tas": "2m_temperature",  # Temperature at 2 meters above the surface
@@ -72,6 +72,36 @@ CMIP5_PARAMETERS_MAPPINGS = {
     "rlds": "surface_thermal_radiation_downwards",  # Surface thermal radiation downwards
 }
 
+ERA5_RESULT_COLUMNS = {
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "precipitation_type",
+    "total_precipitation",  # this can be derived by <mean_precipitation_flux> * <seconds in a day> / 1000 (to convert mm to m)
+    "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",
+    "surface_net_solar_radiation",
+    "surface_net_thermal_radiation",
+    # exclusive to ERA5 below
+    "snowfall",
+    "total_cloud_cover",
+    "2m_dewpoint_temperature",
+    "soil_temperature_level_1",
+    "volumetric_soil_water_layer_1",
+}
+
+CMIP5_RESULT_COLUMNS = {
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "total_precipitation",
+    "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",
+}
 
 class CopernicusDataStoreAPI:
     def __init__(self, user_id: int, api_token: UUID) -> None:
@@ -88,7 +118,7 @@ class CopernicusDataStoreAPI:
             time lat lon bnds average_DT average_T1 average_T2 <parameter abbreviation> time_bnds lat_bnds lon_bnds
 
         Returns:
-            pd.DataFrame: _description_
+            pd.DataFrame:
         """
         dest_dir = "training_data"
 
@@ -101,7 +131,7 @@ class CopernicusDataStoreAPI:
             {
                 "ensemble_member": "r10i1p1",
                 "format": "zip",
-                "variable": list(CMIP5_PARAMETERS),
+                "variable": list(__CMIP5_PARAMETERS),
                 "experiment": "historical",
                 "model": "gfdl_cm2p1",
                 "period": ["202101-202512"],
@@ -137,7 +167,7 @@ class CopernicusDataStoreAPI:
                 inplace=True,
             )
             df.dropna(inplace=True)
-            for key, value in CMIP5_PARAMETERS_MAPPINGS.items():
+            for key, value in __CMIP5_PARAMETERS_MAPPINGS.items():
                 if key in df.columns:
                     result_df[value] = df[key]
                     result_df.reset_index()
@@ -176,7 +206,7 @@ class CopernicusDataStoreAPI:
             {
                 "format": "netcdf",
                 "product_type": "monthly_averaged_reanalysis",
-                "variable": list(ERA5_PARAMETERS),
+                "variable": list(__ERA5_PARAMETERS),
                 "year": [str(current_year - 1), str(current_year)],
                 "month": [str(month).zfill(2) for month in range(1, 13)],
                 "time": "00:00",
@@ -196,7 +226,7 @@ class CopernicusDataStoreAPI:
 
         df.dropna(inplace=True)
         df = common.process_copernicus_climate_data(
-            df=df, columns_mappings=ERA5_PARAMETERS_COLUMNS
+            df=df, columns_mappings=__ERA5_PARAMETERS_COLUMNS
         )
 
         months_of_last_year_to_remove = range(1, current_month - 1)
@@ -230,7 +260,7 @@ class CopernicusDataStoreAPI:
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
                     "product_type": "monthly_averaged_reanalysis",
-                    "variable": list(ERA5_PARAMETERS),
+                    "variable": list(__ERA5_PARAMETERS),
                     "year": [
                         str(year) for year in range(actual_start, previous_start + 1)
                     ],
@@ -258,7 +288,7 @@ class CopernicusDataStoreAPI:
             os.removedirs(tmp_dir)
 
         result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
+            df=result_df, columns_mappings=__ERA5_PARAMETERS_COLUMNS
         )
         print(result_df)
         return result_df

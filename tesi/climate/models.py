@@ -24,9 +24,16 @@ class FutureClimateData(Base):
     __tablename__ = "future_climate_data"
     coordinates_str: Mapped[str] = mapped_column(primary_key=True)
     coordinates: Mapped[Geography] = mapped_column(
-        Geography(geometry_type="POINT", srid=4326, spatial_index=True)
+        Geography(geometry_type="POINT", srid=4326, spatial_index=False)
     )
     year: Mapped[int] = mapped_column(primary_key=True)
     month: Mapped[Month] = mapped_column(primary_key=True)
-    precipitations: Mapped[float]
-    surface_temperature: Mapped[float]
+    
+    u_component_of_wind_10m: Mapped[float]
+    v_component_of_wind_10m: Mapped[float]
+    temperature_2m: Mapped[float]
+    evaporation: Mapped[float]
+    total_precipitation: Mapped[float]
+    surface_pressure: Mapped[float]
+    surface_solar_radiation_downwards: Mapped[float]
+    surface_thermal_radiation_downwards: Mapped[float]
