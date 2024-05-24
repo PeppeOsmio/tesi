@@ -2,16 +2,14 @@ from datetime import datetime, timezone
 import logging
 import os
 import random
-from typing import cast
 import cdsapi
 import zipfile
-
 import pandas as pd
 from tesi.climate.utils import common
 from uuid import UUID
 
 
-ERA5_PARAMETERS = [
+ERA5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -29,9 +27,9 @@ ERA5_PARAMETERS = [
     "2m_dewpoint_temperature",
     "soil_temperature_level_1",
     "volumetric_soil_water_layer_1",
-]
+}
 
-CMIP5_PARAMETERS = [
+CMIP5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -40,7 +38,7 @@ CMIP5_PARAMETERS = [
     "surface_pressure",
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
-]
+}
 
 ERA5_PARAMETERS_COLUMNS = {
     "u10": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
@@ -103,7 +101,7 @@ class CopernicusDataStoreAPI:
             {
                 "ensemble_member": "r10i1p1",
                 "format": "zip",
-                "variable": CMIP5_PARAMETERS,
+                "variable": list(CMIP5_PARAMETERS),
                 "experiment": "historical",
                 "model": "gfdl_cm2p1",
                 "period": ["202101-202512"],
@@ -153,9 +151,15 @@ class CopernicusDataStoreAPI:
         )
 
         # convert from mm/s (aggregated over 24 hours) to m
-        result_df["total_precipitation"] = (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
+        result_df["total_precipitation"] = (
+            (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
+        )
+        result_df.drop(columns=["mean_precipitation_flux"], inplace=True)
         now = datetime.now(tz=timezone.utc)
-        result_df = result_df[(result_df.index.get_level_values('year') >= now.year) & (result_df.index.get_level_values('month') >= now.month)]
+        result_df = result_df[
+            (result_df.index.get_level_values("year") >= now.year)
+            & (result_df.index.get_level_values("month") >= now.month)
+        ]
 
         return result_df
 
@@ -165,19 +169,14 @@ class CopernicusDataStoreAPI:
         now = datetime.now(tz=timezone.utc)
         current_month = now.month
         current_year = now.year
-        c = cdsapi.Client(
-            url="https://cds.climate.copernicus.eu/api/v2",
-            key="311032:15a4dd58-d44c-4d52-afa3-db18f38e1d2c",
-            verify=1,
-        )
         tmp_file_path = f"{random.randbytes(32).hex()}.nc"
 
-        c.retrieve(
+        self.cds_client.retrieve(
             "reanalysis-era5-single-levels-monthly-means",
             {
                 "format": "netcdf",
                 "product_type": "monthly_averaged_reanalysis",
-                "variable": ERA5_PARAMETERS,
+                "variable": list(ERA5_PARAMETERS),
                 "year": [str(current_year - 1), str(current_year)],
                 "month": [str(month).zfill(2) for month in range(1, 13)],
                 "time": "00:00",
@@ -231,7 +230,7 @@ class CopernicusDataStoreAPI:
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
                     "product_type": "monthly_averaged_reanalysis",
-                    "variable": ERA5_PARAMETERS,
+                    "variable": list(ERA5_PARAMETERS),
                     "year": [
                         str(year) for year in range(actual_start, previous_start + 1)
                     ],
@@ -261,7 +260,7 @@ class CopernicusDataStoreAPI:
         result_df = common.process_copernicus_climate_data(
             df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
-        # result_df["surface_temperature"] = result_df["surface_temperature"] - 273.15
+        print(result_df)
         return result_df
 
 
@@ -272,17 +271,16 @@ def main():
     )
 
     df = cds_api.download_future_climate_data()
-    df[:100].to_csv("data/future_climate_example.csv")
+    df[:100].to_csv("data/future_climate_data_example.csv")
     os.makedirs("training_data", exist_ok=True)
-    df.to_csv("training_data/future_climate.csv")
-    print(df)
+    df.to_csv("training_data/future_climate_data.csv")
 
-    result_df = cds_api.get_past_climate_data_since_1940(40.484638, 17.225732)
-    result_df[:100].to_csv("data/past_climate_data_example.csv")
+    df = cds_api.get_past_climate_data_since_1940(40.484638, 17.225732)
+    df[:100].to_csv("data/past_climate_data_example.csv")
     os.makedirs("training_data", exist_ok=True)
-    result_df.to_csv("training_data/past_climate_data.csv")
-    result_df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
-    result_df.to_csv("data/climate_data_last_12_months_example.csv")
+    df.to_csv("training_data/past_climate_data.csv")
+    df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
+    df.to_csv("data/climate_data_last_12_months_example.csv")
 
 
 if __name__ == "__main__":

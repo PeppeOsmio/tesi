@@ -38,7 +38,7 @@ class PastClimateDataDTO:
     surface_thermal_radiation_downwards: float
     surface_net_solar_radiation: float
     surface_net_thermal_radiation: float
-    # exclusive to Past 
+    # exclusive to Past
     snowfall: float
     total_cloud_cover: float
     dewpoint_temperature_2m: float

@@ -1,9 +1,17 @@
+from asgiref.sync import async_to_sync
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
+from tesi.climate.utils import copernicus_data_store_api
+from tesi.climate.di import (
+    get_db_session,
+    get_cds_api,
+    get_past_climate_data_repository,
+    get_future_climate_data_repository,
+)
 
 
 def inverse_transform_generated_data(scaler, data):
@@ -13,6 +21,22 @@ def inverse_transform_generated_data(scaler, data):
 def combine_with_fixed_features(seed_data, generated_data):
     # Placeholder function: implement according to your specific requirements
     return np.array(generated_data)
+
+
+def format_data(
+    seq_length: int, x_train_scaled: np.ndarray, y_train_scaled: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    x_train_scaled_with_past_months = []
+    y_train_scaled_for_model = []
+    for i in range(len(x_train_scaled) - seq_length):
+        past_months_sequence = x_train_scaled[i : i + seq_length]
+        x_train_scaled_with_past_months.append(past_months_sequence)
+        y_train_scaled_for_model.append(y_train_scaled[i + seq_length])
+    return np.array(x_train_scaled_with_past_months), np.array(y_train_scaled_for_model)
+
+
+def generate_data(data_length: int, model: Sequential):
+    pass
 
 
 def generate_model(features: int, target: int, seq_length: int) -> Sequential:
@@ -25,28 +49,12 @@ def generate_model(features: int, target: int, seq_length: int) -> Sequential:
     return model
 
 
-def format_data(
-    seq_length: int, x_train_scaled: np.ndarray, y_train_scaled: np.ndarray
-) -> tuple[np.ndarray, np.ndarray]:
-    x_train_scaled_with_past_months = []
-    for i in range(len(x_train_scaled) - seq_length):
-        past_months_sequence = x_train_scaled[i : i + seq_length]
-        x_train_scaled_with_past_months.append(past_months_sequence)
-    y_train_scaled_for_model = y_train_scaled[seq_length:]
-    return np.array(x_train_scaled_with_past_months), y_train_scaled_for_model
-
-
-def generate_data(data_length: int, model: Sequential):
-    pass
-
-
 def train_model(
-    model: Sequential,
     features: list[str],
     target: list[str],
     past_climate_data: pd.DataFrame,
     seq_length: int,
-) -> tuple[MinMaxScaler, MinMaxScaler]:
+) -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
     x = past_climate_data[features]
     y = past_climate_data[target]
 
@@ -67,37 +75,48 @@ def train_model(
         x_train_scaled=x_train_scaled,
         y_train_scaled=y_train_scaled,
     )
+    model = generate_model(
+        features=len(features), target=len(target), seq_length=seq_length
+    )
     model.fit(x_train_scaled_with_months, y_train_scaled_for_model, epochs=50)
-    return x_scaler, y_scaler
+    return model, x_scaler, y_scaler
 
 
 def main():
     # Load and preprocess data
-    features = [
-        # "year",
-        # "month",
-        # "longitude",
-        # "latitude",
-        "surface_temperature",
-        "total_precipitations",
-        "surface_net_solar_radiation",
-        "surface_pressure",
-        "volumetric_soil_water_layer_1",
-    ]
-    target = [
-        "surface_net_solar_radiation",
-        "surface_pressure",
-        "volumetric_soil_water_layer_1",
-    ]
-    past_climate_data = pd.read_csv("training_data/past_climate_data.csv")
+
+    TARANTO_LONGITUDE, TARANTO_LATITUDE = 40.484638, 17.225732
+
+    target = list(
+        copernicus_data_store_api.ERA5_PARAMETERS
+        - copernicus_data_store_api.CMIP5_PARAMETERS
+    )
+    features = list(copernicus_data_store_api.ERA5_PARAMETERS)
+
+    @async_to_sync
+    async def func_db():
+        return await get_db_session()
+
+    db_session = func_db()
+
+    cds_api = get_cds_api()
+    past_climate_data_repository = get_past_climate_data_repository(
+        db_session=db_session, cds_api=cds_api
+    )
+    future_climate_data_repository = get_future_climate_data_repository(
+        db_session=db_session, cds_api=cds_api
+    )
+
+    past_climate_data = past_climate_data_repository.get_past_climate_data(
+        longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+    )
 
     SEQ_LENGTH = 12
 
     model = generate_model(
         features=len(features), target=len(target), seq_length=SEQ_LENGTH
     )
-    x_scaler, y_scaler = train_model(
-        model=model,
+    model, x_scaler, y_scaler = train_model(
         features=features,
         target=target,
         past_climate_data=past_climate_data,
