@@ -14,14 +14,14 @@ ERA5_PARAMETERS = {
     "10m_v_component_of_wind",
     "2m_temperature",
     "evaporation",
-    "precipitation_type",
     "total_precipitation",  # this can be derived by <mean_precipitation_flux> * <seconds in a day> / 1000 (to convert mm to m)
     "surface_pressure",
     "surface_solar_radiation_downwards",
-    "surface_thermal_radiation_downwards",
+    "surface_thermal_radiation_downwards"
+    # exclusive to ERA5 below
     "surface_net_solar_radiation",
     "surface_net_thermal_radiation",
-    # exclusive to ERA5 below
+    "precipitation_type",
     "snowfall",
     "total_cloud_cover",
     "2m_dewpoint_temperature",

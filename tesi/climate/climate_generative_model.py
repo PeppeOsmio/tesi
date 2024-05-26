@@ -1,3 +1,4 @@
+import logging
 import os
 from asgiref.sync import async_to_sync
 import numpy as np
@@ -175,4 +176,5 @@ def main():
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     main()

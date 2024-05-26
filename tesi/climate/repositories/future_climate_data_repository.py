@@ -38,7 +38,6 @@ class FutureClimateDataRepository:
                 total = len(future_climate_data_df)
                 while processed < total:
                     rows = future_climate_data_df[processed : processed + STEP]
-                    print(len(rows))
                     for index, row in rows.iterrows():
                         index = cast(pd.MultiIndex, index)
                         year, month = index
@@ -47,7 +46,6 @@ class FutureClimateDataRepository:
                                 longitude=row["longitude"], latitude=row["latitude"]
                             )
                         )
-                        print(coordinates_wkt)
                         future_climate_data = FutureClimateData(
                             coordinates_str=coordinates_wkt,
                             coordinates=coordinates_wkt,
