@@ -6,7 +6,7 @@ from tesi.climate.dtos import FutureClimateDataDTO
 from tesi.climate.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession
 from geoalchemy2.functions import ST_X, ST_Y, ST_DistanceSphere
-
+from typing import cast
 from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
 
 
@@ -20,45 +20,61 @@ class FutureClimateDataRepository:
         self.copernicus_data_store_api = copernicus_data_store_api
 
     @staticmethod
-    def coordinates_to_string(longitude: float, latitude: float) -> str:
-        return f"{longitude}-{latitude}"
+    def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
+        return f"POINT({longitude} {latitude})"
 
-    def download_future_climate_data_into_db(self):
+    def download_future_climate_data(self) -> pd.DataFrame:
+        return self.copernicus_data_store_api.download_future_climate_data()
 
-        future_climate_df = (
-            self.copernicus_data_store_api.download_future_climate_data()
-        )
+    def save_future_climate_data(self, future_climate_data_df: pd.DataFrame):
 
         @async_to_sync
-        async def save_in_db():
+        async def save_in_db(future_climate_data_df: pd.DataFrame):
             async with self.db_session as session:
                 stmt = delete(FutureClimateData)
                 await session.execute(stmt)
                 processed = 0
-                STEP = 100
-                total = len(future_climate_df)
+                STEP = 50
+                total = len(future_climate_data_df)
                 while processed < total:
-                    rows = future_climate_df[processed : processed + STEP]
-                    for i, row in rows.iterrows():
-                        future_climate_data = FutureClimateData(
-                            coordinates_str=FutureClimateDataRepository.coordinates_to_string(
+                    rows = future_climate_data_df[processed : processed + STEP]
+                    print(len(rows))
+                    for index, row in rows.iterrows():
+                        index = cast(pd.MultiIndex, index)
+                        year, month = index
+                        coordinates_wkt = (
+                            FutureClimateDataRepository.coordinates_to_well_known_text(
                                 longitude=row["longitude"], latitude=row["latitude"]
-                            ),
-                            coordinates=f'POINT({row["longitude"], row["latitude"]})',
-                            year=row["year"],
-                            month=row["month"],
-                            precipitations=row["precipitations"],
-                            surface_temperature=row["surface_temperature"],
+                            )
+                        )
+                        print(coordinates_wkt)
+                        future_climate_data = FutureClimateData(
+                            coordinates_str=coordinates_wkt,
+                            coordinates=coordinates_wkt,
+                            year=year,
+                            month=month,
+                            u_component_of_wind_10m=row["10m_u_component_of_wind"],
+                            v_component_of_wind_10m=row["10m_v_component_of_wind"],
+                            temperature_2m=row["2m_temperature"],
+                            evaporation=row["evaporation"],
+                            total_precipitation=row["total_precipitation"],
+                            surface_pressure=row["surface_pressure"],
+                            surface_solar_radiation_downwards=row[
+                                "surface_solar_radiation_downwards"
+                            ],
+                            surface_thermal_radiation_downwards=row[
+                                "surface_thermal_radiation_downwards"
+                            ],
                         )
                         session.add(future_climate_data)
                     processed += len(rows)
-                await session.commit()
+                    await session.commit()
 
-        save_in_db()
+        save_in_db(future_climate_data_df)
 
     @async_to_sync
     async def get_future_climate_data_for_coordinates(
-        self, latitude: float, longitude: float
+        self, longitude: float, latitude: float
     ) -> FutureClimateDataDTO:
         point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.db_session as session:

@@ -1,3 +1,4 @@
+import os
 from asgiref.sync import async_to_sync
 import numpy as np
 import pandas as pd
@@ -5,7 +6,7 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
-from tesi.climate.dtos import PastClimateDataDTO
+from tesi.climate.dtos import FutureClimateDataDTO, PastClimateDataDTO
 from tesi.climate.utils import copernicus_data_store_api
 from tesi.climate.di import (
     get_db_session,
@@ -53,10 +54,9 @@ def generate_model(features: int, target: int, seq_length: int) -> Sequential:
 def train_model(
     features: list[str],
     target: list[str],
-    past_climate_data: list[PastClimateDataDTO],
+    past_climate_data_df: pd.DataFrame,
     seq_length: int,
 ) -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
-    past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(past_climate_data)
     x = past_climate_data_df[features]
     y = past_climate_data_df[target]
 
@@ -102,16 +102,34 @@ def main():
     db_session = func_db()
 
     cds_api = get_cds_api()
+
+    past_training_data_csv_path = "training_data/past_climate_data.csv"
     past_climate_data_repository = get_past_climate_data_repository(
         db_session=db_session, cds_api=cds_api
     )
+
+    if os.path.exists(past_training_data_csv_path):
+        past_climate_data_df = pd.read_csv(past_training_data_csv_path, index_col=["year", "month"])
+    else:
+        past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
+            past_climate_data_repository.get_past_climate_data(
+                longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+            )
+        )
+        past_climate_data_df.to_csv(past_training_data_csv_path)
+
+    future_climate_data_csv_path = "training_data/future_climate_data.csv"
     future_climate_data_repository = get_future_climate_data_repository(
         db_session=db_session, cds_api=cds_api
     )
-
-    past_climate_data = past_climate_data_repository.get_past_climate_data(
-        longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
-    )
+    if os.path.exists(future_climate_data_csv_path):
+        future_climate_data_df = pd.read_csv(future_climate_data_csv_path, index_col=["year", "month"])
+    else:
+        future_climate_data_df = (
+            future_climate_data_repository.download_future_climate_data()
+        )
+        future_climate_data_df.to_csv(future_climate_data_csv_path)
+    future_climate_data_repository.save_future_climate_data(future_climate_data_df)
 
     SEQ_LENGTH = 12
 
@@ -121,12 +139,19 @@ def main():
     model, x_scaler, y_scaler = train_model(
         features=features,
         target=target,
-        past_climate_data=past_climate_data,
+        past_climate_data_df=past_climate_data_df,
         seq_length=SEQ_LENGTH,
     )
 
-    seed_data = x_train_scaled_with_months[-1]
+    seed_data = PastClimateDataDTO.from_list_to_dataframe(
+        past_climate_data_repository.get_past_climate_data_of_last_12_months(
+            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+        )
+    )
+
     scaled_seed_data = x_scaler.transform(seed_data)
+    print(scaled_seed_data)
+    return
     generated_data = []
     current_step = scaled_seed_data
 

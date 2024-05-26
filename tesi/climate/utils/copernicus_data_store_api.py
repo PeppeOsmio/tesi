@@ -9,7 +9,7 @@ from tesi.climate.utils import common
 from uuid import UUID
 
 
-__ERA5_PARAMETERS = {
+ERA5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -29,7 +29,7 @@ __ERA5_PARAMETERS = {
     "volumetric_soil_water_layer_1",
 }
 
-__CMIP5_PARAMETERS = {
+CMIP5_PARAMETERS = {
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -40,7 +40,7 @@ __CMIP5_PARAMETERS = {
     "surface_thermal_radiation_downwards",
 }
 
-__ERA5_PARAMETERS_COLUMNS = {
+ERA5_PARAMETERS_COLUMNS = {
     "u10": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
     "v10": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
     "t2m": "2m_temperature",  # Temperature at 2 meters above the surface
@@ -61,7 +61,7 @@ __ERA5_PARAMETERS_COLUMNS = {
 }
 
 
-__CMIP5_PARAMETERS_MAPPINGS = {
+CMIP5_PARAMETERS_MAPPINGS = {
     "uas": "10m_u_component_of_wind",  # Eastward component of wind at 10 meters
     "vas": "10m_v_component_of_wind",  # Northward component of wind at 10 meters
     "tas": "2m_temperature",  # Temperature at 2 meters above the surface
@@ -103,6 +103,7 @@ CMIP5_RESULT_COLUMNS = {
     "surface_thermal_radiation_downwards",
 }
 
+
 class CopernicusDataStoreAPI:
     def __init__(self, user_id: int, api_token: UUID) -> None:
         self.cds_client = cdsapi.Client(
@@ -131,7 +132,7 @@ class CopernicusDataStoreAPI:
             {
                 "ensemble_member": "r10i1p1",
                 "format": "zip",
-                "variable": list(__CMIP5_PARAMETERS),
+                "variable": list(CMIP5_PARAMETERS),
                 "experiment": "historical",
                 "model": "gfdl_cm2p1",
                 "period": ["202101-202512"],
@@ -154,6 +155,8 @@ class CopernicusDataStoreAPI:
             df = common.convert_nc_file_to_dataframe(
                 source_file_path=extracted_file_path, limit=None
             )
+            # take only the first segment of each measurement for each day and location
+            df = df[df["bnds"] == 1.0]
             df.drop(
                 columns=[
                     "bnds",
@@ -167,29 +170,34 @@ class CopernicusDataStoreAPI:
                 inplace=True,
             )
             df.dropna(inplace=True)
-            for key, value in __CMIP5_PARAMETERS_MAPPINGS.items():
+            if "time" not in result_df.columns:
+                result_df["time"] = df["time"]
+            if "longitude" not in result_df.columns:
+                result_df["longitude"] = df["lon"]
+            if "latitude" not in result_df.columns:
+                result_df["latitude"] = df["lat"]
+            for key, value in CMIP5_PARAMETERS_MAPPINGS.items():
                 if key in df.columns:
                     result_df[value] = df[key]
                     result_df.reset_index()
                     break
             os.remove(extracted_file_path)
-            if "time" not in result_df.columns:
-                result_df["time"] = df["time"]
-
         result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings={"lon": "longitude", "lat": "latitude"}
+            df=result_df, columns_mappings={}
         )
+
+        # take only the FUTURE data
+        now = datetime.now(tz=timezone.utc)
+        result_df = result_df[
+            (result_df.index.get_level_values("year") >= now.year)
+            & (result_df.index.get_level_values("month") >= now.month)
+        ]
 
         # convert from mm/s (aggregated over 24 hours) to m
         result_df["total_precipitation"] = (
             (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
         )
         result_df.drop(columns=["mean_precipitation_flux"], inplace=True)
-        now = datetime.now(tz=timezone.utc)
-        result_df = result_df[
-            (result_df.index.get_level_values("year") >= now.year)
-            & (result_df.index.get_level_values("month") >= now.month)
-        ]
 
         return result_df
 
@@ -206,7 +214,7 @@ class CopernicusDataStoreAPI:
             {
                 "format": "netcdf",
                 "product_type": "monthly_averaged_reanalysis",
-                "variable": list(__ERA5_PARAMETERS),
+                "variable": list(ERA5_PARAMETERS),
                 "year": [str(current_year - 1), str(current_year)],
                 "month": [str(month).zfill(2) for month in range(1, 13)],
                 "time": "00:00",
@@ -226,7 +234,7 @@ class CopernicusDataStoreAPI:
 
         df.dropna(inplace=True)
         df = common.process_copernicus_climate_data(
-            df=df, columns_mappings=__ERA5_PARAMETERS_COLUMNS
+            df=df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
 
         months_of_last_year_to_remove = range(1, current_month - 1)
@@ -260,7 +268,7 @@ class CopernicusDataStoreAPI:
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
                     "product_type": "monthly_averaged_reanalysis",
-                    "variable": list(__ERA5_PARAMETERS),
+                    "variable": list(ERA5_PARAMETERS),
                     "year": [
                         str(year) for year in range(actual_start, previous_start + 1)
                     ],
@@ -288,7 +296,7 @@ class CopernicusDataStoreAPI:
             os.removedirs(tmp_dir)
 
         result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings=__ERA5_PARAMETERS_COLUMNS
+            df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
         )
         print(result_df)
         return result_df
