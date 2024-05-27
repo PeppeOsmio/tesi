@@ -72,7 +72,7 @@ class FutureClimateDataRepository:
 
     @async_to_sync
     async def get_future_climate_data_for_coordinates(
-        self, longitude: float, latitude: float
+        self, longitude: float, latitude: float, year: int, month: int
     ) -> FutureClimateDataDTO:
         point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.db_session as session:
@@ -81,6 +81,10 @@ class FutureClimateDataRepository:
                     FutureClimateData,
                     ST_X(FutureClimateData.coordinates).label("longitude"),
                     ST_Y(FutureClimateData.coordinates).label("latitude"),
+                )
+                .where(
+                    (FutureClimateData.year == year)
+                    & (FutureClimateData.month == month)
                 )
                 .order_by(
                     ST_DistanceSphere(

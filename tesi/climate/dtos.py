@@ -24,8 +24,8 @@ class FutureClimateDataDTO:
     surface_thermal_radiation_downwards: float
 
     @staticmethod
-    def from_list_to_dataframe(lst: list[FutureClimateDataDTO]) -> pd.DataFrame:
-        df = pd.DataFrame([item.__dict__ for item in lst])
+    def from_obj_to_dataframe(obj: FutureClimateDataDTO) -> pd.DataFrame:
+        df = pd.DataFrame([obj.__dict__])
         df.rename(
             columns={
                 "u_component_of_wind_10m": "10m_u_component_of_wind",

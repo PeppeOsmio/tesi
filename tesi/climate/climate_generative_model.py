@@ -110,7 +110,9 @@ def main():
     )
 
     if os.path.exists(past_training_data_csv_path):
-        past_climate_data_df = pd.read_csv(past_training_data_csv_path, index_col=["year", "month"])
+        past_climate_data_df = pd.read_csv(
+            past_training_data_csv_path, index_col=["year", "month"]
+        )
     else:
         past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
             past_climate_data_repository.get_past_climate_data(
@@ -119,18 +121,23 @@ def main():
         )
         past_climate_data_df.to_csv(past_training_data_csv_path)
 
-    future_climate_data_csv_path = "training_data/future_climate_data.csv"
+    whole_future_climate_data_csv_path = "training_data/whole_future_climate_data.csv"
     future_climate_data_repository = get_future_climate_data_repository(
         db_session=db_session, cds_api=cds_api
     )
-    if os.path.exists(future_climate_data_csv_path):
-        future_climate_data_df = pd.read_csv(future_climate_data_csv_path, index_col=["year", "month"])
+    if os.path.exists(whole_future_climate_data_csv_path):
+        whole_future_climate_data_df = pd.read_csv(
+            whole_future_climate_data_csv_path, index_col=["year", "month"]
+        )
     else:
-        future_climate_data_df = (
+        whole_future_climate_data_df = (
             future_climate_data_repository.download_future_climate_data()
         )
-        future_climate_data_df.to_csv(future_climate_data_csv_path)
-    future_climate_data_repository.save_future_climate_data(future_climate_data_df)
+        whole_future_climate_data_df.to_csv(whole_future_climate_data_csv_path)
+    future_climate_data_repository.save_future_climate_data(
+        whole_future_climate_data_df
+    )
+    whole_future_climate_data_df = None
 
     SEQ_LENGTH = 12
 
@@ -150,8 +157,24 @@ def main():
         )
     )
 
+    seed_data = seed_data[features]
+
     scaled_seed_data = x_scaler.transform(seed_data)
     print(scaled_seed_data)
+
+    future_climate_data_csv_path = "training_data/future_climate_data.csv"
+    if os.path.exists(future_climate_data_csv_path):
+        future_climate_data_df = pd.read_csv(
+            future_climate_data_csv_path, index_col=["year", "month"]
+        )
+    else:
+        future_climate_data_df = FutureClimateDataDTO.from_obj_to_dataframe(
+            future_climate_data_repository.get_future_climate_data_for_coordinates(
+                longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE, year=2024, month=5
+            )
+        )
+        future_climate_data_df.to_csv(future_climate_data_csv_path)
+    print(future_climate_data_df)
     return
     generated_data = []
     current_step = scaled_seed_data
