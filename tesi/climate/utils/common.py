@@ -4,6 +4,10 @@ import pandas as pd
 import xarray
 
 
+def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
+    return f"POINT({longitude} {latitude})"
+
+
 def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None
 ) -> pd.DataFrame:
@@ -39,6 +43,3 @@ def process_copernicus_climate_data(
         df = tmp_df_combined
 
     return df
-
-
-

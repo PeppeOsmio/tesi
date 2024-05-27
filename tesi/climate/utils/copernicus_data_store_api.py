@@ -112,7 +112,7 @@ class CopernicusDataStoreAPI:
             verify=1,
         )
 
-    def download_future_climate_data(self) -> pd.DataFrame:
+    def get_future_climate_data(self) -> pd.DataFrame:
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
         Response headers:
@@ -308,7 +308,7 @@ def main():
         user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
     )
 
-    df = cds_api.download_future_climate_data()
+    df = cds_api.get_future_climate_data()
     df[:100].to_csv("data/future_climate_data_example.csv")
     os.makedirs("training_data", exist_ok=True)
     df.to_csv("training_data/future_climate_data.csv")

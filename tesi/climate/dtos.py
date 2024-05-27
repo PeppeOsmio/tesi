@@ -3,14 +3,13 @@ from dataclasses import dataclass
 
 import pandas as pd
 
-from tesi.climate.models import Month
 from typing import cast
 
 
 @dataclass
 class FutureClimateDataDTO:
     year: int
-    month: Month
+    month: int
     longitude: float
     latitude: float
 
@@ -24,8 +23,8 @@ class FutureClimateDataDTO:
     surface_thermal_radiation_downwards: float
 
     @staticmethod
-    def from_obj_to_dataframe(obj: FutureClimateDataDTO) -> pd.DataFrame:
-        df = pd.DataFrame([obj.__dict__])
+    def from_list_to_dataframe(list: list[FutureClimateDataDTO]) -> pd.DataFrame:
+        df = pd.DataFrame([obj.__dict__ for obj in list])
         df.rename(
             columns={
                 "u_component_of_wind_10m": "10m_u_component_of_wind",
@@ -55,7 +54,7 @@ class FutureClimateDataDTO:
 @dataclass
 class PastClimateDataDTO:
     year: int
-    month: Month
+    month: int
     longitude: float
     latitude: float
 
