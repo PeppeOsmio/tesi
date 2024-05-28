@@ -1,4 +1,5 @@
 import argparse
+import logging
 from typing import cast
 import pandas as pd
 import xarray
@@ -23,23 +24,45 @@ def convert_nc_file_to_dataframe(
     return df
 
 
+def merge_by_expver(df: pd.DataFrame) -> pd.DataFrame:
+    logging.info("Processing 'expver' column")
+    df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
+    df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
+
+    logging.info(f"expver 1 DataFrame shape: {df_expver1.shape}")
+    logging.info(f"expver 5 DataFrame shape: {df_expver5.shape}")
+
+    df_combined = df_expver1.combine_first(df_expver5)
+
+    logging.info(f"DataFrame shape after combining 'expver': {df.shape}")
+    return df_combined
+
+
 def process_copernicus_climate_data(
     df: pd.DataFrame, columns_mappings: dict[str, str]
 ) -> pd.DataFrame:
-    df = df.rename(columns=columns_mappings)
+    logging.info(f"Initial DataFrame shape before processing: {df.shape}")
 
+    # Renaming columns
+    df = df.rename(columns=columns_mappings)
+    logging.info(f"DataFrame shape after renaming columns: {df.shape}")
+
+    # Converting and extracting date parts
     df["time"] = pd.to_datetime(df["time"])
     df["year"] = df["time"].dt.year
     df["month"] = df["time"].dt.month
     df.drop(columns=["time"], inplace=True)
+    logging.info(
+        f"DataFrame shape after time conversion and dropping 'time' column: {df.shape}"
+    )
+
+    # Resetting and setting index
     df.reset_index(drop=True, inplace=True)
     df.set_index(keys=["year", "month"], inplace=True)
+    logging.info(f"DataFrame shape after setting index: {df.shape}")
+
+    # Sorting index
     df.sort_index(ascending=[True, True], inplace=True)
-    if "expver" in df.columns:
-        # merge expver 5 into empty expver 1
-        df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
-        df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
-        tmp_df_combined = df_expver1.combine_first(df_expver5)
-        df = tmp_df_combined
+    logging.info(f"DataFrame shape after sorting index: {df.shape}")
 
     return df

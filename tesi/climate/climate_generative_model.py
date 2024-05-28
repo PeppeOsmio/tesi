@@ -103,19 +103,23 @@ async def main():
     past_climate_data_repository = get_past_climate_data_repository(
         db_session=db_session, cds_api=cds_api
     )
-    if await past_climate_data_repository.did_download_past_climate_data():
-        past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
-            await past_climate_data_repository.get_past_climate_data_for_coordinates(
-                longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
-            )
+    new_past_climate_data_df = (
+        await past_climate_data_repository.download_new_past_climate_data(
+            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE, cache=True
+        )
+    )
+    if len(new_past_climate_data_df) > 0:
+        await past_climate_data_repository.save_past_climate_data(
+            new_past_climate_data_df
         )
     else:
-        past_climate_data_df = (
-            await past_climate_data_repository.download_past_climate_data(
-                longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
-            )
+        logging.info(f"No new past climate data to download")
+
+    past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
+        await past_climate_data_repository.get_past_climate_data_for_coordinates(
+            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
         )
-        await past_climate_data_repository.save_past_climate_data(past_climate_data_df)
+    )
 
     future_climate_data_repository = get_future_climate_data_repository(
         db_session=db_session, cds_api=cds_api
@@ -123,7 +127,7 @@ async def main():
 
     if await future_climate_data_repository.did_download_future_climate_data():
         whole_future_climate_data_df = (
-            await future_climate_data_repository.download_future_climate_data()
+            await future_climate_data_repository.download_future_climate_data(cache=True)
         )
         await future_climate_data_repository.save_future_climate_data(
             whole_future_climate_data_df

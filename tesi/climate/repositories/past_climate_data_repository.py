@@ -3,12 +3,12 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 from geoalchemy2 import Geography
 import pandas as pd
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 import sqlalchemy
-from tesi.climate.dtos import FutureClimateDataDTO, PastClimateDataDTO
+from tesi.climate.dtos import PastClimateDataDTO
 from tesi.climate.models import FutureClimateData, PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession
-from geoalchemy2.functions import ST_X, ST_Y, ST_Distance
+from geoalchemy2.functions import ST_Distance
 from typing import cast
 from tesi.climate.utils.common import coordinates_to_well_known_text
 from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
@@ -23,35 +23,62 @@ class PastClimateDataRepository:
         self.db_session = db_session
         self.copernicus_data_store_api = copernicus_data_store_api
 
-    async def download_past_climate_data(
-        self, longitude: float, latitude: float
+    async def download_new_past_climate_data(
+        self, longitude: float, latitude: float, cache: bool
     ) -> pd.DataFrame:
+        async with self.db_session as session:
+            stmt = select(
+                func.max(FutureClimateData.year), func.max(FutureClimateData.month)
+            )
+            result = (await session.execute(stmt)).first()
+        # the initial data available from CDS's ERA5 dataset
+        max_year: int | None = None
+        max_month: int | None = None
+        print(f"result: {result}")
+        if result is not None and result[0] is not None:
+            max_year, max_month = result.tuple()
+        year_from = max_year if max_year is not None else 1940
+        month_from = (max_month + 1) if max_month is not None else 1
+        if max_month == 12:
+            year_from += 1
+            month_from = 1
+
+        print(f"max_year: {max_year}")
+        print(f"max_month: {max_month}")
+        print(f"year_from: {year_from}")
+        print(f"month_from: {month_from}")
+
+        def download_func():
+            csv_path = "training_data/past_climate_data.csv"
+            if cache and os.path.exists(csv_path):
+                df = pd.read_csv(csv_path, index_col=["year", "month"])
+                df = df[
+                    (df.index.get_level_values("year") >= year_from)
+                    & (df.index.get_level_values("month") >= month_from)
+                ]
+                return df
+            df = self.copernicus_data_store_api.get_past_climate_data(
+                longitude=longitude,
+                latitude=latitude,
+                year_from=year_from,
+                month_from=month_from,
+            )
+            if cache:
+                df.to_csv(csv_path)
+            return df
+
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
-            result = await loop.run_in_executor(
-                executor=pool,
-                func=lambda: self.copernicus_data_store_api.get_past_climate_data_since_1940(
-                    longitude=longitude, latitude=latitude
-                ),
-            )
+            result = await loop.run_in_executor(executor=pool, func=download_func)
         return result
-
-    async def did_download_past_climate_data(self) -> bool:
-        async with self.db_session as session:
-            stmt = select(PastClimateData.year).limit(1)
-            result = await session.scalar(stmt)
-        return result is not None
 
     async def save_past_climate_data(self, past_climate_data_df: pd.DataFrame):
         async with self.db_session as session:
-            stmt = delete(FutureClimateData)
-            await session.execute(stmt)
-            processed = 0
             STEP = 50
-            total = len(past_climate_data_df)
-            while processed < total:
-                rows = past_climate_data_df[processed : processed + STEP]
-                for index, row in rows.iterrows():
+            PROCESSED = 0
+            while PROCESSED < len(past_climate_data_df):
+                row = past_climate_data_df[PROCESSED : PROCESSED + STEP]
+                for index, row in past_climate_data_df.iterrows():
                     index = cast(pd.MultiIndex, index)
                     year, month = index
                     coordinates_wkt = coordinates_to_well_known_text(
@@ -76,21 +103,17 @@ class PastClimateDataRepository:
                             "surface_thermal_radiation_downwards"
                         ],
                         surface_net_solar_radiation=row["surface_net_solar_radiation"],
-                        surface_net_thermal_radiation=row[
-                            "surface_net_thermal_radiation"
-                        ],
+                        surface_net_thermal_radiation=row["surface_net_thermal_radiation"],
                         precipitation_type=row["precipitation_type"],
                         snowfall=row["snowfall"],
                         total_cloud_cover=row["total_cloud_cover"],
                         dewpoint_temperature_2m=row["2m_dewpoint_temperature"],
                         soil_temperature_level_1=row["soil_temperature_level_1"],
-                        volumetric_soil_water_layer_1=row[
-                            "volumetric_soil_water_level_1"
-                        ],
+                        volumetric_soil_water_layer_1=row["volumetric_soil_water_layer_1"],
                     )
-                    session.add(past_climate_data)
-                processed += len(rows)
-                await session.commit()
+                session.add(past_climate_data)
+                PROCESSED += len(row)
+            await session.commit()
 
     async def get_past_climate_data_for_coordinates(
         self, longitude: float, latitude: float
@@ -100,7 +123,10 @@ class PastClimateDataRepository:
             stmt = select(
                 PastClimateData,
             ).order_by(
-                ST_Distance(PastClimateData.coordinates, sqlalchemy.cast(point_well_known_text, Geography))
+                ST_Distance(
+                    PastClimateData.coordinates,
+                    sqlalchemy.cast(point_well_known_text, Geography),
+                )
             )
             results = list(await session.scalars(stmt))
         if len(results) == 0:
@@ -118,7 +144,8 @@ class PastClimateDataRepository:
                 )
                 .order_by(
                     ST_Distance(
-                        PastClimateData.coordinates, sqlalchemy.cast(point_well_known_text, Geography)
+                        PastClimateData.coordinates,
+                        sqlalchemy.cast(point_well_known_text, Geography),
                     ),
                     PastClimateData.year,
                     PastClimateData.month,

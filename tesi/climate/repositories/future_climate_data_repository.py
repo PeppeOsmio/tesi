@@ -1,8 +1,9 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import os
 from geoalchemy2 import Geography
 import pandas as pd
-from sqlalchemy import delete, select
+from sqlalchemy import delete, func, select
 from tesi.climate.dtos import FutureClimateDataDTO
 from tesi.climate.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -22,13 +23,19 @@ class FutureClimateDataRepository:
         self.db_session = db_session
         self.copernicus_data_store_api = copernicus_data_store_api
 
-    async def download_future_climate_data(self) -> pd.DataFrame:
+    async def download_future_climate_data(self, cache: bool) -> pd.DataFrame:
+        def download_func():
+            csv_path = "training_data/whole_future_climate_data.csv"
+            if cache and os.path.exists(csv_path):
+                return pd.read_csv(csv_path, index_col=["year", "month"])
+            df = self.copernicus_data_store_api.get_future_climate_data()
+            if cache:
+                df.to_csv(csv_path)
+            return df
+
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
-            result = await loop.run_in_executor(
-                executor=pool,
-                func=lambda: self.copernicus_data_store_api.get_future_climate_data(),
-            )
+            result = await loop.run_in_executor(executor=pool, func=download_func)
         return result
 
     async def did_download_future_climate_data(self) -> bool:
@@ -87,7 +94,8 @@ class FutureClimateDataRepository:
                 )
                 .order_by(
                     ST_Distance(
-                        FutureClimateData.coordinates, sqlalchemy.cast(point_well_known_text, Geography)
+                        FutureClimateData.coordinates,
+                        sqlalchemy.cast(point_well_known_text, Geography),
                     )
                 )
                 .limit(1)
