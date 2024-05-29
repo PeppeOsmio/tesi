@@ -127,7 +127,9 @@ async def main():
 
     if await future_climate_data_repository.did_download_future_climate_data():
         whole_future_climate_data_df = (
-            await future_climate_data_repository.download_future_climate_data(cache=True)
+            await future_climate_data_repository.download_future_climate_data(
+                cache=True
+            )
         )
         await future_climate_data_repository.save_future_climate_data(
             whole_future_climate_data_df

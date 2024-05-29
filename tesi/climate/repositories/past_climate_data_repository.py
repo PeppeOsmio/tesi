@@ -24,47 +24,15 @@ class PastClimateDataRepository:
         self.copernicus_data_store_api = copernicus_data_store_api
 
     async def download_new_past_climate_data(
-        self, longitude: float, latitude: float, cache: bool
+        self, longitude: float, latitude: float, year_from: int, month_from: int
     ) -> pd.DataFrame:
-        async with self.db_session as session:
-            stmt = select(
-                func.max(FutureClimateData.year), func.max(FutureClimateData.month)
-            )
-            result = (await session.execute(stmt)).first()
-        # the initial data available from CDS's ERA5 dataset
-        max_year: int | None = None
-        max_month: int | None = None
-        print(f"result: {result}")
-        if result is not None and result[0] is not None:
-            max_year, max_month = result.tuple()
-        year_from = max_year if max_year is not None else 1940
-        month_from = (max_month + 1) if max_month is not None else 1
-        if max_month == 12:
-            year_from += 1
-            month_from = 1
-
-        print(f"max_year: {max_year}")
-        print(f"max_month: {max_month}")
-        print(f"year_from: {year_from}")
-        print(f"month_from: {month_from}")
-
         def download_func():
-            csv_path = "training_data/past_climate_data.csv"
-            if cache and os.path.exists(csv_path):
-                df = pd.read_csv(csv_path, index_col=["year", "month"])
-                df = df[
-                    (df.index.get_level_values("year") >= year_from)
-                    & (df.index.get_level_values("month") >= month_from)
-                ]
-                return df
             df = self.copernicus_data_store_api.get_past_climate_data(
-                longitude=longitude,
-                latitude=latitude,
                 year_from=year_from,
                 month_from=month_from,
+                longitude=longitude,
+                latitude=latitude,
             )
-            if cache:
-                df.to_csv(csv_path)
             return df
 
         loop = asyncio.get_running_loop()
@@ -74,6 +42,9 @@ class PastClimateDataRepository:
 
     async def save_past_climate_data(self, past_climate_data_df: pd.DataFrame):
         async with self.db_session as session:
+            delete_stmt = delete(PastClimateData)
+            await session.execute(delete_stmt)
+            
             STEP = 50
             PROCESSED = 0
             while PROCESSED < len(past_climate_data_df):
@@ -81,6 +52,7 @@ class PastClimateDataRepository:
                 for index, row in past_climate_data_df.iterrows():
                     index = cast(pd.MultiIndex, index)
                     year, month = index
+
                     coordinates_wkt = coordinates_to_well_known_text(
                         longitude=row["longitude"], latitude=row["latitude"]
                     )
@@ -103,13 +75,17 @@ class PastClimateDataRepository:
                             "surface_thermal_radiation_downwards"
                         ],
                         surface_net_solar_radiation=row["surface_net_solar_radiation"],
-                        surface_net_thermal_radiation=row["surface_net_thermal_radiation"],
+                        surface_net_thermal_radiation=row[
+                            "surface_net_thermal_radiation"
+                        ],
                         precipitation_type=row["precipitation_type"],
                         snowfall=row["snowfall"],
                         total_cloud_cover=row["total_cloud_cover"],
                         dewpoint_temperature_2m=row["2m_dewpoint_temperature"],
                         soil_temperature_level_1=row["soil_temperature_level_1"],
-                        volumetric_soil_water_layer_1=row["volumetric_soil_water_layer_1"],
+                        volumetric_soil_water_layer_1=row[
+                            "volumetric_soil_water_layer_1"
+                        ],
                     )
                 session.add(past_climate_data)
                 PROCESSED += len(row)

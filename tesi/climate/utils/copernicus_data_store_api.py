@@ -246,8 +246,16 @@ class CopernicusDataStoreAPI:
         return df
 
     def get_past_climate_data(
-        self, longitude: float, latitude: float, year_from: int, month_from: int
+        self,
+        year_from: int | None,
+        month_from: int | None,
+        longitude: float,
+        latitude: float,
     ) -> pd.DataFrame:
+
+        _year_from = year_from if year_from is not None else 1940
+
+        _month_from = month_from if month_from is not None else 1
 
         result_df = pd.DataFrame()
 
@@ -258,14 +266,14 @@ class CopernicusDataStoreAPI:
         tmp_to = datetime.now(tz=timezone.utc).year
         tmp_from = tmp_to
 
-        while tmp_from >= year_from:
+        while tmp_from >= _year_from:
             previous_start = tmp_from
             tmp_from -= STEP
-            actual_start = max(year_from, tmp_from)
+            actual_start = max(_year_from, tmp_from)
 
             months = [str(month).zfill(2) for month in range(1, 13)]
             if actual_start == year_from:
-                months = [str(month).zfill(2) for month in range(month_from, 13)]
+                months = [str(month).zfill(2) for month in range(_month_from, 13)]
 
             logging.info(f"Getting data from {actual_start} to {previous_start}")
             tmp_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
@@ -279,7 +287,7 @@ class CopernicusDataStoreAPI:
                     ],
                     "month": months,
                     "day": [str(day).zfill(2) for day in range(1, 32)],
-                    "time": [f"{hour:02d}:00" for hour in range(24)],
+                    "time": "00:00",
                     "format": "netcdf",
                     "area": [
                         latitude + 0.01,
@@ -314,7 +322,7 @@ class CopernicusDataStoreAPI:
 def main():
     logging.basicConfig(level=logging.INFO)
     cds_api = CopernicusDataStoreAPI(
-        user_id=313835, api_token=UUID(hex="ecc07596-3c00-40b0-8716-fe6b0a79c421")
+        user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
     )
 
     df = cds_api.get_future_climate_data()
@@ -323,7 +331,10 @@ def main():
     df.to_csv("training_data/future_climate_data.csv")
 
     df = cds_api.get_past_climate_data(
-        40.484638, 17.225732, year_from=1940, month_from=1
+        year_from=1940,
+        month_from=1,
+        longitude=40.484638,
+        latitude=17.225732,
     )
     df[:100].to_csv("data/past_climate_data_example.csv")
     os.makedirs("training_data", exist_ok=True)

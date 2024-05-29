@@ -15,7 +15,7 @@ from tesi.database.di import get_db_session
 
 def get_cds_api() -> CopernicusDataStoreAPI:
     return CopernicusDataStoreAPI(
-        user_id=313835, api_token=UUID(hex="ecc07596-3c00-40b0-8716-fe6b0a79c421")
+        user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
     )
 
 

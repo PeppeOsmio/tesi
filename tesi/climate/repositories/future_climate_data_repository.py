@@ -1,5 +1,6 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+import logging
 import os
 from geoalchemy2 import Geography
 import pandas as pd
@@ -23,14 +24,9 @@ class FutureClimateDataRepository:
         self.db_session = db_session
         self.copernicus_data_store_api = copernicus_data_store_api
 
-    async def download_future_climate_data(self, cache: bool) -> pd.DataFrame:
+    async def download_future_climate_data(self) -> pd.DataFrame:
         def download_func():
-            csv_path = "training_data/whole_future_climate_data.csv"
-            if cache and os.path.exists(csv_path):
-                return pd.read_csv(csv_path, index_col=["year", "month"])
             df = self.copernicus_data_store_api.get_future_climate_data()
-            if cache:
-                df.to_csv(csv_path)
             return df
 
         loop = asyncio.get_running_loop()
@@ -57,6 +53,7 @@ class FutureClimateDataRepository:
                 for index, row in rows.iterrows():
                     index = cast(pd.MultiIndex, index)
                     year, month = index
+
                     coordinates_wkt = coordinates_to_well_known_text(
                         longitude=row["longitude"], latitude=row["latitude"]
                     )
@@ -82,6 +79,7 @@ class FutureClimateDataRepository:
                     session.add(future_climate_data)
                 processed += len(rows)
                 await session.commit()
+        logging.info(f"Saved {processed} future climate data")
 
     async def get_future_climate_data_for_coordinates(
         self, longitude: float, latitude: float
