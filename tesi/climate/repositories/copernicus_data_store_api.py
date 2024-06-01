@@ -248,16 +248,19 @@ class CopernicusDataStoreAPI:
             tmp_df = common.convert_nc_file_to_dataframe(
                 source_file_path=tmp_file_path, limit=None
             )
+
+            tmp_df.to_csv(f"{tmp_file_path}_{datetime.now(tz=timezone.utc).isoformat()}.csv")
+
             if "expver" in tmp_df.columns:
                 tmp_df = common.merge_by_expver(tmp_df)
 
-            os.remove(tmp_file_path)
             tmp_df = common.process_copernicus_climate_data(
                 df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
             )
             on_save_chunk(tmp_df)
 
             print(tmp_df)
+            os.remove(tmp_file_path)
 
         if os.path.exists(tmp_dir):
             os.removedirs(tmp_dir)
