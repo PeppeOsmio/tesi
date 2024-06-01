@@ -255,7 +255,7 @@ class CopernicusDataStoreAPI:
                 tmp_df = common.merge_by_expver(tmp_df)
 
             tmp_df = common.process_copernicus_climate_data(
-                df=result_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
+                df=tmp_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
             )
             on_save_chunk(tmp_df)
 
