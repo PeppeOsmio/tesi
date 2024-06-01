@@ -233,7 +233,7 @@ class CopernicusDataStoreAPI:
                     "year": [str(year) for year in years_to_fetch],
                     "month": [str(month).zfill(2) for month in range(1, 13)],
                     "day": [str(day).zfill(2) for day in range(1, 32)],
-                    "time": "00:00",
+                    "time": [f"{hour:02d}:00" for hour in range(24)],
                     "format": "netcdf",
                     "area": [
                         latitude + 0.01,
