@@ -17,11 +17,7 @@ async def main():
         db_session=db_session, cds_api=cds_api
     )
 
-    future_climate_data_df = (
-        await future_climate_data_repository.download_future_climate_data()
-    )
-
-    future_climate_data_df.to_csv("training_data/future_climate_data.csv")
+    await future_climate_data_repository.download_future_climate_data()
 
 
 if __name__ == "__main__":

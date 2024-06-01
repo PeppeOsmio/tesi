@@ -1,3 +1,5 @@
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import os
 from typing import cast
 import pandas as pd
@@ -106,7 +108,7 @@ def download_crops_yield_data() -> pd.DataFrame:
         columns=columns_to_include
     )
 
-    df.dropna(
+    df = df.dropna(
         subset=[
             "longitude",
             "latitude",
@@ -117,7 +119,6 @@ def download_crops_yield_data() -> pd.DataFrame:
             "sowing_year",
             "harvest_year",
         ],
-        inplace=True,
     )
 
     df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
@@ -127,12 +128,15 @@ def download_crops_yield_data() -> pd.DataFrame:
 
     df.sort_values(by=["crop", "country", "location"], ascending=[True, True, True])
 
-    df.reset_index(drop=True, inplace=True)
+    df = df.reset_index(drop=True)
     return df
+
+async def main():
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor() as pool:
+        crops_df = await loop.run_in_executor(executor=pool, func=download_crops_yield_data)
+    crops_df.to_csv("training_data/crops_yield.csv", index=False)
 
 
 if __name__ == "__main__":
-    df = download_crops_yield_data()
-    df[:100].to_csv("data/crops_example.csv")
-    os.makedirs("training_data", exist_ok=True)
-    df.to_csv("training_data/crops.csv")
+    asyncio.run(main())

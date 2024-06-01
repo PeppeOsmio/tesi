@@ -1,9 +1,26 @@
 from __future__ import annotations
 from dataclasses import dataclass
+from datetime import datetime
+from uuid import UUID
 
 import pandas as pd
 
 from typing import cast
+
+@dataclass
+class CropDTO:
+    id: UUID
+    name: str
+    created_at: datetime
+
+@dataclass
+class LocationDTO:
+    id: UUID
+    country: str
+    name: str
+    longitude: float
+    latitude: float
+    created_at: datetime
 
 
 @dataclass
@@ -25,13 +42,12 @@ class FutureClimateDataDTO:
     @staticmethod
     def from_list_to_dataframe(list: list[FutureClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([obj.__dict__ for obj in list])
-        df.rename(
+        df = df.rename(
             columns={
                 "u_component_of_wind_10m": "10m_u_component_of_wind",
                 "v_component_of_wind_10m": "10m_v_component_of_wind",
                 "temperature_2m": "2m_temperature",
             },
-            inplace=True,
         )
         return df
 
@@ -53,10 +69,9 @@ class FutureClimateDataDTO:
 
 @dataclass
 class PastClimateDataDTO:
+    location_id: UUID
     year: int
     month: int
-    longitude: float
-    latitude: float
 
     u_component_of_wind_10m: float
     v_component_of_wind_10m: float
@@ -79,14 +94,13 @@ class PastClimateDataDTO:
     @staticmethod
     def from_list_to_dataframe(lst: list[PastClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([item.__dict__ for item in lst])
-        df.rename(
+        df = df.rename(
             columns={
                 "u_component_of_wind_10m": "10m_u_component_of_wind",
                 "v_component_of_wind_10m": "10m_v_component_of_wind",
                 "temperature_2m": "2m_temperature",
                 "dewpoint_temperature_2m": "2m_dewpoint_temperature",
             },
-            inplace=True,
         )
         return df
 

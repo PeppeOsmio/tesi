@@ -116,7 +116,7 @@ async def main():
         logging.info(f"No new past climate data to download")
 
     past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
-        await past_climate_data_repository.get_past_climate_data_for_coordinates(
+        await past_climate_data_repository.get_past_climate_data_for_location(
             longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
         )
     )
@@ -149,7 +149,7 @@ async def main():
     )
 
     seed_data = PastClimateDataDTO.from_list_to_dataframe(
-        await past_climate_data_repository.get_past_climate_data_of_previous_12_months(
+        await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
             longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
         )
     )

@@ -4,6 +4,12 @@ from typing import cast
 import pandas as pd
 import xarray
 
+# Policoro
+EXAMPLE_LOCATION_COUNTRY = "Italy"
+EXAMPLE_LOCATION_NAME = "Policoro"
+EXAMPLE_LONGITUDE = 16.678341
+EXAMPLE_LATITUDE = 40.212971
+
 
 def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
     return f"POINT({longitude} {latitude})"
@@ -20,7 +26,7 @@ def convert_nc_file_to_dataframe(
     ds = None
     if limit is not None:
         df = df[:limit]
-    df.reset_index(inplace=True)
+    df = df.reset_index()
     return df
 
 
@@ -51,18 +57,18 @@ def process_copernicus_climate_data(
     df["time"] = pd.to_datetime(df["time"])
     df["year"] = df["time"].dt.year
     df["month"] = df["time"].dt.month
-    df.drop(columns=["time"], inplace=True)
+    df = df.drop(columns=["time"])
     logging.info(
         f"DataFrame shape after time conversion and dropping 'time' column: {df.shape}"
     )
 
     # Resetting and setting index
-    df.reset_index(drop=True, inplace=True)
-    df.set_index(keys=["year", "month"], inplace=True)
+    df = df.reset_index(drop=True)
+    df = df.set_index(keys=["year", "month"])
     logging.info(f"DataFrame shape after setting index: {df.shape}")
 
     # Sorting index
-    df.sort_index(ascending=[True, True], inplace=True)
+    df = df.sort_index(ascending=[False, False])
     logging.info(f"DataFrame shape after sorting index: {df.shape}")
 
     return df

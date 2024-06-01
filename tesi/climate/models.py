@@ -1,21 +1,60 @@
+from datetime import datetime
 from enum import IntEnum
-from sqlalchemy import Index
-from sqlalchemy.orm import Mapped, mapped_column
+from uuid import UUID
+from sqlalchemy import ForeignKey, Index, UniqueConstraint
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from tesi.database.base import Base
 from geoalchemy2 import Geography
+
+
+class Location(Base):
+    __tablename__ = "location"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    country: Mapped[str] = mapped_column(index=True)
+    name: Mapped[str] = mapped_column(index=True)
+    longitude: Mapped[float]
+    latitude: Mapped[float]
+    created_at: Mapped[datetime] = mapped_column(index=True)
+
+    __table_args__ = (
+        UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
+    )
+
+
+class Crop(Base):
+    __tablename__ = "crop"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    name: Mapped[str] = mapped_column(unique=True)
+    created_at: Mapped[datetime] = mapped_column(index=True)
+
+
+class CropYieldData(Base):
+    __tablename__ = "crop_yield_data"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id"))
+    crop_id: Mapped[str] = mapped_column(ForeignKey(column="crop.id"))
+    sowing_year: Mapped[int]
+    sowing_month: Mapped[int]
+    harvest_year: Mapped[int]
+    harvest_month: Mapped[int]
+    _yield: Mapped[float]
+
+    location: Mapped[Location] = relationship()
 
 
 class PastClimateData(Base):
     __tablename__ = "past_climate_data"
 
-    longitude: Mapped[float] = mapped_column(primary_key=True)
-    latitude: Mapped[float] = mapped_column(primary_key=True)
-    year: Mapped[int] = mapped_column(primary_key=True)
-    month: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True)
 
-    coordinates: Mapped[Geography] = mapped_column(
-        Geography(geometry_type="POINT", srid=4326, spatial_index=False)
+    location_id: Mapped[UUID] = mapped_column(
+        ForeignKey(column="location.id", ondelete="CASCADE")
     )
+    year: Mapped[int]
+    month: Mapped[int]
 
     u_component_of_wind_10m: Mapped[float]
     v_component_of_wind_10m: Mapped[float]
@@ -35,14 +74,18 @@ class PastClimateData(Base):
     soil_temperature_level_1: Mapped[float]
     volumetric_soil_water_layer_1: Mapped[float]
 
+    location: Mapped[Location] = relationship()
+
 
 class FutureClimateData(Base):
     __tablename__ = "future_climate_data"
 
-    longitude: Mapped[int] = mapped_column(primary_key=True)
-    latitude: Mapped[int] = mapped_column(primary_key=True)
-    year: Mapped[int] = mapped_column(primary_key=True)
-    month: Mapped[int] = mapped_column(primary_key=True)
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+
+    longitude: Mapped[int]
+    latitude: Mapped[int]
+    year: Mapped[int]
+    month: Mapped[int]
 
     coordinates: Mapped[Geography] = mapped_column(
         Geography(geometry_type="POINT", srid=4326, spatial_index=False)
