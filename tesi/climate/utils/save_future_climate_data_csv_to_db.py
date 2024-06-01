@@ -16,7 +16,9 @@ async def main():
         db_session=db_session, cds_api=cds_api
     )
 
-    future_climate_data_df = pd.read_csv("training_data/future_climate_data.csv", index_col=["year", "month"])
+    future_climate_data_df = pd.read_csv(
+        "training_data/future_climate_data.csv", index_col=["year", "month"]
+    )
 
     await future_climate_data_repository.save_future_climate_data(
         future_climate_data_df

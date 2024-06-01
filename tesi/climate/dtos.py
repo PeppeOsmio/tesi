@@ -7,11 +7,13 @@ import pandas as pd
 
 from typing import cast
 
+
 @dataclass
 class CropDTO:
     id: UUID
     name: str
     created_at: datetime
+
 
 @dataclass
 class LocationDTO:

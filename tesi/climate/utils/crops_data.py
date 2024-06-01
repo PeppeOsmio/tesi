@@ -131,10 +131,13 @@ def download_crops_yield_data() -> pd.DataFrame:
     df = df.reset_index(drop=True)
     return df
 
+
 async def main():
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor() as pool:
-        crops_df = await loop.run_in_executor(executor=pool, func=download_crops_yield_data)
+        crops_df = await loop.run_in_executor(
+            executor=pool, func=download_crops_yield_data
+        )
     crops_df.to_csv("training_data/crops_yield.csv", index=False)
 
 

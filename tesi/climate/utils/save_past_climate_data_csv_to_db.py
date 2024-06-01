@@ -21,7 +21,7 @@ async def main():
     past_climate_data_repository = get_past_climate_data_repository(
         db_session=db_session, cds_api=cds_api, location_repository=location_repository
     )
-    
+
     new_past_climate_data_csv_path = (
         f"training_data/{common.EXAMPLE_LOCATION_NAME}_past_climate_data.csv"
     )

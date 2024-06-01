@@ -8,7 +8,7 @@ from typing import Any, cast
 import uuid
 import pandas as pd
 import requests
-from sqlalchemy import insert, select
+from sqlalchemy import delete, insert, select
 from tesi.climate.dtos import CropDTO
 from tesi.climate.models import Crop, CropYieldData
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -139,7 +139,7 @@ class CropYieldDataRepository:
                 "sowing_year",
                 "harvest_year",
             ],
-        )            
+        )
 
         df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
         df["crop"] = df["crop"].str.replace(r"\.winter$", "", regex=True)
@@ -188,16 +188,24 @@ class CropYieldDataRepository:
                     longitude=longitude, latitude=latitude
                 )
                 if location is not None:
-                    location_coordinates_to_ids.update({str((longitude, latitude)): location.id})
+                    location_coordinates_to_ids.update(
+                        {str((longitude, latitude)): location.id}
+                    )
                     continue
-                logging.info(f"Creating location {location_name} at {longitude} {latitude}")
+                logging.info(
+                    f"Creating location {location_name} at {longitude} {latitude}"
+                )
                 location = await self.location_repository.create_location(
                     country=country,
                     name=location_name,
                     longitude=longitude,
                     latitude=latitude,
                 )
-                location_coordinates_to_ids.update({str((longitude, latitude)): location.id})
+                location_coordinates_to_ids.update(
+                    {str((longitude, latitude)): location.id}
+                )
+
+            await session.execute(delete(CropYieldData))
 
             logging.info("Starting creating crop yield data")
             processed = 0
@@ -207,21 +215,24 @@ class CropYieldDataRepository:
                 rows = crop_yield_data_df[processed : processed + STEP]
                 values_dicts: list[dict[str, Any]] = []
                 for index, row in rows.iterrows():
-                    values_dicts.append({
-                        "id": uuid.uuid4(),
-                        "location_id": location_coordinates_to_ids[str((row["longitude"], row["latitude"]))],
-                        "crop_id": crop_names_to_ids[row["crop"]],
-                        "sowing_year": row["sowing_year"],
-                        "sowing_month": row["sowing_month"],
-                        "harvest_year": row["harvest_year"],
-                        "harvest_month": row["harvest_month"],
-                        "_yield": row["yield"]
-                    })
+                    values_dicts.append(
+                        {
+                            "id": uuid.uuid4(),
+                            "location_id": location_coordinates_to_ids[
+                                str((row["longitude"], row["latitude"]))
+                            ],
+                            "crop_id": crop_names_to_ids[row["crop"]],
+                            "sowing_year": row["sowing_year"],
+                            "sowing_month": row["sowing_month"],
+                            "harvest_year": row["harvest_year"],
+                            "harvest_month": row["harvest_month"],
+                            "_yield": row["yield"],
+                        }
+                    )
                 await session.execute(insert(CropYieldData), values_dicts)
                 processed += len(rows)
                 logging.info(f"{processed}/{len(crop_yield_data_df)}")
             await session.commit()
-        
 
     async def get_crop_by_name(self, name: str) -> CropDTO | None:
         async with self.db_session as session:

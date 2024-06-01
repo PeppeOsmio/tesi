@@ -274,30 +274,31 @@ class CopernicusDataStoreAPI:
             os.removedirs(tmp_dir)
 
 
-
 def main():
     ...
     # logging.basicConfig(level=logging.INFO)
     # cds_api = CopernicusDataStoreAPI(
     #     user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
     # )
-# 
-    # df = cds_api.get_future_climate_data()
-    # df[:100].to_csv("data/future_climate_data_example.csv")
-    # os.makedirs("training_data", exist_ok=True)
-    # df.to_csv("training_data/future_climate_data.csv")
-# 
-    # cds_api.get_past_climate_data(
-    #     year_from=1940,
-    #     month_from=1,
-    #     longitude=40.484638,
-    #     latitude=17.225732,
-    # )
-    # df[:100].to_csv("data/past_climate_data_example.csv")
-    # os.makedirs("training_data", exist_ok=True)
-    # df.to_csv("training_data/past_climate_data.csv")
-    # df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
-    # df.to_csv("data/climate_data_last_12_months_example.csv")
+
+
+#
+# df = cds_api.get_future_climate_data()
+# df[:100].to_csv("data/future_climate_data_example.csv")
+# os.makedirs("training_data", exist_ok=True)
+# df.to_csv("training_data/future_climate_data.csv")
+#
+# cds_api.get_past_climate_data(
+#     year_from=1940,
+#     month_from=1,
+#     longitude=40.484638,
+#     latitude=17.225732,
+# )
+# df[:100].to_csv("data/past_climate_data_example.csv")
+# os.makedirs("training_data", exist_ok=True)
+# df.to_csv("training_data/past_climate_data.csv")
+# df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
+# df.to_csv("data/climate_data_last_12_months_example.csv")
 
 
 if __name__ == "__main__":
