@@ -12,7 +12,7 @@ from tesi.climate.repositories.location_repository import LocationRepository
 from tesi.climate.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
 )
-from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 from tesi.database.di import get_db_session
 
 

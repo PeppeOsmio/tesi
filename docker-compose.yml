@@ -6,7 +6,7 @@ services:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=db
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - ./postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432
   
@@ -14,6 +14,3 @@ services:
     image: adminer:latest
     ports:
       - 8080:8080
-
-volumes:
-  postgres_data:

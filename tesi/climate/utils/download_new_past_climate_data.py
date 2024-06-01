@@ -24,13 +24,16 @@ async def main():
         db_session=db_session, cds_api=cds_api, location_repository=location_repository
     )
 
-    await location_repository.delete_location(name=common.EXAMPLE_LOCATION_NAME)
-    location = await location_repository.create_location(
-        country=common.EXAMPLE_LOCATION_COUNTRY,
-        name=common.EXAMPLE_LOCATION_NAME,
-        longitude=common.EXAMPLE_LONGITUDE,
-        latitude=common.EXAMPLE_LATITUDE,
+    location = await location_repository.get_location_by_country_and_name(
+        country=common.EXAMPLE_LOCATION_COUNTRY, name=common.EXAMPLE_LOCATION_NAME
     )
+    if location is None:
+        location = await location_repository.create_location(
+            country=common.EXAMPLE_LOCATION_COUNTRY,
+            name=common.EXAMPLE_LOCATION_NAME,
+            longitude=common.EXAMPLE_LONGITUDE,
+            latitude=common.EXAMPLE_LATITUDE,
+        )
 
     await past_climate_data_repository.download_new_past_climate_data(
         location_id=location.id

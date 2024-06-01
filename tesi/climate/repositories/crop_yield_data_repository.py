@@ -9,7 +9,7 @@ import uuid
 import pandas as pd
 import requests
 from sqlalchemy import delete, insert, select
-from tesi.climate.dtos import CropDTO
+from tesi.climate.dtos import CropDTO, LocationClimateYearsDTO
 from tesi.climate.models import Crop, CropYieldData
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -241,6 +241,30 @@ class CropYieldDataRepository:
         if crop is None:
             return None
         return self.__crop_model_to_dto(crop)
+
+    async def get_unique_location_climate_years(
+        self,
+    ) -> list[LocationClimateYearsDTO]:
+        async with self.db_session as session:
+            stmt = select(
+                CropYieldData.location_id,
+                CropYieldData.sowing_year,
+                CropYieldData.harvest_year,
+            ).distinct()
+            results = list(await session.execute(stmt))
+
+        location_id_to_years_dict: dict[uuid.UUID, set[int]] = {}
+        for result in results:
+            location_id, sowing_year, harvest_year = result.tuple()
+            if location_id_to_years_dict.get(location_id) is None:
+                location_id_to_years_dict.update({location_id: set()})
+            location_id_to_years_dict[location_id].add(sowing_year)
+            location_id_to_years_dict[location_id].add(harvest_year)
+
+        return [
+            LocationClimateYearsDTO(location_id=location_id, years=years)
+            for location_id, years in location_id_to_years_dict.items()
+        ]
 
     def __crop_model_to_dto(self, crop: Crop) -> CropDTO:
         return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)

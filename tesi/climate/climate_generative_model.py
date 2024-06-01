@@ -8,7 +8,7 @@ from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
 from tesi.climate.dtos import FutureClimateDataDTO, PastClimateDataDTO
-from tesi.climate.utils import copernicus_data_store_api
+from tesi.climate.repositories import copernicus_data_store_api
 from tesi.climate.di import (
     get_db_session,
     get_cds_api,

@@ -2,21 +2,16 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 import logging
-import os
 from uuid import UUID
 import uuid
-from geoalchemy2 import Geography
 import pandas as pd
-from sqlalchemy import delete, func, insert, select
-import sqlalchemy
-from tesi.climate.dtos import PastClimateDataDTO
-from tesi.climate.models import FutureClimateData, PastClimateData
+from sqlalchemy import delete, insert, select
+from tesi.climate.dtos import LocationClimateYearsDTO, PastClimateDataDTO
+from tesi.climate.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession
-from geoalchemy2.functions import ST_Distance
 from typing import Any, cast
 from tesi.climate.repositories.location_repository import LocationRepository
-from tesi.climate.utils.common import coordinates_to_well_known_text
-from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 
 
 class PastClimateDataRepository:
@@ -44,6 +39,32 @@ class PastClimateDataRepository:
         if result is None:
             return None
         return self.__past_climate_data_model_to_dto(result)
+    
+    async def download_past_climate_data_for_years(self, location_id: UUID, years: list[int]):
+        location = await self.location_repository.get_location_by_id(location_id)
+        if location is None:
+            raise ValueError(f"Location {location_id} does not exist in db")
+
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+
+            def download_func():
+                def on_save_chunk(chunk: pd.DataFrame):
+                    return asyncio.run_coroutine_threadsafe(
+                        coro=self.__save_past_climate_data(
+                            location_id=location_id, past_climate_data_df=chunk
+                        ),
+                        loop=loop,
+                    ).result()
+
+                self.copernicus_data_store_api.get_past_climate_data_for_years(
+                    longitude=location.longitude,
+                    latitude=location.latitude,
+                    years=years,
+                    on_save_chunk=on_save_chunk,
+                )
+
+            await loop.run_in_executor(executor=pool, func=download_func)
 
     async def download_new_past_climate_data(self, location_id: UUID):
 
@@ -59,10 +80,8 @@ class PastClimateDataRepository:
             max_month = last_climate_data.month
 
             year_from = cast(int, max_year)
-            month_from = cast(int, max_month)
             if max_month == 12:
                 year_from += 1
-                month_from = 1
 
         location = await self.location_repository.get_location_by_id(location_id)
 
@@ -88,7 +107,6 @@ class PastClimateDataRepository:
 
                 self.copernicus_data_store_api.get_past_climate_data(
                     year_from=year_from,
-                    month_from=month_from,
                     longitude=location.longitude,
                     latitude=location.latitude,
                     on_save_chunk=on_save_chunk,
@@ -193,6 +211,28 @@ class PastClimateDataRepository:
                 f"Can't find past climate data of previous 12 months for location"
             )
         return [self.__past_climate_data_model_to_dto(result) for result in results]
+    
+    async def get_unique_location_climate_years(
+        self,
+    ) -> list[LocationClimateYearsDTO]:
+        async with self.db_session as session:
+            stmt = select(
+                PastClimateData.location_id,
+                PastClimateData.year,
+            ).distinct()
+            results = list(await session.execute(stmt))
+
+        location_id_to_years_dict: dict[uuid.UUID, set[int]] = {}
+        for result in results:
+            location_id, year = result.tuple()
+            if location_id_to_years_dict.get(location_id) is None:
+                location_id_to_years_dict.update({location_id: set()})
+            location_id_to_years_dict[location_id].add(year)
+
+        return [
+            LocationClimateYearsDTO(location_id=location_id, years=years)
+            for location_id, years in location_id_to_years_dict.items()
+        ]
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData

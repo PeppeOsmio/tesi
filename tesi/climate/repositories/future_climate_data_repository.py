@@ -13,7 +13,7 @@ from geoalchemy2.functions import ST_Distance
 from typing import Any, cast
 import sqlalchemy
 from tesi.climate.utils.common import coordinates_to_well_known_text
-from tesi.climate.utils.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 
 
 class FutureClimateDataRepository:

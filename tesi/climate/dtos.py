@@ -7,6 +7,10 @@ import pandas as pd
 
 from typing import cast
 
+@dataclass
+class LocationClimateYearsDTO:
+    location_id: UUID
+    years: set[int]
 
 @dataclass
 class CropDTO:

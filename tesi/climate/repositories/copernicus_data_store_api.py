@@ -201,50 +201,37 @@ class CopernicusDataStoreAPI:
 
         return result_df
 
-    def get_past_climate_data(
+    def get_past_climate_data_for_years(
         self,
-        year_from: int | None,
-        month_from: int | None,
         longitude: float,
         latitude: float,
+        years: list[int],
         on_save_chunk: Callable[[pd.DataFrame], None],
     ):
-
-        _year_from = year_from if year_from is not None else 1940
-
-        _month_from = month_from if month_from is not None else 1
 
         result_df = pd.DataFrame()
 
         tmp_dir = "./tmp/global_climate_data"
         os.makedirs(tmp_dir, exist_ok=True)
 
-        now = datetime.now(tz=timezone.utc)
+        _years = [*years]
+        _years.sort()
 
         STEP = 15
-        tmp_to = now.year
-        tmp_from = tmp_to
+        processed = 0
 
-        while tmp_from >= _year_from:
-            previous_start = tmp_from
-            tmp_from -= STEP
-            actual_start = max(_year_from, tmp_from)
+        while processed < len(_years):
+            years_to_fetch = _years[processed : processed + STEP]
 
-            months = [str(month).zfill(2) for month in range(1, 13)]
-            if actual_start == year_from:
-                months = [str(month).zfill(2) for month in range(_month_from, 13)]
-
-            logging.info(f"Getting data from {actual_start} to {previous_start}")
+            logging.info(f"Getting data for years {years_to_fetch}")
             tmp_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
             self.cds_client.retrieve(
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
                     "product_type": "monthly_averaged_reanalysis",
                     "variable": list(ERA5_PARAMETERS),
-                    "year": [
-                        str(year) for year in range(actual_start, previous_start + 1)
-                    ],
-                    "month": months,
+                    "year": [str(year) for year in years_to_fetch],
+                    "month": [str(month).zfill(2) for month in range(1, 13)],
                     "day": [str(day).zfill(2) for day in range(1, 32)],
                     "time": "00:00",
                     "format": "netcdf",
@@ -270,35 +257,37 @@ class CopernicusDataStoreAPI:
             )
             on_save_chunk(tmp_df)
 
+            print(tmp_df)
+
         if os.path.exists(tmp_dir):
             os.removedirs(tmp_dir)
 
+    def get_past_climate_data(
+        self,
+        year_from: int | None,
+        longitude: float,
+        latitude: float,
+        on_save_chunk: Callable[[pd.DataFrame], None],
+    ):
 
-def main():
-    ...
-    # logging.basicConfig(level=logging.INFO)
-    # cds_api = CopernicusDataStoreAPI(
-    #     user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
-    # )
+        _year_from = year_from if year_from is not None else 1940
+
+        now = datetime.now(tz=timezone.utc)
+
+        if _year_from > now.year:
+            return
+
+        years = list(range(_year_from, now.year))
+
+        return self.get_past_climate_data_for_years(
+            longitude=longitude,
+            latitude=latitude,
+            years=years,
+            on_save_chunk=on_save_chunk,
+        )
 
 
-#
-# df = cds_api.get_future_climate_data()
-# df[:100].to_csv("data/future_climate_data_example.csv")
-# os.makedirs("training_data", exist_ok=True)
-# df.to_csv("training_data/future_climate_data.csv")
-#
-# cds_api.get_past_climate_data(
-#     year_from=1940,
-#     month_from=1,
-#     longitude=40.484638,
-#     latitude=17.225732,
-# )
-# df[:100].to_csv("data/past_climate_data_example.csv")
-# os.makedirs("training_data", exist_ok=True)
-# df.to_csv("training_data/past_climate_data.csv")
-# df = cds_api.get_climate_data_of_last_12_months(40.484638, 17.225732)
-# df.to_csv("data/climate_data_last_12_months_example.csv")
+def main(): ...
 
 
 if __name__ == "__main__":
