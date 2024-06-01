@@ -249,7 +249,7 @@ class CopernicusDataStoreAPI:
                 source_file_path=tmp_file_path, limit=None
             )
 
-            tmp_df.to_csv(f"{tmp_file_path}_{datetime.now(tz=timezone.utc).isoformat()}.csv")
+            tmp_df.to_csv(f"past_climate_data_{datetime.now(tz=timezone.utc).isoformat()}.csv")
 
             if "expver" in tmp_df.columns:
                 tmp_df = common.merge_by_expver(tmp_df)
