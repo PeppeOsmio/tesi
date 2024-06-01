@@ -53,11 +53,13 @@ async def main():
             processed : processed + STEP
         ]
         await asyncio.gather(
-            past_climate_data_repository.download_past_climate_data_for_years(
-                location_id=location_climate_years.location_id,
-                years=list(location_climate_years.years),
-            )
-            for location_climate_years in items
+            *[
+                past_climate_data_repository.download_past_climate_data_for_years(
+                    location_id=location_climate_years.location_id,
+                    years=list(location_climate_years.years),
+                )
+                for location_climate_years in items
+            ]
         )
 
 
