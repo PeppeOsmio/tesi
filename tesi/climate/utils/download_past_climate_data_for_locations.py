@@ -46,11 +46,18 @@ async def main():
                 location_climate_years.years = location_climate_years.years - tmp.years
                 break
 
-    for location_climate_years in location_climate_years_from_crop_yield_data:
-        print(location_climate_years)
-        await past_climate_data_repository.download_past_climate_data_for_years(
-            location_id=location_climate_years.location_id,
-            years=list(location_climate_years.years),
+    STEP = 5
+    processed = 0
+    while processed < len(location_climate_years_from_crop_yield_data):
+        items = location_climate_years_from_crop_yield_data[
+            processed : processed + STEP
+        ]
+        await asyncio.gather(
+            past_climate_data_repository.download_past_climate_data_for_years(
+                location_id=location_climate_years.location_id,
+                years=list(location_climate_years.years),
+            )
+            for location_climate_years in items
         )
 
 
