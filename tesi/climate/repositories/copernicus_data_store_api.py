@@ -223,7 +223,7 @@ class CopernicusDataStoreAPI:
         while processed < len(_years):
             years_to_fetch = _years[processed : processed + STEP]
 
-            logging.info(f"Getting data for years {years_to_fetch}")
+            logging.info(f"Getting data for years {years_to_fetch} and coordinates ({longitude} {latitude})")
             tmp_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
             self.cds_client.retrieve(
                 name="reanalysis-era5-single-levels-monthly-means",
