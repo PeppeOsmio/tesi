@@ -3,6 +3,7 @@ import logging
 from typing import Iterable
 from uuid import UUID
 
+from tesi import logging_conf
 from tesi.climate.di import (
     get_cds_api,
     get_crop_repository,
@@ -49,7 +50,11 @@ async def main():
                 location_climate_years.years = location_climate_years.years - tmp.years
                 break
 
-    location_climate_years_to_fetch: list[LocationClimateYearsDTO] = [item for item in location_climate_years_from_crop_yield_data if len(item.years) > 0 ]
+    location_climate_years_to_fetch: list[LocationClimateYearsDTO] = [
+        item
+        for item in location_climate_years_from_crop_yield_data
+        if len(item.years) > 0
+    ]
 
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
     processed = 0
@@ -76,5 +81,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging_conf.create_logger(config=logging_conf.get_default_conf())
     asyncio.run(main())

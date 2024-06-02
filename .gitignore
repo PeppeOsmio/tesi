@@ -1,6 +1,7 @@
 .venv
 .vscode
 __pycache__
+logs/
 # Libre Office Calc
 .~lock*
 # Docker

@@ -119,7 +119,6 @@ class PastClimateDataRepository:
     async def __save_past_climate_data(
         self, location_id: UUID, past_climate_data_df: pd.DataFrame
     ):
-        print(past_climate_data_df)
         if len(past_climate_data_df) == 0:
             return
         async with self.session_maker() as session:
