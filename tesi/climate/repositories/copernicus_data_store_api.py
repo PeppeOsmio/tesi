@@ -8,6 +8,7 @@ import zipfile
 import pandas as pd
 from tesi.climate.utils import common
 from uuid import UUID
+import shutil
 
 
 ERA5_PARAMETERS = {
@@ -265,7 +266,7 @@ class CopernicusDataStoreAPI:
             os.remove(tmp_file_path)
 
         if os.path.exists(tmp_dir):
-            os.removedirs(tmp_dir)
+            shutil.rmtree(tmp_dir)
 
     def get_past_climate_data(
         self,
