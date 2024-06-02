@@ -54,9 +54,6 @@ async def main():
 
     location_climate_years_to_fetch: list[LocationClimateYearsDTO] = [item for item in location_climate_years_from_crop_yield_data if len(item.years) > 0 ]
 
-    for item in location_climate_years_to_fetch:
-        logging.info(f"{item.location_id} {item.years}")
-
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
     processed = 0
     logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
