@@ -39,31 +39,33 @@ class PastClimateDataRepository:
         if result is None:
             return None
         return self.__past_climate_data_model_to_dto(result)
-    
-    async def download_past_climate_data_for_years(self, location_id: UUID, years: list[int]):
+
+    async def download_past_climate_data_for_years(
+        self, location_id: UUID, years: list[int]
+    ):
         location = await self.location_repository.get_location_by_id(location_id)
         if location is None:
             raise ValueError(f"Location {location_id} does not exist in db")
 
         loop = asyncio.get_running_loop()
+
+        def download_func():
+            def on_save_chunk(chunk: pd.DataFrame):
+                return asyncio.run_coroutine_threadsafe(
+                    coro=self.__save_past_climate_data(
+                        location_id=location_id, past_climate_data_df=chunk
+                    ),
+                    loop=loop,
+                ).result()
+
+            self.copernicus_data_store_api.get_past_climate_data_for_years(
+                longitude=location.longitude,
+                latitude=location.latitude,
+                years=years,
+                on_save_chunk=on_save_chunk,
+            )
+
         with ThreadPoolExecutor() as pool:
-
-            def download_func():
-                def on_save_chunk(chunk: pd.DataFrame):
-                    return asyncio.run_coroutine_threadsafe(
-                        coro=self.__save_past_climate_data(
-                            location_id=location_id, past_climate_data_df=chunk
-                        ),
-                        loop=loop,
-                    ).result()
-
-                self.copernicus_data_store_api.get_past_climate_data_for_years(
-                    longitude=location.longitude,
-                    latitude=location.latitude,
-                    years=years,
-                    on_save_chunk=on_save_chunk,
-                )
-
             await loop.run_in_executor(executor=pool, func=download_func)
 
     async def download_new_past_climate_data(self, location_id: UUID):
@@ -211,7 +213,7 @@ class PastClimateDataRepository:
                 f"Can't find past climate data of previous 12 months for location"
             )
         return [self.__past_climate_data_model_to_dto(result) for result in results]
-    
+
     async def get_unique_location_climate_years(
         self,
     ) -> list[LocationClimateYearsDTO]:

@@ -52,15 +52,14 @@ async def main():
         items = location_climate_years_from_crop_yield_data[
             processed : processed + STEP
         ]
-        await asyncio.gather(
-            *[
-                past_climate_data_repository.download_past_climate_data_for_years(
-                    location_id=location_climate_years.location_id,
-                    years=list(location_climate_years.years),
-                )
-                for location_climate_years in items
-            ]
-        )
+        coroutines = [
+            past_climate_data_repository.download_past_climate_data_for_years(
+                location_id=location_climate_years.location_id,
+                years=list(location_climate_years.years),
+            )
+            for location_climate_years in items
+        ]
+        await asyncio.gather(*coroutines)
 
 
 if __name__ == "__main__":

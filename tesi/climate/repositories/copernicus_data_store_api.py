@@ -209,8 +209,6 @@ class CopernicusDataStoreAPI:
         on_save_chunk: Callable[[pd.DataFrame], None],
     ):
 
-        result_df = pd.DataFrame()
-
         tmp_dir = "./tmp/global_climate_data"
         os.makedirs(tmp_dir, exist_ok=True)
 
@@ -223,7 +221,9 @@ class CopernicusDataStoreAPI:
         while processed < len(_years):
             years_to_fetch = _years[processed : processed + STEP]
 
-            logging.info(f"Getting data for years {years_to_fetch} and coordinates ({longitude} {latitude})")
+            logging.info(
+                f"Getting data for years {years_to_fetch} and coordinates ({longitude} {latitude})"
+            )
             tmp_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
             self.cds_client.retrieve(
                 name="reanalysis-era5-single-levels-monthly-means",
@@ -249,7 +249,9 @@ class CopernicusDataStoreAPI:
                 source_file_path=tmp_file_path, limit=None
             )
 
-            tmp_df.to_csv(f"past_climate_data_{datetime.now(tz=timezone.utc).isoformat()}.csv")
+            tmp_df.to_csv(
+                f"past_climate_data_{datetime.now(tz=timezone.utc).isoformat()}.csv"
+            )
 
             if "expver" in tmp_df.columns:
                 tmp_df = common.merge_by_expver(tmp_df)
@@ -258,8 +260,8 @@ class CopernicusDataStoreAPI:
                 df=tmp_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
             )
             on_save_chunk(tmp_df)
+            processed += len(years_to_fetch)
 
-            print(tmp_df)
             os.remove(tmp_file_path)
 
         if os.path.exists(tmp_dir):
