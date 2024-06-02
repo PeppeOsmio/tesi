@@ -47,9 +47,6 @@ async def main():
         for tmp in location_climate_years_from_past_climate_data:
             if location_climate_years.location_id == tmp.location_id:
                 location_climate_years.years = location_climate_years.years - tmp.years
-                logging.info(
-                    f"{location_climate_years.location_id} {location_climate_years.years}"
-                )
                 break
 
     location_climate_years_to_fetch: list[LocationClimateYearsDTO] = [item for item in location_climate_years_from_crop_yield_data if len(item.years) > 0 ]
