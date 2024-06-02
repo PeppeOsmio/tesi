@@ -56,22 +56,28 @@ async def main():
         logging.info(f"{item.location_id} {item.years}")
 
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
+    processed = 0
 
     async def worker(
         semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
     ):
         async with semaphore:
-            await past_climate_data_repository.download_past_climate_data_for_years(
-                location_id=location_climate_years.location_id,
-                years=list(location_climate_years.years),
-            )
+            # await past_climate_data_repository.download_past_climate_data_for_years(
+            #     location_id=location_climate_years.location_id,
+            #     years=list(location_climate_years.years),
+            # )
+            await asyncio.sleep(3)
+            logging.info(f"COMPLETED: {processed}/{len(location_climate_years_from_crop_yield_data)}")
 
-    await asyncio.gather(
-        *[
+    for task in asyncio.as_completed(
+        [
             worker(semaphore=semaphore, location_climate_years=location_climate_years)
             for location_climate_years in location_climate_years_from_crop_yield_data
         ]
-    )
+    ):
+        await task
+        processed += 1
+        logging.info(f"COMPLETED: {processed}/{len(location_climate_years_from_crop_yield_data)}")
 
 
 if __name__ == "__main__":
