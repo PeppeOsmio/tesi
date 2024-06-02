@@ -20,7 +20,9 @@ async def main():
     location_repository = get_location_repository(session_maker=session_maker)
     cds_api = get_cds_api()
     past_climate_data_repository = get_past_climate_data_repository(
-        session_maker=session_maker, cds_api=cds_api, location_repository=location_repository
+        session_maker=session_maker,
+        cds_api=cds_api,
+        location_repository=location_repository,
     )
     crop_repository = get_crop_repository(session_maker=session_maker)
 
@@ -53,20 +55,12 @@ async def main():
             processed : processed + STEP
         ]
 
-        async def coro(id: int, location_id: UUID, years: list[int]):
-            logging.info(f"Running coro {id}")
-            await past_climate_data_repository.download_past_climate_data_for_years(
-                location_id=location_id,
-                years=years,
-            )
-
         coroutines = [
-            coro(
-                id=i,
+            past_climate_data_repository.download_past_climate_data_for_years(
                 location_id=location_climate_years.location_id,
                 years=list(location_climate_years.years),
             )
-            for i, location_climate_years in enumerate(items)
+            for location_climate_years in items
         ]
         await asyncio.gather(*coroutines)
 
