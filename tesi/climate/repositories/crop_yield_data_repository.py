@@ -11,7 +11,7 @@ import requests
 from sqlalchemy import delete, insert, select
 from tesi.climate.dtos import CropDTO, LocationClimateYearsDTO
 from tesi.climate.models import Crop, CropYieldData
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from tesi.climate.repositories.crop_repository import CropRepository
 from tesi.climate.repositories.location_repository import LocationRepository
@@ -100,11 +100,11 @@ columns_to_include: dict[str, str] = {
 class CropYieldDataRepository:
     def __init__(
         self,
-        db_session: AsyncSession,
+        session_maker: async_sessionmaker[AsyncSession],
         crop_repository: CropRepository,
         location_repository: LocationRepository,
     ) -> None:
-        self.db_session = db_session
+        self.session_maker = session_maker
         self.crop_repository = crop_repository
         self.location_repository = location_repository
 
@@ -158,7 +158,7 @@ class CropYieldDataRepository:
                 executor=pool, func=self.__download_crops_yield_data
             )
 
-        async with self.db_session as session:
+        async with self.session_maker() as session:
 
             logging.info("Checking crops to create")
             crop_names_to_ids: dict[str, uuid.UUID] = {}
@@ -235,7 +235,7 @@ class CropYieldDataRepository:
             await session.commit()
 
     async def get_crop_by_name(self, name: str) -> CropDTO | None:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(Crop).where(Crop.name == name)
             crop = await session.scalar(stmt)
         if crop is None:
@@ -245,12 +245,20 @@ class CropYieldDataRepository:
     async def get_unique_location_climate_years(
         self,
     ) -> list[LocationClimateYearsDTO]:
-        async with self.db_session as session:
-            stmt = select(
-                CropYieldData.location_id,
-                CropYieldData.sowing_year,
-                CropYieldData.harvest_year,
-            ).distinct()
+        async with self.session_maker() as session:
+            stmt = (
+                select(
+                    CropYieldData.location_id,
+                    CropYieldData.sowing_year,
+                    CropYieldData.harvest_year,
+                )
+                .order_by(
+                    CropYieldData.location_id,
+                    CropYieldData.sowing_year,
+                    CropYieldData.harvest_year,
+                )
+                .distinct()
+            )
             results = list(await session.execute(stmt))
 
         location_id_to_years_dict: dict[uuid.UUID, set[int]] = {}

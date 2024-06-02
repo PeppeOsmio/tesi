@@ -1,6 +1,6 @@
 from typing import Annotated
 from uuid import UUID
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from fastapi import Depends
 
 from tesi.climate.repositories.crop_repository import CropRepository
@@ -13,30 +13,30 @@ from tesi.climate.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
 )
 from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
-from tesi.database.di import get_db_session
+from tesi.database.di import get_session_maker
 
 
 def get_location_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
 ) -> LocationRepository:
-    return LocationRepository(db_session=db_session)
+    return LocationRepository(session_maker=session_maker)
 
 
 def get_crop_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)]
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
 ) -> CropRepository:
-    return CropRepository(db_session=db_session)
+    return CropRepository(session_maker=session_maker)
 
 
 def get_crop_yield_data_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
     crop_repository: Annotated[CropRepository, Depends(get_crop_repository)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
     ],
 ) -> CropYieldDataRepository:
     return CropYieldDataRepository(
-        db_session=db_session,
+        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
     )
@@ -49,21 +49,21 @@ def get_cds_api() -> CopernicusDataStoreAPI:
 
 
 def get_past_climate_data_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
     cds_api: Annotated[CopernicusDataStoreAPI, get_cds_api],
     location_repository: Annotated[LocationRepository, get_location_repository],
 ) -> PastClimateDataRepository:
     return PastClimateDataRepository(
-        db_session=db_session,
+        session_maker=session_maker,
         copernicus_data_store_api=cds_api,
         location_repository=location_repository,
     )
 
 
 def get_future_climate_data_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
     cds_api: Annotated[CopernicusDataStoreAPI, get_cds_api],
 ) -> FutureClimateDataRepository:
     return FutureClimateDataRepository(
-        db_session=db_session, copernicus_data_store_api=cds_api
+        session_maker=session_maker, copernicus_data_store_api=cds_api
     )

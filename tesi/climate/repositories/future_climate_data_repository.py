@@ -8,7 +8,7 @@ import pandas as pd
 from sqlalchemy import delete, func, insert, select
 from tesi.climate.dtos import FutureClimateDataDTO
 from tesi.climate.models import FutureClimateData
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from geoalchemy2.functions import ST_Distance
 from typing import Any, cast
 import sqlalchemy
@@ -19,10 +19,10 @@ from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataSt
 class FutureClimateDataRepository:
     def __init__(
         self,
-        db_session: AsyncSession,
+        session_maker: async_sessionmaker[AsyncSession],
         copernicus_data_store_api: CopernicusDataStoreAPI,
     ) -> None:
-        self.db_session = db_session
+        self.session_maker = session_maker
         self.copernicus_data_store_api = copernicus_data_store_api
 
     async def download_future_climate_data(self):
@@ -40,7 +40,7 @@ class FutureClimateDataRepository:
                 executor=pool, func=download_func
             )
 
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = delete(FutureClimateData)
             await session.execute(stmt)
             processed = 0
@@ -79,7 +79,7 @@ class FutureClimateDataRepository:
         logging.info(f"Saved {processed} future climate data")
 
     async def did_download_future_climate_data(self) -> bool:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(FutureClimateData.year).limit(1)
             result = await session.scalar(stmt)
         return result is not None
@@ -88,7 +88,7 @@ class FutureClimateDataRepository:
         self, longitude: float, latitude: float
     ) -> list[FutureClimateDataDTO]:
         point_well_known_text = f"POINT({longitude} {latitude})"
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 select(
                     FutureClimateData,

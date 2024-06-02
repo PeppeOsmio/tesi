@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import logging
 import os
 import random
-from typing import Callable
+from typing import Any, Callable
 import cdsapi
 import zipfile
 import pandas as pd

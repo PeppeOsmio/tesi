@@ -5,26 +5,25 @@ from tesi.climate.di import (
     get_cds_api,
     get_crop_repository,
     get_crop_yield_data_repository,
-    get_future_climate_data_repository,
     get_location_repository,
 )
-from tesi.database.di import get_db_session
+from tesi.database.di import get_session_maker
 
 
 async def main():
 
     logging.basicConfig(level=logging.INFO)
 
-    db_session = await get_db_session()
+    session_maker = get_session_maker()
 
     cds_api = get_cds_api()
 
-    location_repository = get_location_repository(db_session=db_session)
+    location_repository = get_location_repository(session_maker=session_maker)
 
-    crop_repository = get_crop_repository(db_session=db_session)
+    crop_repository = get_crop_repository(session_maker=session_maker)
 
     crop_yield_data_repository = get_crop_yield_data_repository(
-        db_session=db_session,
+        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
     )

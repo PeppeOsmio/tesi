@@ -8,7 +8,7 @@ import pandas as pd
 from sqlalchemy import delete, insert, select
 from tesi.climate.dtos import LocationClimateYearsDTO, PastClimateDataDTO
 from tesi.climate.models import PastClimateData
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
 from tesi.climate.repositories.location_repository import LocationRepository
 from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
@@ -17,18 +17,18 @@ from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataSt
 class PastClimateDataRepository:
     def __init__(
         self,
-        db_session: AsyncSession,
+        session_maker: async_sessionmaker[AsyncSession],
         copernicus_data_store_api: CopernicusDataStoreAPI,
         location_repository: LocationRepository,
     ) -> None:
-        self.db_session = db_session
+        self.session_maker = session_maker
         self.copernicus_data_store_api = copernicus_data_store_api
         self.location_repository = location_repository
 
     async def get_last_past_climate_data(
         self, location_id: UUID
     ) -> PastClimateDataDTO | None:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 select(PastClimateData)
                 .where(PastClimateData.location_id == location_id)
@@ -121,7 +121,7 @@ class PastClimateDataRepository:
     ):
         if len(past_climate_data_df) == 0:
             return
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             STEP = 100
             PROCESSED = 0
             is_first_row = True
@@ -183,7 +183,7 @@ class PastClimateDataRepository:
     async def get_past_climate_data_for_location(
         self, location_id: UUID
     ) -> list[PastClimateDataDTO]:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(
                 PastClimateData,
             ).where(PastClimateData.location_id == location_id)
@@ -195,7 +195,7 @@ class PastClimateDataRepository:
     async def get_past_climate_data_of_location_of_previous_12_months(
         self, location_id: UUID
     ) -> list[PastClimateDataDTO]:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 select(
                     PastClimateData,
@@ -217,11 +217,15 @@ class PastClimateDataRepository:
     async def get_unique_location_climate_years(
         self,
     ) -> list[LocationClimateYearsDTO]:
-        async with self.db_session as session:
-            stmt = select(
-                PastClimateData.location_id,
-                PastClimateData.year,
-            ).distinct()
+        async with self.session_maker() as session:
+            stmt = (
+                select(
+                    PastClimateData.location_id,
+                    PastClimateData.year,
+                )
+                .order_by(PastClimateData.location_id, PastClimateData.year)
+                .distinct()
+            )
             results = list(await session.execute(stmt))
 
         location_id_to_years_dict: dict[uuid.UUID, set[int]] = {}

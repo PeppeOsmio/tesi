@@ -3,20 +3,20 @@ import uuid
 from sqlalchemy import insert, select
 from tesi.climate.dtos import CropDTO
 from tesi.climate.models import Crop
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 
 class CropRepository:
     def __init__(
         self,
-        db_session: AsyncSession,
+        session_maker: async_sessionmaker[AsyncSession],
     ) -> None:
-        self.db_session = db_session
+        self.session_maker = session_maker
 
     async def create_crop(self, name: str) -> CropDTO:
         crop_id = uuid.uuid4()
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = insert(Crop).values(
                 [{"id": crop_id, "name": name, "created_at": now}]
             )
@@ -25,7 +25,7 @@ class CropRepository:
         return CropDTO(id=crop_id, name=name, created_at=now)
 
     async def get_crop_by_name(self, name: str) -> CropDTO | None:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(Crop).where(Crop.name == name)
             crop = await session.scalar(stmt)
         if crop is None:
