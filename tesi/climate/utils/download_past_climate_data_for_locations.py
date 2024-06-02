@@ -59,6 +59,7 @@ async def main():
 
     semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
     processed = 0
+    logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
 
     async def worker(
         semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
