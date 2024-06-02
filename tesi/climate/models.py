@@ -76,6 +76,10 @@ class PastClimateData(Base):
 
     location: Mapped[Location] = relationship()
 
+    __table_args__ = (
+        UniqueConstraint("location_id", "year", "month", name="_location_id_year_month_uc"),
+    )
+
 
 class FutureClimateData(Base):
     __tablename__ = "future_climate_data"
@@ -99,3 +103,7 @@ class FutureClimateData(Base):
     surface_pressure: Mapped[float]
     surface_solar_radiation_downwards: Mapped[float]
     surface_thermal_radiation_downwards: Mapped[float]
+
+    __table_args__ = (
+        UniqueConstraint("longitude", "latitude", "year", "month", name="_longitude_latitude_year_month_uc"),
+    )

@@ -10,11 +10,12 @@ from tesi.climate.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
+from tesi.climate.dtos import LocationClimateYearsDTO
 from tesi.database.di import get_session_maker
 
 
 async def main():
-    logging.basicConfig(level=logging.INFO)
+    CONCURRENT_REQUESTS = 5
 
     session_maker = get_session_maker()
     location_repository = get_location_repository(session_maker=session_maker)
@@ -44,29 +45,35 @@ async def main():
 
     for location_climate_years in location_climate_years_from_crop_yield_data:
         for tmp in location_climate_years_from_past_climate_data:
-            if location_climate_years.location_id == tmp:
+            if location_climate_years.location_id == tmp.location_id:
                 location_climate_years.years = location_climate_years.years - tmp.years
+                logging.info(
+                    f"{location_climate_years.location_id} {location_climate_years.years}"
+                )
                 break
 
-    STEP = 5
-    processed = 0
-    while processed < len(location_climate_years_from_crop_yield_data):
-        items = location_climate_years_from_crop_yield_data[
-            processed : processed + STEP
-        ]
-        logging.info(
-            f"Downloading for locations {[str(item.location_id) for item in items]}"
-        )
-        coroutines = [
-            past_climate_data_repository.download_past_climate_data_for_years(
+    for item in location_climate_years_from_crop_yield_data:
+        logging.info(f"{item.location_id} {item.years}")
+
+    semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
+
+    async def worker(
+        semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
+    ):
+        async with semaphore:
+            await past_climate_data_repository.download_past_climate_data_for_years(
                 location_id=location_climate_years.location_id,
                 years=list(location_climate_years.years),
             )
-            for location_climate_years in items
+
+    await asyncio.gather(
+        *[
+            worker(semaphore=semaphore, location_climate_years=location_climate_years)
+            for location_climate_years in location_climate_years_from_crop_yield_data
         ]
-        await asyncio.gather(*coroutines)
-        processed += len(items)
+    )
 
 
 if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
     asyncio.run(main())
