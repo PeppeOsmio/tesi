@@ -1,6 +1,7 @@
 import asyncio
 import logging
 
+from tesi import logging_conf
 from tesi.climate.di import (
     get_cds_api,
     get_crop_repository,
@@ -32,5 +33,5 @@ async def main():
 
 
 if __name__ == "__main__":
-    logging.basicConfig(level=logging.INFO)
+    logging_conf.create_logger(config=logging_conf.get_default_conf())
     asyncio.run(main())
