@@ -14,6 +14,8 @@ from tesi.zappai.repositories.dtos import ClimateDataDTO
 from tesi.database.di import get_session_maker
 from tesi.zappai.utils import common
 
+import traceback
+
 
 async def main():
     logging.basicConfig(level=logging.INFO)
@@ -38,9 +40,15 @@ async def main():
             latitude=common.EXAMPLE_LATITUDE,
         )
 
-    await past_climate_data_repository.download_new_past_climate_data(
-        location_id=location.id
-    )
+    while True:
+        try:
+            await past_climate_data_repository.download_new_past_climate_data(
+                location_id=location.id
+            )
+            break
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            logging.info("Failed to fetch past climate data, retrying...")
 
 
 if __name__ == "__main__":

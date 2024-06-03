@@ -2,12 +2,14 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
+from uuid import UUID
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
+from tesi.zappai.exceptions import LocationNotFoundError
 from tesi.zappai.repositories.dtos import FutureClimateDataDTO, ClimateDataDTO
 from tesi.zappai.repositories import copernicus_data_store_api
 from tesi.zappai.di import (
@@ -16,6 +18,13 @@ from tesi.zappai.di import (
     get_cds_api,
     get_past_climate_data_repository,
     get_future_climate_data_repository,
+)
+from tesi.zappai.repositories.future_climate_data_repository import (
+    FutureClimateDataRepository,
+)
+from tesi.zappai.repositories.location_repository import LocationRepository
+from tesi.zappai.repositories.past_climate_data_repository import (
+    PastClimateDataRepository,
 )
 from tesi.zappai.utils import common
 import joblib
@@ -92,7 +101,12 @@ def train_model(
     return model, x_scaler, y_scaler
 
 
-async def main():
+async def create_and_train_climate_generative_model_for_location(
+    location_repository: LocationRepository,
+    past_climate_data_repository: PastClimateDataRepository,
+    future_climate_data_repository: FutureClimateDataRepository,
+    location_id: UUID,
+):
     # Load and preprocess data
 
     target = list(
@@ -101,33 +115,12 @@ async def main():
     )
     features = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
 
-    session_maker = get_session_maker()
-    cds_api = get_cds_api()
-    location_repository = get_location_repository(session_maker=session_maker)
-    past_climate_data_repository = get_past_climate_data_repository(
-        session_maker=session_maker,
-        cds_api=cds_api,
-        location_repository=location_repository,
-    )
-    future_climate_data_repository = get_future_climate_data_repository(
-        session_maker=session_maker, cds_api=cds_api
-    )
-
-    location = await location_repository.get_location_by_country_and_name(
-        country=common.EXAMPLE_LOCATION_COUNTRY, name=common.EXAMPLE_LOCATION_NAME
-    )
+    location = await location_repository.get_location_by_id(location_id=location_id)
     if location is None:
-        location = await location_repository.create_location(
-            country=common.EXAMPLE_LOCATION_COUNTRY,
-            name=common.EXAMPLE_LOCATION_NAME,
-            longitude=common.EXAMPLE_LONGITUDE,
-            latitude=common.EXAMPLE_LATITUDE,
-        )
+        raise LocationNotFoundError()
 
-    new_past_climate_data_df = (
-        await past_climate_data_repository.download_new_past_climate_data(
-            location_id=location.id
-        )
+    await past_climate_data_repository.download_new_past_climate_data(
+        location_id=location.id
     )
 
     past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
@@ -194,6 +187,40 @@ async def main():
         x_scaler, generated_combined
     )
     print(generated_data_original)
+
+
+async def main():
+    # Load and preprocess data
+
+    session_maker = get_session_maker()
+    cds_api = get_cds_api()
+    location_repository = get_location_repository(session_maker=session_maker)
+    past_climate_data_repository = get_past_climate_data_repository(
+        session_maker=session_maker,
+        cds_api=cds_api,
+        location_repository=location_repository,
+    )
+    future_climate_data_repository = get_future_climate_data_repository(
+        session_maker=session_maker, cds_api=cds_api
+    )
+
+    location = await location_repository.get_location_by_country_and_name(
+        country=common.EXAMPLE_LOCATION_COUNTRY, name=common.EXAMPLE_LOCATION_NAME
+    )
+    if location is None:
+        location = await location_repository.create_location(
+            country=common.EXAMPLE_LOCATION_COUNTRY,
+            name=common.EXAMPLE_LOCATION_NAME,
+            longitude=common.EXAMPLE_LONGITUDE,
+            latitude=common.EXAMPLE_LATITUDE,
+        ) 
+
+    await create_and_train_climate_generative_model_for_location(
+        location_repository=location_repository,
+        past_climate_data_repository=past_climate_data_repository,
+        future_climate_data_repository=future_climate_data_repository,
+        location_id=location.id,
+    )
 
 
 if __name__ == "__main__":

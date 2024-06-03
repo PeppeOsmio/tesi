@@ -82,9 +82,11 @@ class PastClimateDataRepository:
             max_year = last_climate_data.year
             max_month = last_climate_data.month
 
-            year_from = cast(int, max_year)
+            year_from = max_year
+            month_from = max_month + 1
             if max_month == 12:
                 year_from += 1
+                month_from = 1
 
         location = await self.location_repository.get_location_by_id(location_id)
 
@@ -110,6 +112,7 @@ class PastClimateDataRepository:
 
                 self.copernicus_data_store_api.get_past_climate_data(
                     year_from=year_from,
+                    month_from=month_from,
                     longitude=location.longitude,
                     latitude=location.latitude,
                     on_save_chunk=on_save_chunk,

@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import traceback
 
 from tesi import logging_conf
 from tesi.zappai.di import get_cds_api, get_future_climate_data_repository
@@ -18,7 +19,14 @@ async def main():
         session_maker=session_maker, cds_api=cds_api
     )
 
-    await future_climate_data_repository.download_future_climate_data()
+    
+    while True:
+        try:
+            await future_climate_data_repository.download_future_climate_data()
+            break
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            logging.info("Failed to fetch past climate data, retrying...")
 
 
 if __name__ == "__main__":

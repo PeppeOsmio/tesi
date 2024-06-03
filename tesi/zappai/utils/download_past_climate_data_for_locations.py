@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import traceback
 from typing import Iterable
 from uuid import UUID
 
@@ -64,10 +65,17 @@ async def main():
         semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
     ):
         async with semaphore:
-            await past_climate_data_repository.download_past_climate_data_for_years(
-                location_id=location_climate_years.location_id,
-                years=list(location_climate_years.years),
-            )
+
+            while True:
+                try:
+                    await past_climate_data_repository.download_past_climate_data_for_years(
+                        location_id=location_climate_years.location_id,
+                        years=list(location_climate_years.years),
+                    )
+                    break
+                except Exception as e:
+                    logging.error(traceback.format_exc())
+                    logging.info("Failed to fetch past climate data, retrying...")
 
     for task in asyncio.as_completed(
         [

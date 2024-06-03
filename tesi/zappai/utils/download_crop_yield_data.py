@@ -1,5 +1,6 @@
 import asyncio
 import logging
+import traceback
 
 from tesi import logging_conf
 from tesi.zappai.di import (
@@ -24,7 +25,13 @@ async def main():
         location_repository=location_repository,
     )
 
-    await crop_yield_data_repository.download_crop_yield_data()
+    while True:
+        try:
+            await crop_yield_data_repository.download_crop_yield_data()
+            break
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            logging.info("Failed to fetch past climate data, retrying...")
 
 
 if __name__ == "__main__":

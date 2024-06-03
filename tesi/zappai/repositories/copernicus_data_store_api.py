@@ -267,16 +267,20 @@ class CopernicusDataStoreAPI:
     def get_past_climate_data(
         self,
         year_from: int | None,
+        month_from: int | None,
         longitude: float,
         latitude: float,
         on_save_chunk: Callable[[pd.DataFrame], None],
     ):
 
         _year_from = year_from if year_from is not None else 1940
+        _month_from = month_from if month_from is not None else 1
 
         now = datetime.now(tz=timezone.utc)
 
         if _year_from > now.year:
+            return
+        if _month_from >= now.month:
             return
 
         years = list(range(_year_from, now.year + 1))
