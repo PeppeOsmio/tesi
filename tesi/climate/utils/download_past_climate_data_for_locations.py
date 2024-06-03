@@ -16,7 +16,7 @@ from tesi.database.di import get_session_maker
 
 
 async def main():
-    CONCURRENT_REQUESTS = 5
+    CONCURRENT_REQUESTS = 1
 
     session_maker = get_session_maker()
     location_repository = get_location_repository(session_maker=session_maker)
