@@ -3,13 +3,13 @@ import logging
 
 import pandas as pd
 
-from tesi.climate.di import (
+from tesi.zappai.di import (
     get_cds_api,
     get_location_repository,
     get_past_climate_data_repository,
 )
 from tesi.database.di import get_db_session
-from tesi.climate.utils import common
+from tesi.zappai.utils import common
 
 
 async def main():

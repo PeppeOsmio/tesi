@@ -76,7 +76,7 @@ class FutureClimateDataDTO:
 
 
 @dataclass
-class PastClimateDataDTO:
+class ClimateDataDTO:
     location_id: UUID
     year: int
     month: int
@@ -100,7 +100,7 @@ class PastClimateDataDTO:
     volumetric_soil_water_layer_1: float
 
     @staticmethod
-    def from_list_to_dataframe(lst: list[PastClimateDataDTO]) -> pd.DataFrame:
+    def from_list_to_dataframe(lst: list[ClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([item.__dict__ for item in lst])
         df = df.rename(
             columns={
@@ -113,7 +113,7 @@ class PastClimateDataDTO:
         return df
 
     @staticmethod
-    def from_dataframe_to_list(df: pd.DataFrame) -> list[PastClimateDataDTO]:
+    def from_dataframe_to_list(df: pd.DataFrame) -> list[ClimateDataDTO]:
         tmp_df = df.rename(
             columns={
                 "10m_u_component_of_wind": "u_component_of_wind_10m",
@@ -122,8 +122,8 @@ class PastClimateDataDTO:
                 "2m_dewpoint_temperature": "dewpoint_temperature_2m",
             },
         )
-        result: list[PastClimateDataDTO] = []
+        result: list[ClimateDataDTO] = []
         for index, row in tmp_df.iterrows():
             year, month = cast(pd.MultiIndex, index)
-            result.append(PastClimateDataDTO(year=year, month=month, **row.to_dict()))
+            result.append(ClimateDataDTO(year=year, month=month, **row.to_dict()))
         return result

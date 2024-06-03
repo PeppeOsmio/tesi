@@ -1,4 +1,5 @@
 import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
 import numpy as np
@@ -7,14 +8,20 @@ from sklearn.preprocessing import MinMaxScaler
 from keras.src.layers import LSTM, Dense
 from keras.src.models import Sequential
 from sklearn.model_selection import train_test_split
-from tesi.climate.dtos import FutureClimateDataDTO, PastClimateDataDTO
-from tesi.climate.repositories import copernicus_data_store_api
-from tesi.climate.di import (
-    get_db_session,
+from tesi.zappai.repositories.dtos import FutureClimateDataDTO, ClimateDataDTO
+from tesi.zappai.repositories import copernicus_data_store_api
+from tesi.zappai.di import (
+    get_location_repository,
+    get_session_maker,
     get_cds_api,
     get_past_climate_data_repository,
     get_future_climate_data_repository,
 )
+from tesi.zappai.utils import common
+import joblib
+
+CLIMATE_GENERATIVE_MODEL_FILEPATH = "ml_models/climate_generative_model.pkl"
+CLIMATE_X_SCALER_FILEPATH = "ml_models/climate_x_scaler.pkl"
 
 
 def inverse_transform_generated_data(scaler, data):
@@ -88,53 +95,46 @@ def train_model(
 async def main():
     # Load and preprocess data
 
-    TARANTO_LONGITUDE, TARANTO_LATITUDE = 40.484638, 17.225732
-
     target = list(
         copernicus_data_store_api.ERA5_RESULT_COLUMNS
         - copernicus_data_store_api.CMIP5_RESULT_COLUMNS
     )
     features = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
 
-    db_session = await get_db_session()
-
+    session_maker = get_session_maker()
     cds_api = get_cds_api()
-
+    location_repository = get_location_repository(session_maker=session_maker)
     past_climate_data_repository = get_past_climate_data_repository(
-        db_session=db_session, cds_api=cds_api
+        session_maker=session_maker,
+        cds_api=cds_api,
+        location_repository=location_repository,
     )
+    future_climate_data_repository = get_future_climate_data_repository(
+        session_maker=session_maker, cds_api=cds_api
+    )
+
+    location = await location_repository.get_location_by_country_and_name(
+        country=common.EXAMPLE_LOCATION_COUNTRY, name=common.EXAMPLE_LOCATION_NAME
+    )
+    if location is None:
+        location = await location_repository.create_location(
+            country=common.EXAMPLE_LOCATION_COUNTRY,
+            name=common.EXAMPLE_LOCATION_NAME,
+            longitude=common.EXAMPLE_LONGITUDE,
+            latitude=common.EXAMPLE_LATITUDE,
+        )
+
     new_past_climate_data_df = (
         await past_climate_data_repository.download_new_past_climate_data(
-            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE, cache=True
+            location_id=location.id
         )
     )
-    if len(new_past_climate_data_df) > 0:
-        await past_climate_data_repository.save_past_climate_data(
-            new_past_climate_data_df
-        )
-    else:
-        logging.info(f"No new past climate data to download")
 
-    past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
+    past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
         await past_climate_data_repository.get_past_climate_data_for_location(
-            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+            location_id=location.id
         )
     )
-
-    future_climate_data_repository = get_future_climate_data_repository(
-        db_session=db_session, cds_api=cds_api
-    )
-
-    if await future_climate_data_repository.did_download_future_climate_data():
-        whole_future_climate_data_df = (
-            await future_climate_data_repository.download_future_climate_data(
-                cache=True
-            )
-        )
-        await future_climate_data_repository.save_future_climate_data(
-            whole_future_climate_data_df
-        )
-        whole_future_climate_data_df = None
 
     SEQ_LENGTH = 12
 
@@ -148,9 +148,17 @@ async def main():
         seq_length=SEQ_LENGTH,
     )
 
-    seed_data = PastClimateDataDTO.from_list_to_dataframe(
+    def dump_func():
+        joblib.dump(value=x_scaler, filename=CLIMATE_X_SCALER_FILEPATH)
+        joblib.dump(value=model, filename=CLIMATE_GENERATIVE_MODEL_FILEPATH)
+
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor() as pool:
+        loop.run_in_executor(executor=pool, func=dump_func)
+
+    seed_data = ClimateDataDTO.from_list_to_dataframe(
         await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
-            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+            location_id=location.id
         )
     )
 
@@ -161,7 +169,7 @@ async def main():
 
     future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
         await future_climate_data_repository.get_future_climate_data_for_coordinates(
-            longitude=TARANTO_LONGITUDE, latitude=TARANTO_LATITUDE
+            longitude=common.EXAMPLE_LONGITUDE, latitude=common.EXAMPLE_LATITUDE
         )
     )
     print(future_climate_data_df)

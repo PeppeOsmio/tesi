@@ -5,14 +5,14 @@ from typing import cast
 import pandas as pd
 
 from tesi import logging_conf
-from tesi.climate.di import (
+from tesi.zappai.di import (
     get_cds_api,
     get_location_repository,
     get_past_climate_data_repository,
 )
-from tesi.climate.dtos import PastClimateDataDTO
+from tesi.zappai.repositories.dtos import ClimateDataDTO
 from tesi.database.di import get_session_maker
-from tesi.climate.utils import common
+from tesi.zappai.utils import common
 
 
 async def main():

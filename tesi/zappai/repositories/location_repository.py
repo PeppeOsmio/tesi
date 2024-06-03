@@ -2,8 +2,8 @@ from datetime import datetime, timezone
 from uuid import UUID
 import uuid
 from sqlalchemy import delete, insert, select
-from tesi.climate.dtos import LocationDTO
-from tesi.climate.models import Location
+from tesi.zappai.repositories.dtos import LocationDTO
+from tesi.zappai.models import Location
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 

@@ -7,12 +7,12 @@ import uuid
 import pandas as pd
 from sqlalchemy import delete, desc, insert, select
 import sqlalchemy
-from tesi.climate.dtos import LocationClimateYearsDTO, PastClimateDataDTO
-from tesi.climate.models import PastClimateData
+from tesi.zappai.repositories.dtos import LocationClimateYearsDTO, ClimateDataDTO
+from tesi.zappai.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
-from tesi.climate.repositories.location_repository import LocationRepository
-from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.zappai.repositories.location_repository import LocationRepository
+from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 
 
 class PastClimateDataRepository:
@@ -28,7 +28,7 @@ class PastClimateDataRepository:
 
     async def get_last_past_climate_data(
         self, location_id: UUID
-    ) -> PastClimateDataDTO | None:
+    ) -> ClimateDataDTO | None:
         async with self.session_maker() as session:
             stmt = (
                 select(PastClimateData)
@@ -183,7 +183,7 @@ class PastClimateDataRepository:
 
     async def get_past_climate_data_for_location(
         self, location_id: UUID
-    ) -> list[PastClimateDataDTO]:
+    ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = select(
                 PastClimateData,
@@ -195,7 +195,7 @@ class PastClimateDataRepository:
 
     async def get_past_climate_data_of_location_of_previous_12_months(
         self, location_id: UUID
-    ) -> list[PastClimateDataDTO]:
+    ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = (
                 select(
@@ -243,8 +243,8 @@ class PastClimateDataRepository:
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData
-    ) -> PastClimateDataDTO:
-        return PastClimateDataDTO(
+    ) -> ClimateDataDTO:
+        return ClimateDataDTO(
             location_id=past_climate_data.location_id,
             year=past_climate_data.year,
             month=past_climate_data.month,

@@ -6,14 +6,14 @@ import uuid
 from geoalchemy2 import Geography
 import pandas as pd
 from sqlalchemy import asc, delete, func, insert, select
-from tesi.climate.dtos import FutureClimateDataDTO
-from tesi.climate.models import FutureClimateData
+from tesi.zappai.repositories.dtos import FutureClimateDataDTO
+from tesi.zappai.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from geoalchemy2.functions import ST_Distance
 from typing import Any, cast
 import sqlalchemy
-from tesi.climate.utils.common import coordinates_to_well_known_text
-from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.zappai.utils.common import coordinates_to_well_known_text
+from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 
 
 class FutureClimateDataRepository:

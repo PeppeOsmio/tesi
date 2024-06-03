@@ -9,12 +9,12 @@ import uuid
 import pandas as pd
 import requests
 from sqlalchemy import delete, insert, select
-from tesi.climate.dtos import CropDTO, LocationClimateYearsDTO
-from tesi.climate.models import Crop, CropYieldData
+from tesi.zappai.repositories.dtos import CropDTO, LocationClimateYearsDTO
+from tesi.zappai.models import Crop, CropYieldData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
-from tesi.climate.repositories.crop_repository import CropRepository
-from tesi.climate.repositories.location_repository import LocationRepository
+from tesi.zappai.repositories.crop_repository import CropRepository
+from tesi.zappai.repositories.location_repository import LocationRepository
 
 all_columns = [
     "Author",

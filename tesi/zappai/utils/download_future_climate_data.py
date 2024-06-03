@@ -2,7 +2,7 @@ import asyncio
 import logging
 
 from tesi import logging_conf
-from tesi.climate.di import get_cds_api, get_future_climate_data_repository
+from tesi.zappai.di import get_cds_api, get_future_climate_data_repository
 from tesi.database.di import get_session_maker
 
 

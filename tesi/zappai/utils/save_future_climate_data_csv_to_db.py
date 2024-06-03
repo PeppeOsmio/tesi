@@ -2,7 +2,7 @@ import asyncio
 
 import pandas as pd
 
-from tesi.climate.di import get_cds_api, get_future_climate_data_repository
+from tesi.zappai.di import get_cds_api, get_future_climate_data_repository
 from tesi.database.di import get_db_session
 
 

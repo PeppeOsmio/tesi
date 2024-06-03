@@ -1,7 +1,7 @@
 import argparse
 from typing import cast
 
-from tesi.climate.utils.common import convert_nc_file_to_dataframe
+from tesi.zappai.utils.common import convert_nc_file_to_dataframe
 
 if __name__ == "__main__":
     # Create the ArgumentParser object

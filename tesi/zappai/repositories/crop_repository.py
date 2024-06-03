@@ -1,8 +1,8 @@
 from datetime import datetime, timezone
 import uuid
 from sqlalchemy import insert, select
-from tesi.climate.dtos import CropDTO
-from tesi.climate.models import Crop
+from tesi.zappai.repositories.dtos import CropDTO
+from tesi.zappai.models import Crop
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 

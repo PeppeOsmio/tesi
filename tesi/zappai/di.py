@@ -3,16 +3,16 @@ from uuid import UUID
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from fastapi import Depends
 
-from tesi.climate.repositories.crop_repository import CropRepository
-from tesi.climate.repositories.crop_yield_data_repository import CropYieldDataRepository
-from tesi.climate.repositories.future_climate_data_repository import (
+from tesi.zappai.repositories.crop_repository import CropRepository
+from tesi.zappai.repositories.crop_yield_data_repository import CropYieldDataRepository
+from tesi.zappai.repositories.future_climate_data_repository import (
     FutureClimateDataRepository,
 )
-from tesi.climate.repositories.location_repository import LocationRepository
-from tesi.climate.repositories.past_climate_data_repository import (
+from tesi.zappai.repositories.location_repository import LocationRepository
+from tesi.zappai.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
 )
-from tesi.climate.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 from tesi.database.di import get_session_maker
 
 

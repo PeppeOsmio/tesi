@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     db_host: str = ""
     db_port: str = ""
     db_type: Literal["sqlite", "postgresql", "mariadb", "mysql"] = "sqlite"
-    db_name: str = "allreports.db"
+    db_name: str = "tesi.db"
     db_user: str = ""
     db_password: str = ""
 

@@ -4,14 +4,14 @@ from typing import Iterable
 from uuid import UUID
 
 from tesi import logging_conf
-from tesi.climate.di import (
+from tesi.zappai.di import (
     get_cds_api,
     get_crop_repository,
     get_crop_yield_data_repository,
     get_location_repository,
     get_past_climate_data_repository,
 )
-from tesi.climate.dtos import LocationClimateYearsDTO
+from tesi.zappai.repositories.dtos import LocationClimateYearsDTO
 from tesi.database.di import get_session_maker
 
 
