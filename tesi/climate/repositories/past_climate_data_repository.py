@@ -5,7 +5,8 @@ import logging
 from uuid import UUID
 import uuid
 import pandas as pd
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, desc, insert, select
+import sqlalchemy
 from tesi.climate.dtos import LocationClimateYearsDTO, PastClimateDataDTO
 from tesi.climate.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -32,7 +33,7 @@ class PastClimateDataRepository:
             stmt = (
                 select(PastClimateData)
                 .where(PastClimateData.location_id == location_id)
-                .order_by(PastClimateData.year, PastClimateData.month)
+                .order_by(desc(PastClimateData.year), desc(PastClimateData.month))
                 .limit(1)
             )
             result = await session.scalar(stmt)

@@ -283,7 +283,7 @@ class CopernicusDataStoreAPI:
         if _year_from > now.year:
             return
 
-        years = list(range(_year_from, now.year))
+        years = list(range(_year_from, now.year + 1))
 
         return self.get_past_climate_data_for_years(
             longitude=longitude,

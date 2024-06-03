@@ -5,7 +5,7 @@ import os
 import uuid
 from geoalchemy2 import Geography
 import pandas as pd
-from sqlalchemy import delete, func, insert, select
+from sqlalchemy import asc, delete, func, insert, select
 from tesi.climate.dtos import FutureClimateDataDTO
 from tesi.climate.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -94,10 +94,10 @@ class FutureClimateDataRepository:
                     FutureClimateData,
                 )
                 .order_by(
-                    ST_Distance(
+                    asc(ST_Distance(
                         FutureClimateData.coordinates,
                         sqlalchemy.cast(point_well_known_text, Geography),
-                    )
+                    ))
                 )
                 .limit(1)
             )
