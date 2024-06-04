@@ -220,7 +220,7 @@ class CopernicusDataStoreAPI:
         _years = [*years]
         _years.sort()
 
-        STEP = 25
+        STEP = 20
         processed = 0
 
         while processed < len(_years):
@@ -257,10 +257,9 @@ class CopernicusDataStoreAPI:
             tmp_df = common.process_copernicus_climate_data(
                 df=tmp_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
             )
+            os.remove(tmp_file_path)
             on_save_chunk(tmp_df)
             processed += len(years_to_fetch)
-
-            os.remove(tmp_file_path)
 
         if os.path.exists(tmp_dir):
             shutil.rmtree(tmp_dir)

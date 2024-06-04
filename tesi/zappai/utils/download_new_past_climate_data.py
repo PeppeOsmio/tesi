@@ -40,7 +40,8 @@ async def main():
             latitude=common.EXAMPLE_LATITUDE,
         )
 
-    while True:
+    retries = 0
+    while retries < 10:
         try:
             await past_climate_data_repository.download_new_past_climate_data(
                 location_id=location.id
@@ -49,6 +50,7 @@ async def main():
         except Exception as e:
             logging.error(traceback.format_exc())
             logging.info("Failed to fetch past climate data, retrying...")
+            retries += 1
 
 
 if __name__ == "__main__":

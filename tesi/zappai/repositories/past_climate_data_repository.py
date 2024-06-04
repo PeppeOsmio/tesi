@@ -181,7 +181,7 @@ class PastClimateDataRepository:
                         }
                     )
                 await session.execute(insert(PastClimateData), values_dicts)
-                PROCESSED += len(row)
+                PROCESSED += len(rows)
             await session.commit()
 
     async def get_past_climate_data_for_location(

@@ -50,12 +50,14 @@ def process_copernicus_climate_data(
     df = df.set_index(keys=["year", "month"])
 
     # Sorting index
-    df = df.sort_index(ascending=[False, False])
-
+    df = df.sort_index(ascending=[True, True])
+    df.to_csv("tmp/with_expver.csv")
     if "expver" in df.columns:
+        
         df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
         df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
 
         df = df_expver1.combine_first(df_expver5)
+        df.to_csv("tmp/without_expver.csv")
 
     return df

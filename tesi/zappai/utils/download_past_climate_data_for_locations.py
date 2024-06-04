@@ -65,8 +65,8 @@ async def main():
         semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
     ):
         async with semaphore:
-
-            while True:
+            retries = 0
+            while retries < 10:
                 try:
                     await past_climate_data_repository.download_past_climate_data_for_years(
                         location_id=location_climate_years.location_id,
@@ -76,6 +76,7 @@ async def main():
                 except Exception as e:
                     logging.error(traceback.format_exc())
                     logging.info("Failed to fetch past climate data, retrying...")
+                    retries += 1
 
     for task in asyncio.as_completed(
         [
