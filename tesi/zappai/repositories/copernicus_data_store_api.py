@@ -280,8 +280,6 @@ class CopernicusDataStoreAPI:
 
         now = datetime.now(tz=timezone.utc)
 
-        print(f"year_from: {_year_from} month_from: {month_from}")
-
         if _year_from > now.year:
             return
         # data is available for the previous previous month. e.g if it's June now, it's available until April for sure
