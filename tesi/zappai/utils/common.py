@@ -31,6 +31,7 @@ def convert_nc_file_to_dataframe(
 
 
 def merge_by_expver(df: pd.DataFrame) -> pd.DataFrame:
+    "Index by year and month before running this!"
     df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
     df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
 
@@ -58,5 +59,11 @@ def process_copernicus_climate_data(
 
     # Sorting index
     df = df.sort_index(ascending=[False, False])
+
+    if "expver" in df.columns:
+        df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
+        df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
+
+        df = df_expver1.combine_first(df_expver5)
 
     return df

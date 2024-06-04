@@ -29,8 +29,11 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from tesi.zappai.utils import common
 import joblib
 
-CLIMATE_GENERATIVE_MODEL_FILEPATH = "ml_models/climate_generative_model.pkl"
-CLIMATE_X_SCALER_FILEPATH = "ml_models/climate_x_scaler.pkl"
+CLIMATE_MODELS_DIR = "ml_models/"
+CLIMATE_GENERATIVE_MODEL_FILEPATH = os.path.join(
+    CLIMATE_MODELS_DIR, "climate_generative_model.pkl"
+)
+CLIMATE_X_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_x_scaler.pkl")
 
 
 def inverse_transform_generated_data(scaler, data):
@@ -74,8 +77,13 @@ def train_model(
     past_climate_data_df: pd.DataFrame,
     seq_length: int,
 ) -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
+    _features = features
+    _features.remove("precipitation_type")
     x = past_climate_data_df[features]
     y = past_climate_data_df[target]
+
+    print(x)
+    print(y)
 
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.2, shuffle=False
@@ -119,15 +127,13 @@ async def create_and_train_climate_generative_model_for_location(
     if location is None:
         raise LocationNotFoundError()
 
-    await past_climate_data_repository.download_new_past_climate_data(
-        location_id=location.id
-    )
-
     past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
         await past_climate_data_repository.get_past_climate_data_for_location(
             location_id=location.id
         )
     )
+
+    past_climate_data_df.to_csv("tmp.csv")
 
     SEQ_LENGTH = 12
 
@@ -142,12 +148,13 @@ async def create_and_train_climate_generative_model_for_location(
     )
 
     def dump_func():
+        os.makedirs(CLIMATE_MODELS_DIR, exist_ok=True)
         joblib.dump(value=x_scaler, filename=CLIMATE_X_SCALER_FILEPATH)
         joblib.dump(value=model, filename=CLIMATE_GENERATIVE_MODEL_FILEPATH)
 
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor() as pool:
-        loop.run_in_executor(executor=pool, func=dump_func)
+        await loop.run_in_executor(executor=pool, func=dump_func)
 
     seed_data = ClimateDataDTO.from_list_to_dataframe(
         await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
@@ -213,7 +220,7 @@ async def main():
             name=common.EXAMPLE_LOCATION_NAME,
             longitude=common.EXAMPLE_LONGITUDE,
             latitude=common.EXAMPLE_LATITUDE,
-        ) 
+        )
 
     await create_and_train_climate_generative_model_for_location(
         location_repository=location_repository,

@@ -84,7 +84,7 @@ class PastClimateDataRepository:
 
             year_from = max_year
             month_from = max_month + 1
-            if max_month == 12:
+            if month_from == 13:
                 year_from += 1
                 month_from = 1
 

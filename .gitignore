@@ -12,3 +12,4 @@ data/future_climate/temperature_at_surface.csv
 *.nc
 training_data/
 past_climate_data*.csv
+test/

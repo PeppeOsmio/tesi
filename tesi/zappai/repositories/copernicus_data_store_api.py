@@ -216,7 +216,7 @@ class CopernicusDataStoreAPI:
         _years = [*years]
         _years.sort()
 
-        STEP = 15
+        STEP = 20
         processed = 0
 
         while processed < len(_years):
@@ -250,8 +250,10 @@ class CopernicusDataStoreAPI:
                 source_file_path=tmp_file_path, limit=None
             )
 
-            if "expver" in tmp_df.columns:
-                tmp_df = common.merge_by_expver(tmp_df)
+            os.makedirs("test", exist_ok=True)
+            tmp_df.to_csv(f"test/before_expver_{years_to_fetch[0]}_{years_to_fetch[-1]}.csv")
+
+            tmp_df.to_csv(f"test/after_expver_{years_to_fetch[0]}_{years_to_fetch[-1]}.csv")
 
             tmp_df = common.process_copernicus_climate_data(
                 df=tmp_df, columns_mappings=ERA5_PARAMETERS_COLUMNS
@@ -278,9 +280,12 @@ class CopernicusDataStoreAPI:
 
         now = datetime.now(tz=timezone.utc)
 
+        print(f"year_from: {_year_from} month_from: {month_from}")
+
         if _year_from > now.year:
             return
-        if _month_from >= now.month:
+        # data is available for the previous previous month. e.g if it's June now, it's available until April for sure
+        if _month_from >= now.month - 1:
             return
 
         years = list(range(_year_from, now.year + 1))
