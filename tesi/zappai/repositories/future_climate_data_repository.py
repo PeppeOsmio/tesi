@@ -84,28 +84,40 @@ class FutureClimateDataRepository:
             result = await session.scalar(stmt)
         return result is not None
 
-    async def get_future_climate_data_for_coordinates(
+    async def get_future_climate_data_for_nearest_coordinates(
         self, longitude: float, latitude: float
     ) -> list[FutureClimateDataDTO]:
         point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.session_maker() as session:
-            stmt = (
+            coordinates_stmt = (
                 select(
-                    FutureClimateData,
+                    FutureClimateData.longitude, FutureClimateData.latitude
+                ).order_by(
+                    asc(
+                        ST_Distance(
+                            FutureClimateData.coordinates,
+                            sqlalchemy.cast(point_well_known_text, Geography),
+                        )
+                    )
                 )
-                .order_by(
-                    asc(ST_Distance(
-                        FutureClimateData.coordinates,
-                        sqlalchemy.cast(point_well_known_text, Geography),
-                    ))
+            ).limit(1)
+            results = list(await session.execute(coordinates_stmt))
+            if len(results) == 0:
+                raise ValueError(f"No future climate data downloaded")
+            nearest_longitude, nearest_latitude = results[0].tuple()
+            stmt = (
+                select(FutureClimateData)
+                .where(
+                    FutureClimateData.longitude == nearest_longitude,
+                    FutureClimateData.latitude == nearest_latitude,
                 )
-                .limit(1)
+                .order_by(asc(FutureClimateData.year), asc(FutureClimateData.month))
             )
             results = list(await session.scalars(stmt))
-        if len(results) is None:
-            raise Exception(
-                f"Can't find future climate data for {longitude} {latitude}"
-            )
+            if len(results) == 0:
+                raise ValueError(
+                    f"No future climate data to download, nearest coordinates don't exist anymore?"
+                )
         return [self.__future_climate_data_model_to_dto(result) for result in results]
 
     def __future_climate_data_model_to_dto(

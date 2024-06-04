@@ -189,9 +189,13 @@ class CopernicusDataStoreAPI:
 
         # take only the FUTURE data
         now = datetime.now(tz=timezone.utc)
+        # the past data includes only the data from the previous previous month onwards
         result_df = result_df[
-            (result_df.index.get_level_values("year") >= now.year)
-            & (result_df.index.get_level_values("month") >= now.month)
+            (result_df.index.get_level_values("year") > now.year)
+            | (
+                (result_df.index.get_level_values("year") == now.year)
+                & (result_df.index.get_level_values("month") > now.month - 2)
+            )
         ]
 
         # convert from mm/s (aggregated over 24 hours) to m
@@ -216,7 +220,7 @@ class CopernicusDataStoreAPI:
         _years = [*years]
         _years.sort()
 
-        STEP = 20
+        STEP = 25
         processed = 0
 
         while processed < len(_years):
@@ -249,11 +253,6 @@ class CopernicusDataStoreAPI:
             tmp_df = common.convert_nc_file_to_dataframe(
                 source_file_path=tmp_file_path, limit=None
             )
-
-            os.makedirs("test", exist_ok=True)
-            tmp_df.to_csv(f"test/before_expver_{years_to_fetch[0]}_{years_to_fetch[-1]}.csv")
-
-            tmp_df.to_csv(f"test/after_expver_{years_to_fetch[0]}_{years_to_fetch[-1]}.csv")
 
             tmp_df = common.process_copernicus_climate_data(
                 df=tmp_df, columns_mappings=ERA5_PARAMETERS_COLUMNS

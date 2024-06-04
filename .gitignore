@@ -13,3 +13,4 @@ data/future_climate/temperature_at_surface.csv
 training_data/
 past_climate_data*.csv
 test/
+tmp/

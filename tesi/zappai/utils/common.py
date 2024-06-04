@@ -30,19 +30,11 @@ def convert_nc_file_to_dataframe(
     return df
 
 
-def merge_by_expver(df: pd.DataFrame) -> pd.DataFrame:
-    "Index by year and month before running this!"
-    df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
-    df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
-
-    df_combined = df_expver1.combine_first(df_expver5)
-
-    return df_combined
-
-
 def process_copernicus_climate_data(
     df: pd.DataFrame, columns_mappings: dict[str, str]
 ) -> pd.DataFrame:
+
+    df = df.dropna()
 
     # Renaming columns
     df = df.rename(columns=columns_mappings)

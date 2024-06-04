@@ -2,6 +2,7 @@ import asyncio
 from concurrent.futures import ThreadPoolExecutor
 import logging
 import os
+from typing import cast
 from uuid import UUID
 import numpy as np
 import pandas as pd
@@ -29,11 +30,20 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from tesi.zappai.utils import common
 import joblib
 
-CLIMATE_MODELS_DIR = "ml_models/"
+CLIMATE_MODELS_DIR = "data/ml_models/"
 CLIMATE_GENERATIVE_MODEL_FILEPATH = os.path.join(
     CLIMATE_MODELS_DIR, "climate_generative_model.pkl"
 )
 CLIMATE_X_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_x_scaler.pkl")
+CLIMATE_Y_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_y_scaler.pkl")
+
+_TARGET = list(
+    copernicus_data_store_api.ERA5_RESULT_COLUMNS
+    - copernicus_data_store_api.CMIP5_RESULT_COLUMNS
+)
+_TARGET.remove("precipitation_type")
+_FEATURES = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
+_FEATURES.remove("precipitation_type")
 
 
 def inverse_transform_generated_data(scaler, data):
@@ -61,29 +71,23 @@ def generate_data(data_length: int, model: Sequential):
     pass
 
 
-def generate_model(features: int, target: int, seq_length: int) -> Sequential:
+def generate_model(seq_length: int) -> Sequential:
     model = Sequential()
-    model.add(LSTM(50, input_shape=(seq_length, features)))
+    model.add(LSTM(50, input_shape=(seq_length, len(_FEATURES))))
     model.add(Dense(25, activation="relu"))
-    model.add(Dense(target))
+    model.add(Dense(len(_TARGET)))
 
     model.compile(optimizer="adam", loss="mean_squared_error", metrics=["accuracy"])
     return model
 
 
 def train_model(
-    features: list[str],
-    target: list[str],
     past_climate_data_df: pd.DataFrame,
     seq_length: int,
 ) -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
-    _features = features
-    _features.remove("precipitation_type")
-    x = past_climate_data_df[features]
-    y = past_climate_data_df[target]
 
-    print(x)
-    print(y)
+    x = past_climate_data_df[_FEATURES]
+    y = past_climate_data_df[_TARGET]
 
     x_train, x_test, y_train, y_test = train_test_split(
         x, y, test_size=0.2, shuffle=False
@@ -102,9 +106,7 @@ def train_model(
         x_train_scaled=x_train_scaled,
         y_train_scaled=y_train_scaled,
     )
-    model = generate_model(
-        features=len(features), target=len(target), seq_length=seq_length
-    )
+    model = generate_model(seq_length=seq_length)
     model.fit(x_train_scaled_with_months, y_train_scaled_for_model, epochs=50)
     return model, x_scaler, y_scaler
 
@@ -117,12 +119,6 @@ async def create_and_train_climate_generative_model_for_location(
 ):
     # Load and preprocess data
 
-    target = list(
-        copernicus_data_store_api.ERA5_RESULT_COLUMNS
-        - copernicus_data_store_api.CMIP5_RESULT_COLUMNS
-    )
-    features = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
-
     location = await location_repository.get_location_by_id(location_id=location_id)
     if location is None:
         raise LocationNotFoundError()
@@ -133,54 +129,78 @@ async def create_and_train_climate_generative_model_for_location(
         )
     )
 
-    past_climate_data_df.to_csv("tmp.csv")
-
     SEQ_LENGTH = 12
 
-    model = generate_model(
-        features=len(features), target=len(target), seq_length=SEQ_LENGTH
-    )
+    model = generate_model(seq_length=SEQ_LENGTH)
     model, x_scaler, y_scaler = train_model(
-        features=features,
-        target=target,
         past_climate_data_df=past_climate_data_df,
         seq_length=SEQ_LENGTH,
     )
 
     def dump_func():
         os.makedirs(CLIMATE_MODELS_DIR, exist_ok=True)
-        joblib.dump(value=x_scaler, filename=CLIMATE_X_SCALER_FILEPATH)
         joblib.dump(value=model, filename=CLIMATE_GENERATIVE_MODEL_FILEPATH)
+        joblib.dump(value=x_scaler, filename=CLIMATE_X_SCALER_FILEPATH)
+        joblib.dump(value=y_scaler, filename=CLIMATE_Y_SCALER_FILEPATH)
 
     loop = asyncio.get_running_loop()
     with ThreadPoolExecutor() as pool:
         await loop.run_in_executor(executor=pool, func=dump_func)
 
+
+async def test_model(
+    past_climate_data_repository: PastClimateDataRepository,
+    future_climate_data_repository: FutureClimateDataRepository,
+    location_repository: LocationRepository,
+    location_id: UUID,
+):
+
+    location = await location_repository.get_location_by_id(location_id)
+    if location is None:
+        raise LocationNotFoundError()
+
     seed_data = ClimateDataDTO.from_list_to_dataframe(
         await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
-            location_id=location.id
+            location_id=location_id
         )
     )
 
-    seed_data = seed_data[features]
+    def load_func() -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
+        model = cast(
+            Sequential, joblib.load(filename=CLIMATE_GENERATIVE_MODEL_FILEPATH)
+        )
+        x_scaler = cast(MinMaxScaler, joblib.load(filename=CLIMATE_X_SCALER_FILEPATH))
+        y_scaler = cast(MinMaxScaler, joblib.load(filename=CLIMATE_Y_SCALER_FILEPATH))
+        return model, x_scaler, y_scaler
+
+    loop = asyncio.get_running_loop()
+    with ThreadPoolExecutor() as pool:
+        model, x_scaler, y_scaler = await loop.run_in_executor(
+            executor=pool, func=load_func
+        )
+
+    seed_data = seed_data[_FEATURES]
 
     scaled_seed_data = x_scaler.transform(seed_data)
-    print(scaled_seed_data)
 
     future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
-        await future_climate_data_repository.get_future_climate_data_for_coordinates(
-            longitude=common.EXAMPLE_LONGITUDE, latitude=common.EXAMPLE_LATITUDE
+        await future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
+            longitude=location.longitude, latitude=location.latitude
         )
     )
-    print(future_climate_data_df)
-    return
+
+    seed_data.to_csv("tmp/seed.csv")
+    future_climate_data_df.to_csv("tmp/future.csv")
+
     generated_data = []
     current_step = scaled_seed_data
 
     for _ in range(100):
-        prediction = model.predict(np.array([current_step]))[0]
+        prediction = cast(np.ndarray, model.predict(np.array([current_step]))[0])
+        transformed_prediction = y_scaler.inverse_transform(np.array([prediction]))[0]
         generated_data.append(prediction)
-        print(generated_data)
+        for i, data in enumerate(transformed_prediction):
+            print(f"{_TARGET[i]}: {data}")
         return
         current_step = np.append(
             current_step[1:],
@@ -226,6 +246,12 @@ async def main():
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
         future_climate_data_repository=future_climate_data_repository,
+        location_id=location.id,
+    )
+    await test_model(
+        past_climate_data_repository=past_climate_data_repository,
+        future_climate_data_repository=future_climate_data_repository,
+        location_repository=location_repository,
         location_id=location.id,
     )
 
