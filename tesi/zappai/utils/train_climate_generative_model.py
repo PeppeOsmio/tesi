@@ -39,10 +39,10 @@ CLIMATE_X_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_x_scaler.p
 CLIMATE_Y_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_y_scaler.pkl")
 
 _TARGET = list(
-    copernicus_data_store_api.ERA5_VARIABLES
-    - copernicus_data_store_api.CMIP5_VARIABLES
+    copernicus_data_store_api.ERA5_VARIABLES - copernicus_data_store_api.CMIP5_VARIABLES
 )
 _FEATURES = list(copernicus_data_store_api.ERA5_VARIABLES)
+
 
 def inverse_transform_generated_data(scaler, data):
     return scaler.inverse_transform(data)
@@ -112,7 +112,6 @@ def train_model(
 async def create_and_train_climate_generative_model_for_location(
     location_repository: LocationRepository,
     past_climate_data_repository: PastClimateDataRepository,
-    future_climate_data_repository: FutureClimateDataRepository,
     location_id: UUID,
 ):
     # Load and preprocess data
@@ -162,7 +161,7 @@ async def test_model(
             location_id=location_id
         )
     )
-    
+
     index = seed_data.index[-1]
     start_year, start_month = index
     start_year = cast(int, start_year)
@@ -184,55 +183,56 @@ async def test_model(
 
     seed_data = seed_data[_FEATURES]
 
-    scaled_seed_data = x_scaler.transform(seed_data)
-
     future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
         await future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
             longitude=location.longitude, latitude=location.latitude
         )
     )
 
-    future_climate_data_df = future_climate_data_df[list(copernicus_data_store_api.CMIP5_VARIABLES)]
+    future_climate_data_df = future_climate_data_df[
+        list(copernicus_data_store_api.CMIP5_VARIABLES)
+    ]
 
     future_climate_data_df = future_climate_data_df[
         (future_climate_data_df.index.get_level_values("year") > start_year)
-        & (future_climate_data_df.index.get_level_values("month") > start_month)
+        | (
+            (future_climate_data_df.index.get_level_values("year") == start_year)
+            & (future_climate_data_df.index.get_level_values("month") > start_month)
+        )
     ]
-    
 
     future_climate_data_array = future_climate_data_df.to_numpy()
 
-    print(future_climate_data_df.columns)
+    print(future_climate_data_df)
 
     generated_data = []
-    current_step = scaled_seed_data
+
+    # array with the first month available from past climate data and the previous 11 months
+    current_step = seed_data.to_numpy()
 
     # TODO proper scaling pls
 
     for _, future_climate_data in enumerate(future_climate_data_array):
-        prediction = cast(np.ndarray, model.predict(np.array([current_step]))[0])
+        current_step_scaled = x_scaler.transform(current_step)
+        prediction = model.predict(np.array([current_step_scaled]))[0]
+
         transformed_prediction = y_scaler.inverse_transform(np.array([prediction]))[0]
-        print("future_climate_data: ")
-        print(future_climate_data.shape)
-        print("transformed_prediction: ")
-        print(transformed_prediction.shape)
-        enriched_prediction = np.append(transformed_prediction, future_climate_data, axis=0)
-        print_dict: dict[str, float] = {}
-        for i, feature in enumerate(_FEATURES):
-            print_dict.update({feature: enriched_prediction[i]})
-        print(print_dict)
+
+        # contains the next months's data, which is combined  from prediction and CMIP5 data
+        enriched_prediction = np.append(
+            transformed_prediction, future_climate_data, axis=0
+        )
+
         generated_data.append(enriched_prediction)
+
+        # remove the first month of data and push the next month's generated data
         current_step = np.append(
-            current_step[:-1],
+            current_step[1:],
             [enriched_prediction],
             axis=0,
         )
 
-    generated_combined = combine_with_fixed_features(seed_data, generated_data)
-
-    generated_data_original = inverse_transform_generated_data(
-        x_scaler, generated_combined
-    )
+    print(len(generated_data))
 
 
 async def main():
@@ -264,7 +264,6 @@ async def main():
     await create_and_train_climate_generative_model_for_location(
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
-        future_climate_data_repository=future_climate_data_repository,
         location_id=location.id,
     )
     await test_model(
