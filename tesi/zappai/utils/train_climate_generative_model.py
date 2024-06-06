@@ -44,15 +44,6 @@ _TARGET = list(
 _FEATURES = list(copernicus_data_store_api.ERA5_VARIABLES)
 
 
-def inverse_transform_generated_data(scaler, data):
-    return scaler.inverse_transform(data)
-
-
-def combine_with_fixed_features(seed_data, generated_data):
-    # Placeholder function: implement according to your specific requirements
-    return np.array(generated_data)
-
-
 def format_data(
     seq_length: int, x_train_scaled: np.ndarray, y_train_scaled: np.ndarray
 ) -> tuple[np.ndarray, np.ndarray]:
@@ -63,10 +54,6 @@ def format_data(
         x_train_scaled_with_past_months.append(past_months_sequence)
         y_train_scaled_for_model.append(y_train_scaled[i + seq_length])
     return np.array(x_train_scaled_with_past_months), np.array(y_train_scaled_for_model)
-
-
-def generate_data(data_length: int, model: Sequential):
-    pass
 
 
 def generate_model(seq_length: int) -> Sequential:
@@ -145,27 +132,50 @@ async def create_and_train_climate_generative_model_for_location(
         await loop.run_in_executor(executor=pool, func=dump_func)
 
 
+def generate_future_climate_data_from_past_seed_data_12_months(
+    future_climate_data_df: pd.DataFrame,
+    seed_past_12_months_data: pd.DataFrame,
+    x_scaler: MinMaxScaler,
+    y_scaler: MinMaxScaler,
+    model: Sequential,
+) -> list[np.ndarray]:
+    generated_data: list[np.ndarray] = []
+    current_12_months_data = seed_past_12_months_data
+    future_climate_data_array = future_climate_data_df.to_numpy()
+    for _, future_climate_data in enumerate(future_climate_data_array):
+        current_12_months_data_scaled = x_scaler.transform(current_12_months_data)
+        era5_not_in_cmip5_variables_prediction = model.predict(
+            np.array([current_12_months_data_scaled])
+        )[0]
+
+        transformed_era5_not_in_cmip5_variables_prediction = y_scaler.inverse_transform(
+            np.array([era5_not_in_cmip5_variables_prediction])
+        )[0]
+
+        # contains the next months's data, which is combined  rom prediction and CMIP5 data
+        next_month_data_prediction = np.append(
+            transformed_era5_not_in_cmip5_variables_prediction,
+            future_climate_data,
+            axis=0,
+        )
+
+        generated_data.append(next_month_data_prediction)
+
+        # remove the first month of data and push the next month's generated data
+        current_12_months_data = np.append(
+            current_12_months_data[1:],
+            [next_month_data_prediction],
+            axis=0,
+        )
+    return generated_data
+
+
 async def test_model(
     past_climate_data_repository: PastClimateDataRepository,
     future_climate_data_repository: FutureClimateDataRepository,
     location_repository: LocationRepository,
     location_id: UUID,
 ):
-
-    location = await location_repository.get_location_by_id(location_id)
-    if location is None:
-        raise LocationNotFoundError()
-
-    seed_data = ClimateDataDTO.from_list_to_dataframe(
-        await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
-            location_id=location_id
-        )
-    )
-
-    index = seed_data.index[-1]
-    start_year, start_month = index
-    start_year = cast(int, start_year)
-    start_month = cast(int, start_month)
 
     def load_func() -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
         model = cast(
@@ -181,18 +191,30 @@ async def test_model(
             executor=pool, func=load_func
         )
 
-    seed_data = seed_data[_FEATURES]
+    location = await location_repository.get_location_by_id(location_id)
+    if location is None:
+        raise LocationNotFoundError()
+
+    last_12_months_seed_data = ClimateDataDTO.from_list_to_dataframe(
+        await past_climate_data_repository.get_past_climate_data_of_location_of_previous_12_months(
+            location_id=location_id
+        )
+    )
+    last_12_months_seed_data = last_12_months_seed_data[_FEATURES]
+
+    index = last_12_months_seed_data.index[-1]
+    start_year, start_month = index
+    start_year = cast(int, start_year)
+    start_month = cast(int, start_month)
 
     future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
         await future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
             longitude=location.longitude, latitude=location.latitude
         )
     )
-
     future_climate_data_df = future_climate_data_df[
         list(copernicus_data_store_api.CMIP5_VARIABLES)
     ]
-
     future_climate_data_df = future_climate_data_df[
         (future_climate_data_df.index.get_level_values("year") > start_year)
         | (
@@ -201,38 +223,15 @@ async def test_model(
         )
     ]
 
-    future_climate_data_array = future_climate_data_df.to_numpy()
+    data = generate_future_climate_data_from_past_seed_data_12_months(
+        future_climate_data_df=future_climate_data_df,
+        seed_past_12_months_data=last_12_months_seed_data,
+        x_scaler=x_scaler,
+        y_scaler=y_scaler,
+        model=model,
+    )
 
-    print(future_climate_data_df)
-
-    generated_data = []
-
-    # array with the first month available from past climate data and the previous 11 months
-    current_step = seed_data.to_numpy()
-
-    # TODO proper scaling pls
-
-    for _, future_climate_data in enumerate(future_climate_data_array):
-        current_step_scaled = x_scaler.transform(current_step)
-        prediction = model.predict(np.array([current_step_scaled]))[0]
-
-        transformed_prediction = y_scaler.inverse_transform(np.array([prediction]))[0]
-
-        # contains the next months's data, which is combined  from prediction and CMIP5 data
-        enriched_prediction = np.append(
-            transformed_prediction, future_climate_data, axis=0
-        )
-
-        generated_data.append(enriched_prediction)
-
-        # remove the first month of data and push the next month's generated data
-        current_step = np.append(
-            current_step[1:],
-            [enriched_prediction],
-            axis=0,
-        )
-
-    print(len(generated_data))
+    print(data)
 
 
 async def main():
