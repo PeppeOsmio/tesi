@@ -67,7 +67,6 @@ class PastClimateData(Base):
 
     surface_net_solar_radiation: Mapped[float]
     surface_net_thermal_radiation: Mapped[float]
-    precipitation_type: Mapped[float]
     snowfall: Mapped[float]
     total_cloud_cover: Mapped[float]
     dewpoint_temperature_2m: Mapped[float]
@@ -86,8 +85,8 @@ class FutureClimateData(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
 
-    longitude: Mapped[int]
-    latitude: Mapped[int]
+    longitude: Mapped[float]
+    latitude: Mapped[float]
     year: Mapped[int]
     month: Mapped[int]
 

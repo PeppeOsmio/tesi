@@ -15,7 +15,6 @@ class GetPastClimateDataOfLocationResponse(CustomBaseModel):
 
     surface_net_solar_radiation: float
     surface_net_thermal_radiation: float
-    precipitation_type: float
     snowfall: float
     total_cloud_cover: float
     dewpoint_temperature_2m: float

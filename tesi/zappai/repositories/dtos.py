@@ -57,6 +57,8 @@ class FutureClimateDataDTO:
                 "temperature_2m": "2m_temperature",
             },
         )
+        df = df.set_index(keys=["year", "month"], drop=True)
+        df = df.sort_index(ascending=[True, True])
         return df
 
     @staticmethod
@@ -92,7 +94,6 @@ class ClimateDataDTO:
 
     surface_net_solar_radiation: float
     surface_net_thermal_radiation: float
-    precipitation_type: float
     snowfall: float
     total_cloud_cover: float
     dewpoint_temperature_2m: float
@@ -110,6 +111,9 @@ class ClimateDataDTO:
                 "dewpoint_temperature_2m": "2m_dewpoint_temperature",
             },
         )
+        df = df.drop(columns=["location_id"])
+        df = df.set_index(keys=["year", "month"], drop=True)
+        df = df.sort_index(ascending=[True, True])
         return df
 
     @staticmethod

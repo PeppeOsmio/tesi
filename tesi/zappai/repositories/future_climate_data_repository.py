@@ -26,10 +26,6 @@ class FutureClimateDataRepository:
         self.copernicus_data_store_api = copernicus_data_store_api
 
     async def download_future_climate_data(self):
-        if await self.did_download_future_climate_data():
-            logging.info("Already downloaded future climate data")
-            return
-
         def download_func():
             df = self.copernicus_data_store_api.get_future_climate_data()
             return df
@@ -44,7 +40,8 @@ class FutureClimateDataRepository:
             stmt = delete(FutureClimateData)
             await session.execute(stmt)
             processed = 0
-            STEP = 100
+            STEP = 1000
+            logging.info(f"Saved {processed}/{len(future_climate_data_df)} future climate data")
             while processed < len(future_climate_data_df):
                 rows = future_climate_data_df[processed : processed + STEP]
                 values_dicts: list[dict[str, Any]] = []
@@ -75,8 +72,9 @@ class FutureClimateDataRepository:
                     )
                 await session.execute(insert(FutureClimateData).values(values_dicts))
                 processed += len(rows)
+                logging.info(f"Saved {processed}/{len(future_climate_data_df)} future climate data")
             await session.commit()
-        logging.info(f"Saved {processed} future climate data")
+        logging.info(f"Done")
 
     async def did_download_future_climate_data(self) -> bool:
         async with self.session_maker() as session:

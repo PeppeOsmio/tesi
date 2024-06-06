@@ -1,5 +1,6 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from datetime import datetime, timezone
 import logging
 import os
 from typing import cast
@@ -38,13 +39,10 @@ CLIMATE_X_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_x_scaler.p
 CLIMATE_Y_SCALER_FILEPATH = os.path.join(CLIMATE_MODELS_DIR, "climate_y_scaler.pkl")
 
 _TARGET = list(
-    copernicus_data_store_api.ERA5_RESULT_COLUMNS
-    - copernicus_data_store_api.CMIP5_RESULT_COLUMNS
+    copernicus_data_store_api.ERA5_VARIABLES
+    - copernicus_data_store_api.CMIP5_VARIABLES
 )
-_TARGET.remove("precipitation_type")
-_FEATURES = list(copernicus_data_store_api.ERA5_RESULT_COLUMNS)
-_FEATURES.remove("precipitation_type")
-
+_FEATURES = list(copernicus_data_store_api.ERA5_VARIABLES)
 
 def inverse_transform_generated_data(scaler, data):
     return scaler.inverse_transform(data)
@@ -164,6 +162,11 @@ async def test_model(
             location_id=location_id
         )
     )
+    
+    index = seed_data.index[-1]
+    start_year, start_month = index
+    start_year = cast(int, start_year)
+    start_month = cast(int, start_month)
 
     def load_func() -> tuple[Sequential, MinMaxScaler, MinMaxScaler]:
         model = cast(
@@ -189,22 +192,39 @@ async def test_model(
         )
     )
 
-    seed_data.to_csv("tmp/seed.csv")
-    future_climate_data_df.to_csv("tmp/future.csv")
+    future_climate_data_df = future_climate_data_df[list(copernicus_data_store_api.CMIP5_VARIABLES)]
+
+    future_climate_data_df = future_climate_data_df[
+        (future_climate_data_df.index.get_level_values("year") > start_year)
+        & (future_climate_data_df.index.get_level_values("month") > start_month)
+    ]
+    
+
+    future_climate_data_array = future_climate_data_df.to_numpy()
+
+    print(future_climate_data_df.columns)
 
     generated_data = []
     current_step = scaled_seed_data
 
-    for _ in range(100):
+    # TODO proper scaling pls
+
+    for _, future_climate_data in enumerate(future_climate_data_array):
         prediction = cast(np.ndarray, model.predict(np.array([current_step]))[0])
         transformed_prediction = y_scaler.inverse_transform(np.array([prediction]))[0]
-        generated_data.append(prediction)
-        for i, data in enumerate(transformed_prediction):
-            print(f"{_TARGET[i]}: {data}")
-        return
+        print("future_climate_data: ")
+        print(future_climate_data.shape)
+        print("transformed_prediction: ")
+        print(transformed_prediction.shape)
+        enriched_prediction = np.append(transformed_prediction, future_climate_data, axis=0)
+        print_dict: dict[str, float] = {}
+        for i, feature in enumerate(_FEATURES):
+            print_dict.update({feature: enriched_prediction[i]})
+        print(print_dict)
+        generated_data.append(enriched_prediction)
         current_step = np.append(
-            current_step[1:],
-            [np.concatenate((current_step[-1, : -len(target)], prediction))],
+            current_step[:-1],
+            [enriched_prediction],
             axis=0,
         )
 
@@ -213,7 +233,6 @@ async def test_model(
     generated_data_original = inverse_transform_generated_data(
         x_scaler, generated_combined
     )
-    print(generated_data_original)
 
 
 async def main():

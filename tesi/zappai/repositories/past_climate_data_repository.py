@@ -126,7 +126,7 @@ class PastClimateDataRepository:
         if len(past_climate_data_df) == 0:
             return
         async with self.session_maker() as session:
-            STEP = 100
+            STEP = 1000
             PROCESSED = 0
             is_first_row = True
             while PROCESSED < len(past_climate_data_df):
@@ -170,7 +170,6 @@ class PastClimateDataRepository:
                             "surface_net_thermal_radiation": row[
                                 "surface_net_thermal_radiation"
                             ],
-                            "precipitation_type": row["precipitation_type"],
                             "snowfall": row["snowfall"],
                             "total_cloud_cover": row["total_cloud_cover"],
                             "dewpoint_temperature_2m": row["2m_dewpoint_temperature"],
@@ -206,8 +205,8 @@ class PastClimateDataRepository:
                 )
                 .where(PastClimateData.location_id == location_id)
                 .order_by(
-                    PastClimateData.year,
-                    PastClimateData.month,
+                    desc(PastClimateData.year),
+                    desc(PastClimateData.month),
                 )
                 .limit(12)
             )
@@ -261,7 +260,6 @@ class PastClimateDataRepository:
             surface_thermal_radiation_downwards=past_climate_data.surface_thermal_radiation_downwards,
             surface_net_solar_radiation=past_climate_data.surface_net_solar_radiation,
             surface_net_thermal_radiation=past_climate_data.surface_net_thermal_radiation,
-            precipitation_type=past_climate_data.precipitation_type,
             snowfall=past_climate_data.snowfall,
             total_cloud_cover=past_climate_data.total_cloud_cover,
             dewpoint_temperature_2m=past_climate_data.dewpoint_temperature_2m,
