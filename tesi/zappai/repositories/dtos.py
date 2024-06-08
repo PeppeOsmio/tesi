@@ -3,9 +3,12 @@ from dataclasses import dataclass
 from datetime import datetime
 from uuid import UUID
 
+from keras.src.models import Sequential
 import pandas as pd
 
 from typing import cast
+
+from sklearn.preprocessing import MinMaxScaler
 
 
 @dataclass
@@ -29,6 +32,15 @@ class LocationDTO:
     longitude: float
     latitude: float
     created_at: datetime
+
+
+@dataclass
+class ClimateGenerativeModelDTO:
+    id: UUID
+    location_id: UUID
+    model: Sequential
+    x_scaler: MinMaxScaler
+    y_scaler: MinMaxScaler
 
 
 @dataclass

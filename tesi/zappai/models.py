@@ -1,7 +1,6 @@
 from datetime import datetime
-from enum import IntEnum
 from uuid import UUID
-from sqlalchemy import ForeignKey, Index, UniqueConstraint
+from sqlalchemy import ForeignKey, UniqueConstraint
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from tesi.database.base import Base
 from geoalchemy2 import Geography
@@ -20,6 +19,23 @@ class Location(Base):
     __table_args__ = (
         UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
     )
+
+class ClimateGenerativeModel(Base):
+    __tablename__ = "climate_generative_model"
+
+    id: Mapped[UUID]
+
+    model: Mapped[bytes]
+    x_scaler: Mapped[bytes]
+    y_scaler: Mapped[bytes]
+    location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id", ondelete="CASCADE"))
+
+    location: Mapped[Location] = relationship()
+
+    __table_args__ = (
+        UniqueConstraint("location_id", name="_location_id_nc"),
+    )
+
 
 
 class Crop(Base):
@@ -76,7 +92,9 @@ class PastClimateData(Base):
     location: Mapped[Location] = relationship()
 
     __table_args__ = (
-        UniqueConstraint("location_id", "year", "month", name="_location_id_year_month_uc"),
+        UniqueConstraint(
+            "location_id", "year", "month", name="_location_id_year_month_uc"
+        ),
     )
 
 
@@ -104,5 +122,11 @@ class FutureClimateData(Base):
     surface_thermal_radiation_downwards: Mapped[float]
 
     __table_args__ = (
-        UniqueConstraint("longitude", "latitude", "year", "month", name="_longitude_latitude_year_month_uc"),
+        UniqueConstraint(
+            "longitude",
+            "latitude",
+            "year",
+            "month",
+            name="_longitude_latitude_year_month_uc",
+        ),
     )
