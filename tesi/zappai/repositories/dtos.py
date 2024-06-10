@@ -8,7 +8,7 @@ import pandas as pd
 
 from typing import cast
 
-from sklearn.preprocessing import MinMaxScaler
+from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
 @dataclass
@@ -39,9 +39,9 @@ class ClimateGenerativeModelDTO:
     id: UUID
     location_id: UUID
     model: Sequential
-    x_scaler: MinMaxScaler
-    y_scaler: MinMaxScaler
-    mse: float
+    x_scaler: StandardScaler
+    y_scaler: StandardScaler
+    rmse: float
 
 
 @dataclass

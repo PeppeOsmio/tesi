@@ -18,6 +18,7 @@ from tesi.zappai.repositories.climate_generative_model_repository import (
 from tesi.zappai.repositories.dtos import FutureClimateDataDTO, ClimateDataDTO
 from tesi.zappai.repositories import copernicus_data_store_api
 from tesi.zappai.di import (
+    get_climate_generative_model_repository,
     get_location_repository,
     get_session_maker,
     get_cds_api,
@@ -103,7 +104,7 @@ async def main():
             latitude=common.EXAMPLE_LATITUDE,
         )
 
-    climate_generative_model_repository = ClimateGenerativeModelRepository(
+    climate_generative_model_repository = get_climate_generative_model_repository(
         session_maker=session_maker,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,

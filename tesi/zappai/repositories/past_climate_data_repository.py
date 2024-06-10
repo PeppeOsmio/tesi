@@ -201,8 +201,8 @@ class PastClimateDataRepository:
             raise Exception(f"Can't find past climate data for location {location_id}")
         return [self.__past_climate_data_model_to_dto(result) for result in results]
 
-    async def get_past_climate_data_of_previous_12_months(
-        self, location_id: UUID
+    async def get_past_climate_data_of_previous_n_months(
+        self, location_id: UUID, n: int
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = (
@@ -214,7 +214,7 @@ class PastClimateDataRepository:
                     desc(PastClimateData.year),
                     desc(PastClimateData.month),
                 )
-                .limit(12)
+                .limit(n)
             )
             results = list(await session.scalars(stmt))
         if len(results) is None:
