@@ -35,7 +35,13 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 import joblib
 
-BLACKLISTED_TARGET = []
+BLACKLISTED_TARGET = [
+    # "surface_net_solar_radiation",
+    # "surface_net_thermal_radiation",
+    # "snowfall",
+    # "total_cloud_cover",
+    # "2m_dewpoint_temperature",
+]
 
 
 class ClimateGenerativeModelRepository:
@@ -70,7 +76,10 @@ class ClimateGenerativeModelRepository:
     def get_target() -> list[str]:
         target = copernicus_data_store_api.ERA5_EXCLUSIVE_VARIABLES
         for item in BLACKLISTED_TARGET:
-            target.remove(item)
+            try:
+                target.remove(item)
+            except Exception:
+                pass
         return target
 
     @staticmethod
