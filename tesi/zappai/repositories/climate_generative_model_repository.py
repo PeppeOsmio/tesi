@@ -103,19 +103,8 @@ class ClimateGenerativeModelRepository:
         bytes_io.seek(0)
         return bytes_io.read()
 
-    def __get_scalers(
-        self, x_train: pd.DataFrame, y_train: pd.DataFrame
-    ) -> tuple[StandardScaler, StandardScaler]:
-        x_scaler = StandardScaler()
-        y_scaler = StandardScaler()
-
-        x_scaler = x_scaler.fit(x_train.to_numpy())
-        y_scaler = y_scaler.fit(y_train.to_numpy())
-
-        return x_scaler, y_scaler
-
     @staticmethod
-    def __format_data(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
+    def format_data(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         x_train_scaled_with_sequences = []
         y_train_scaled_for_model = []
         for i in range(len(x) - ClimateGenerativeModelRepository.get_seq_length()):
@@ -130,73 +119,19 @@ class ClimateGenerativeModelRepository:
         y_train_scaled_for_model = np.array(y_train_scaled_for_model)
         return x_train_scaled_with_sequences, y_train_scaled_for_model
 
-    @staticmethod
-    def generate_data_from_seed(
-        model: Sequential,
-        x_scaler: StandardScaler,
-        y_scaler: StandardScaler,
-        seed_data: np.ndarray,
-        future_climate_data_df: pd.DataFrame,
-    ) -> pd.DataFrame:
-        """Generates climate data for year, month > seed_data.
-
-        Args:
-            model (Sequential):
-            x_scaler (StandardScaler):
-            y_scaler (StandardScaler):
-            seed_data (np.ndarray):
-            future_climate_data_df (pd.DataFrame): future data that has to start from the month after seed_data
-
-        Returns:
-            pd.DataFrame:
-        """
-        generated_data = []
-        # (SEQ_LENGHT, len(get_features()))
-        current_step = seed_data
-        year_col: list[int] = []
-        month_col: list[int] = []
-        for index, row in future_climate_data_df.iterrows():
-            year, month = cast(pd.MultiIndex, index)
-            year_col.append(year)
-            month_col.append(month)
-            # (SEQ_LENGHT, len(get_features()))
-            scaled_current_step = cast(
-                np.ndarray,
-                x_scaler.inverse_transform(current_step),
-            )
-
-            # (len(get_target()),)
-            scaled_prediction = cast(
-                np.ndarray, model(np.array([scaled_current_step]))
-            )[0]
-
-            # (len(get_target()),)
-            prediction = cast(
-                np.ndarray, y_scaler.inverse_transform(np.array([scaled_prediction]))
-            )[0]
-
-            # (len(get_features()),)
-            enriched_prediction = np.concatenate([prediction, row.to_numpy()], axis=0)
-            generated_data.append(enriched_prediction)
-
-            current_step = np.concatenate(
-                [current_step[1:], np.array([enriched_prediction])]
-            )
-
-        result = pd.DataFrame(
-            data=generated_data, columns=ClimateGenerativeModelRepository.get_features()
-        )
-        result["year"] = year_col
-        result["month"] = month_col
-
-        result = result.set_index(keys=["year", "month"], drop=True)
-
-        return result
-
     def __train_model(
         self, past_climate_data_df: pd.DataFrame
-    ) -> tuple[Sequential, StandardScaler, StandardScaler, float]:
+    ) -> tuple[
+        Sequential, StandardScaler, StandardScaler, float, pd.DataFrame, pd.DataFrame
+    ]:
+        """_summary_
 
+        Args:
+            past_climate_data_df (pd.DataFrame): _description_
+
+        Returns:
+            tuple[Sequential, StandardScaler, StandardScaler, float, pd.DataFrame, pd.DataFrame]: _description_
+        """
         past_climate_data_df = ClimateGenerativeModelRepository.__add_sin_cos_year(
             past_climate_data_df
         )
@@ -242,17 +177,15 @@ class ClimateGenerativeModelRepository:
         )
 
         x_train_formatted, y_train_formatted = (
-            ClimateGenerativeModelRepository.__format_data(
+            ClimateGenerativeModelRepository.format_data(
                 x=x_train_scaled, y=y_train_scaled
             )
         )
-        x_val_formatted, y_val_formatted = (
-            ClimateGenerativeModelRepository.__format_data(
-                x=x_val_scaled, y=y_val_scaled
-            )
+        x_val_formatted, y_val_formatted = ClimateGenerativeModelRepository.format_data(
+            x=x_val_scaled, y=y_val_scaled
         )
         x_test_formatted, y_test_formatted = (
-            ClimateGenerativeModelRepository.__format_data(
+            ClimateGenerativeModelRepository.format_data(
                 x=x_test_scaled, y=y_test_scaled
             )
         )
@@ -281,12 +214,12 @@ class ClimateGenerativeModelRepository:
 
         rmse = model.evaluate(x=x_test_formatted, y=y_test_formatted)[1]
 
-        return model, x_scaler, y_scaler, rmse
+        return model, x_scaler, y_scaler, rmse, x_df_test, y_df_test
 
     async def create_model_for_location(
         self,
         location_id: UUID,
-    ) -> ClimateGenerativeModelDTO:
+    ) -> tuple[ClimateGenerativeModelDTO, pd.DataFrame, pd.DataFrame]:
         """Creates as Sequential model
 
         Args:
@@ -316,14 +249,16 @@ class ClimateGenerativeModelRepository:
         # train in thread
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
-            model, x_scaler, y_scaler, rmse = await loop.run_in_executor(
-                executor=pool,
-                func=lambda: self.__train_model(
-                    past_climate_data_df=past_climate_data_df,
-                ),
+            model, x_scaler, y_scaler, rmse, x_df_test, y_df_test = (
+                await loop.run_in_executor(
+                    executor=pool,
+                    func=lambda: self.__train_model(
+                        past_climate_data_df=past_climate_data_df,
+                    ),
+                )
             )
 
-        id = await self.__save_climate_generative_model(
+        model_id = await self.__save_climate_generative_model(
             location_id=location_id,
             model=model,
             x_scaler=x_scaler,
@@ -331,56 +266,89 @@ class ClimateGenerativeModelRepository:
             rmse=rmse,
         )
 
-        return ClimateGenerativeModelDTO(
-            id=id,
-            location_id=location_id,
-            model=model,
-            x_scaler=x_scaler,
-            y_scaler=y_scaler,
-            rmse=rmse
+        return (
+            ClimateGenerativeModelDTO(
+                id=model_id,
+                location_id=location_id,
+                model=model,
+                x_scaler=x_scaler,
+                y_scaler=y_scaler,
+                rmse=rmse,
+            ),
+            x_df_test,
+            y_df_test,
         )
 
-    def generate_climate_data_from_seed(
+    def generate_data_from_seed(
         self,
-        future_climate_data_df: pd.DataFrame,
-        seed_data: pd.DataFrame,
         model: Sequential,
-    ) -> list[np.ndarray]:
-        """Generates future climate data from the latest available past climate data
+        x_scaler: StandardScaler,
+        y_scaler: StandardScaler,
+        seed_data: pd.DataFrame,
+        future_climate_data_df: pd.DataFrame,
+    ) -> pd.DataFrame:
+        """Generates climate data for year, month > seed_data.
 
         Args:
-            future_climate_data_df (pd.DataFrame):
-            seed_data (pd.DataFrame):
             model (Sequential):
+            x_scaler (StandardScaler):
+            y_scaler (StandardScaler):
+            seed_data (np.ndarray):
+            future_climate_data_df (pd.DataFrame): future data that has to start from the month after seed_data
 
         Returns:
-            list[np.ndarray]:
+            pd.DataFrame:
         """
-        generated_data: list[np.ndarray] = []
-        current_sequences = seed_data
-        future_climate_data_array = future_climate_data_df[
-            ClimateGenerativeModelRepository.get_features()
-        ].to_numpy()
-        for _, future_climate_data in enumerate(future_climate_data_array):
-            prediction = model.predict(np.array([current_sequences]))[0]
-
-            # contains the next months's data, which is combined  rom prediction and CMIP5 data
-            enriched_prediction = np.append(
-                prediction,
-                future_climate_data,
-                axis=0,
+        seed_data = ClimateGenerativeModelRepository.__add_sin_cos_year(seed_data)
+        seed_data = seed_data[ClimateGenerativeModelRepository.get_features()]
+        future_climate_data_df = ClimateGenerativeModelRepository.__add_sin_cos_year(
+            future_climate_data_df
+        )
+        future_climate_data_df = future_climate_data_df[
+            ClimateGenerativeModelRepository.get_cmip5_columns()
+        ]
+        generated_data = []
+        # (SEQ_LENGHT, len(get_features()))
+        current_step = seed_data.to_numpy()
+        year_col: list[int] = []
+        month_col: list[int] = []
+        for index, row in future_climate_data_df.iterrows():
+            year, month = cast(pd.MultiIndex, index)
+            year_col.append(year)
+            month_col.append(month)
+            # (SEQ_LENGHT, len(get_features()))
+            scaled_current_step = cast(
+                np.ndarray,
+                x_scaler.inverse_transform(current_step),
             )
 
+            # (len(get_target()),)
+            scaled_prediction = cast(
+                np.ndarray, model(np.array([scaled_current_step]))
+            )[0]
+
+            # (len(get_target()),)
+            prediction = cast(
+                np.ndarray, y_scaler.inverse_transform(np.array([scaled_prediction]))
+            )[0]
+
+            # (len(get_features()),)
+            enriched_prediction = np.concatenate([prediction, row.to_numpy()], axis=0)
             generated_data.append(enriched_prediction)
 
-            # remove the first month of data and push the next month's generated data
-            current_sequences = np.append(
-                current_sequences[1:],
-                [enriched_prediction],
-                axis=0,
+            current_step = np.concatenate(
+                [current_step[1:], np.array([enriched_prediction])]
             )
-            break
-        return generated_data
+
+        result = pd.DataFrame(
+            data=generated_data, columns=ClimateGenerativeModelRepository.get_features()
+        )
+        result["year"] = year_col
+        result["month"] = month_col
+
+        result = result.set_index(keys=["year", "month"], drop=True)
+
+        return result
 
     async def generate_climate_data_from_last_past_climate_data(
         self,
@@ -404,7 +372,6 @@ class ClimateGenerativeModelRepository:
                 n=ClimateGenerativeModelRepository.get_seq_length(),
             )
         )
-        last_n_months_seed_data = last_n_months_seed_data[self.get_features()]
 
         index = last_n_months_seed_data.index[-1]
         start_year, start_month = index
@@ -428,13 +395,17 @@ class ClimateGenerativeModelRepository:
             )
         ]
 
-        data = self.generate_climate_data_from_seed(
-            future_climate_data_df=future_climate_data_df,
-            seed_data=last_n_months_seed_data,
+        data = self.generate_data_from_seed(
             model=climate_generative_model.model,
+            x_scaler=climate_generative_model.x_scaler,
+            y_scaler=climate_generative_model.y_scaler,
+            seed_data=last_n_months_seed_data,
+            future_climate_data_df=future_climate_data_df,
         )
 
         result = pd.DataFrame(data=data, columns=self.get_features())
+        print(data.shape)
+        print(future_climate_data_df.shape)
         result.index = future_climate_data_df.index
         return result
 
