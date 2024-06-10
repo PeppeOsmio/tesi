@@ -126,26 +126,34 @@ class PastClimateDataRepository:
         if len(past_climate_data_df) == 0:
             return
         async with self.session_maker() as session:
+            # delete the data of the same period as this dataframe
+            max_year, max_month = past_climate_data_df.index[-1]
+            min_year, min_month = past_climate_data_df.index[0]
+            stmt = delete(PastClimateData).where(
+                (
+                    (PastClimateData.year < max_year)
+                    | (
+                        (PastClimateData.year == max_year)
+                        & (PastClimateData.month <= max_month)
+                    )
+                )
+                & (
+                    (PastClimateData.year > min_year)
+                    | (
+                        (PastClimateData.year == min_year)
+                        & (PastClimateData.month >= min_month)
+                    )
+                )
+            )
+            await session.execute(stmt)
             STEP = 1000
             PROCESSED = 0
-            is_first_row = True
             while PROCESSED < len(past_climate_data_df):
                 rows = past_climate_data_df[PROCESSED : PROCESSED + STEP]
                 values_dicts: list[dict[str, Any]] = []
                 for index, row in rows.iterrows():
                     index = cast(pd.MultiIndex, index)
                     year, month = index
-
-                    # delete, if there are any, all the rows of this location from this time period
-                    if is_first_row:
-                        delete_stmt = delete(PastClimateData).where(
-                            (PastClimateData.year >= year)
-                            & (PastClimateData.month >= month)
-                            & (PastClimateData.location_id == location_id)
-                        )
-                        await session.execute(delete_stmt)
-                        is_first_row = False
-
                     values_dicts.append(
                         {
                             "id": uuid.uuid4(),
@@ -183,9 +191,7 @@ class PastClimateDataRepository:
                 PROCESSED += len(rows)
             await session.commit()
 
-    async def get_past_climate_data(
-        self, location_id: UUID
-    ) -> list[ClimateDataDTO]:
+    async def get_past_climate_data(self, location_id: UUID) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = select(
                 PastClimateData,

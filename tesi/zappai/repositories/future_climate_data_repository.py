@@ -26,18 +26,45 @@ class FutureClimateDataRepository:
         self.copernicus_data_store_api = copernicus_data_store_api
 
     async def download_future_climate_data(self):
-        def download_func():
-            df = self.copernicus_data_store_api.get_future_climate_data()
-            return df
-
         loop = asyncio.get_running_loop()
-        with ThreadPoolExecutor() as pool:
-            future_climate_data_df = await loop.run_in_executor(
-                executor=pool, func=download_func
+
+        def download_func():
+            def on_save_chunk(chunk: pd.DataFrame):
+                return asyncio.run_coroutine_threadsafe(
+                    coro=self.__save_future_climate_data(chunk),
+                    loop=loop,
+                ).result()
+
+            self.copernicus_data_store_api.get_future_climate_data(
+                on_save_chunk=on_save_chunk,
             )
 
+        with ThreadPoolExecutor() as pool:
+            await loop.run_in_executor(executor=pool, func=download_func)
+
+        logging.info(f"Done")
+
+    async def __save_future_climate_data(self, future_climate_data_df: pd.DataFrame):
         async with self.session_maker() as session:
-            stmt = delete(FutureClimateData)
+            # delete the data of the same period as this dataframe
+            max_year, max_month = future_climate_data_df.index[-1]
+            min_year, min_month = future_climate_data_df.index[0]
+            stmt = delete(FutureClimateData).where(
+                (
+                    (FutureClimateData.year < max_year)
+                    | (
+                        (FutureClimateData.year == max_year)
+                        & (FutureClimateData.month <= max_month)
+                    )
+                )
+                & (
+                    (FutureClimateData.year > min_year)
+                    | (
+                        (FutureClimateData.year == min_year)
+                        & (FutureClimateData.month >= min_month)
+                    )
+                )
+            )
             await session.execute(stmt)
             processed = 0
             STEP = 1000
@@ -73,13 +100,7 @@ class FutureClimateDataRepository:
                 await session.execute(insert(FutureClimateData).values(values_dicts))
                 processed += len(rows)
             await session.commit()
-        logging.info(f"Done")
-
-    async def did_download_future_climate_data(self) -> bool:
-        async with self.session_maker() as session:
-            stmt = select(FutureClimateData.year).limit(1)
-            result = await session.scalar(stmt)
-        return result is not None
+            logging.info(f"Done.")
 
     async def get_future_climate_data_for_nearest_coordinates(
         self, longitude: float, latitude: float, start_year: int, start_month: int

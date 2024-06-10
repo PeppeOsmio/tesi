@@ -121,7 +121,7 @@ async def main():
         await climate_generative_model_repository.create_model_for_location(
             location_id=location.id,
         )
-    generated_data = await climate_generative_model_repository.generate_climate_data(
+    generated_data = await climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
         location_id=location.id,
     )
     past_climate_data = ClimateDataDTO.from_list_to_dataframe(

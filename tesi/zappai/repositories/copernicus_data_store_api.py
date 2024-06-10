@@ -82,6 +82,11 @@ ERA5_VARIABLES = [
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
     # exclusive to ERA5 below
+    "surface_net_solar_radiation",
+    "surface_net_thermal_radiation",
+    "snowfall",
+    "total_cloud_cover",
+    "2m_dewpoint_temperature",
     "soil_temperature_level_3",
     "volumetric_soil_water_layer_3",
 ]
@@ -108,7 +113,9 @@ class CopernicusDataStoreAPI:
             verify=1,
         )
 
-    def get_future_climate_data(self) -> pd.DataFrame:
+    def get_future_climate_data(
+        self, on_save_chunk: Callable[[pd.DataFrame], None]
+    ):
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
         Response headers:
@@ -123,71 +130,77 @@ class CopernicusDataStoreAPI:
 
         zip_file = os.path.join(dest_dir, f"{random.randbytes(16).hex()}.zip")
 
-        self.cds_client.retrieve(
-            "projections-cmip5-monthly-single-levels",
-            {
-                "ensemble_member": "r10i1p1",
-                "format": "zip",
-                "variable": list(_CMIP5_VARIABLES),
-                "experiment": "historical",
-                "model": "gfdl_cm2p1",
-                "period": ["202101-202512"],
-            },
-            zip_file,
-        )
+        periods = ["202101-202512", "202601-203012"]
 
-        with zipfile.ZipFile(zip_file, "r") as zip_ref:
-            zip_ref.extractall(dest_dir)
-
-        os.remove(zip_file)
-
-        result_df = pd.DataFrame()
-
-        for extracted_file in os.listdir(dest_dir):
-            extracted_file_path = os.path.join(dest_dir, extracted_file)
-            if not extracted_file.endswith(".nc"):
-                continue
-            logging.info(f"Converting {extracted_file_path}")
-            df = common.convert_nc_file_to_dataframe(
-                source_file_path=extracted_file_path, limit=None
+        for period in periods:
+            logging.info(f"Downloading future climate data for period {period}")
+            self.cds_client.retrieve(
+                "projections-cmip5-monthly-single-levels",
+                {
+                    "ensemble_member": "r10i1p1",
+                    "format": "zip",
+                    "variable": list(_CMIP5_VARIABLES),
+                    "experiment": "historical",
+                    "model": "gfdl_cm2p1",
+                    "period": [period],
+                },
+                zip_file,
             )
-            # take only the first segment of each measurement for each day and location
-            df = df[df["bnds"] == 1.0]
-            df = df.drop(
-                columns=[
-                    "bnds",
-                    "average_DT",
-                    "average_T1",
-                    "average_T2",
-                    "time_bnds",
-                    "lat_bnds",
-                    "lon_bnds",
-                ],
+
+            with zipfile.ZipFile(zip_file, "r") as zip_ref:
+                zip_ref.extractall(dest_dir)
+
+            os.remove(zip_file)
+
+            result_df = pd.DataFrame()
+
+            for extracted_file in os.listdir(dest_dir):
+                extracted_file_path = os.path.join(dest_dir, extracted_file)
+                if not extracted_file.endswith(".nc"):
+                    continue
+                logging.info(f"Converting {extracted_file_path}")
+                df = common.convert_nc_file_to_dataframe(
+                    source_file_path=extracted_file_path, limit=None
+                )
+                # take only the first segment of each measurement for each day and location
+                df = df[df["bnds"] == 1.0]
+                df = df.drop(
+                    columns=[
+                        "bnds",
+                        "average_DT",
+                        "average_T1",
+                        "average_T2",
+                        "time_bnds",
+                        "lat_bnds",
+                        "lon_bnds",
+                    ],
+                )
+                df = df.dropna()
+                if "time" not in result_df.columns:
+                    result_df["time"] = df["time"]
+                if "longitude" not in result_df.columns:
+                    result_df["longitude"] = df["lon"]
+                if "latitude" not in result_df.columns:
+                    result_df["latitude"] = df["lat"]
+                for (
+                    key,
+                    value,
+                ) in _CMIP5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING.items():
+                    if key in df.columns:
+                        result_df[value] = df[key]
+                        result_df.reset_index()
+                        break
+                os.remove(extracted_file_path)
+            result_df = common.process_copernicus_climate_data(
+                df=result_df, columns_mappings={}
             )
-            df = df.dropna()
-            if "time" not in result_df.columns:
-                result_df["time"] = df["time"]
-            if "longitude" not in result_df.columns:
-                result_df["longitude"] = df["lon"]
-            if "latitude" not in result_df.columns:
-                result_df["latitude"] = df["lat"]
-            for key, value in _CMIP5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING.items():
-                if key in df.columns:
-                    result_df[value] = df[key]
-                    result_df.reset_index()
-                    break
-            os.remove(extracted_file_path)
-        result_df = common.process_copernicus_climate_data(
-            df=result_df, columns_mappings={}
-        )
 
-        # convert from mm/s (aggregated over 24 hours) to m
-        result_df["total_precipitation"] = (
-            (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
-        )
-        result_df = result_df.drop(columns=["mean_precipitation_flux"])
-
-        return result_df
+            # convert from mm/s (aggregated over 24 hours) to m
+            result_df["total_precipitation"] = (
+                (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
+            )
+            result_df = result_df.drop(columns=["mean_precipitation_flux"])
+            on_save_chunk(result_df)
 
     def get_past_climate_data_for_years(
         self,
