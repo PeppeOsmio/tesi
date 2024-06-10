@@ -173,9 +173,9 @@ class PastClimateDataRepository:
                             "snowfall": row["snowfall"],
                             "total_cloud_cover": row["total_cloud_cover"],
                             "dewpoint_temperature_2m": row["2m_dewpoint_temperature"],
-                            "soil_temperature_level_1": row["soil_temperature_level_1"],
-                            "volumetric_soil_water_layer_1": row[
-                                "volumetric_soil_water_layer_1"
+                            "soil_temperature_level_3": row["soil_temperature_level_3"],
+                            "volumetric_soil_water_layer_3": row[
+                                "volumetric_soil_water_layer_3"
                             ],
                         }
                     )
