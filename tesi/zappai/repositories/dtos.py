@@ -41,6 +41,7 @@ class ClimateGenerativeModelDTO:
     model: Sequential
     x_scaler: MinMaxScaler
     y_scaler: MinMaxScaler
+    mse: float
 
 
 @dataclass
@@ -109,8 +110,8 @@ class ClimateDataDTO:
     snowfall: float
     total_cloud_cover: float
     dewpoint_temperature_2m: float
-    soil_temperature_level_1: float
-    volumetric_soil_water_layer_1: float
+    soil_temperature_level_3: float
+    volumetric_soil_water_layer_3: float
 
     @staticmethod
     def from_list_to_dataframe(lst: list[ClimateDataDTO]) -> pd.DataFrame:

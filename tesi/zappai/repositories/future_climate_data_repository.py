@@ -41,7 +41,7 @@ class FutureClimateDataRepository:
             await session.execute(stmt)
             processed = 0
             STEP = 1000
-            logging.info(f"Saved {processed}/{len(future_climate_data_df)} future climate data")
+            logging.info(f"Saving future climate data...")
             while processed < len(future_climate_data_df):
                 rows = future_climate_data_df[processed : processed + STEP]
                 values_dicts: list[dict[str, Any]] = []
@@ -72,7 +72,6 @@ class FutureClimateDataRepository:
                     )
                 await session.execute(insert(FutureClimateData).values(values_dicts))
                 processed += len(rows)
-                logging.info(f"Saved {processed}/{len(future_climate_data_df)} future climate data")
             await session.commit()
         logging.info(f"Done")
 
@@ -83,7 +82,7 @@ class FutureClimateDataRepository:
         return result is not None
 
     async def get_future_climate_data_for_nearest_coordinates(
-        self, longitude: float, latitude: float
+        self, longitude: float, latitude: float, start_year: int, start_month: int
     ) -> list[FutureClimateDataDTO]:
         point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.session_maker() as session:
@@ -106,8 +105,10 @@ class FutureClimateDataRepository:
             stmt = (
                 select(FutureClimateData)
                 .where(
-                    FutureClimateData.longitude == nearest_longitude,
-                    FutureClimateData.latitude == nearest_latitude,
+                    (FutureClimateData.longitude == nearest_longitude)
+                    & (FutureClimateData.latitude == nearest_latitude)
+                    & (FutureClimateData.year >= start_year)
+                    & (FutureClimateData.month >= start_month)
                 )
                 .order_by(asc(FutureClimateData.year), asc(FutureClimateData.month))
             )

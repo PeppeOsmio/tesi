@@ -183,7 +183,7 @@ class PastClimateDataRepository:
                 PROCESSED += len(rows)
             await session.commit()
 
-    async def get_past_climate_data_for_location(
+    async def get_past_climate_data(
         self, location_id: UUID
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
@@ -195,7 +195,7 @@ class PastClimateDataRepository:
             raise Exception(f"Can't find past climate data for location {location_id}")
         return [self.__past_climate_data_model_to_dto(result) for result in results]
 
-    async def get_past_climate_data_of_location_of_previous_12_months(
+    async def get_past_climate_data_of_previous_12_months(
         self, location_id: UUID
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
@@ -263,6 +263,6 @@ class PastClimateDataRepository:
             snowfall=past_climate_data.snowfall,
             total_cloud_cover=past_climate_data.total_cloud_cover,
             dewpoint_temperature_2m=past_climate_data.dewpoint_temperature_2m,
-            soil_temperature_level_1=past_climate_data.soil_temperature_level_1,
-            volumetric_soil_water_layer_1=past_climate_data.volumetric_soil_water_layer_1,
+            soil_temperature_level_3=past_climate_data.soil_temperature_level_3,
+            volumetric_soil_water_layer_3=past_climate_data.volumetric_soil_water_layer_3,
         )

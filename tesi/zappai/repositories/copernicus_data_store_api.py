@@ -26,8 +26,8 @@ _ERA5_VARIABLES = {
     "snowfall",
     "total_cloud_cover",
     "2m_dewpoint_temperature",
-    "soil_temperature_level_1",
-    "volumetric_soil_water_layer_1",
+    "soil_temperature_level_3",
+    "volumetric_soil_water_layer_3",
 }
 
 _CMIP5_VARIABLES = {
@@ -54,10 +54,10 @@ _ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING = {
     "tcc": "total_cloud_cover",  # Total cloud cover
     "sf": "snowfall",  # Snowfall
     "d2m": "2m_dewpoint_temperature",  # Dewpoint temperature at 2 meters
-    "stl1": "soil_temperature_level_1",  # Soil temperature at level 1 (top layer)
+    "stl3": "soil_temperature_level_3",  # Soil temperature at level 1 (top layer)
     "ssr": "surface_net_solar_radiation",  # Surface net solar radiation
     "str": "surface_net_thermal_radiation",  # Surface net thermal radiation
-    "swvl1": "volumetric_soil_water_layer_1",  # Volumetric soil water content at layer 1
+    "swvl3": "volumetric_soil_water_layer_3",  # Volumetric soil water content at layer 1
 }
 
 
@@ -72,7 +72,7 @@ _CMIP5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING = {
     "rlds": "surface_thermal_radiation_downwards",  # Surface thermal radiation downwards
 }
 
-ERA5_VARIABLES = {
+ERA5_VARIABLES = [
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -82,16 +82,11 @@ ERA5_VARIABLES = {
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
     # exclusive to ERA5 below
-    "surface_net_solar_radiation",
-    "surface_net_thermal_radiation",
-    "snowfall",
-    "total_cloud_cover",
-    "2m_dewpoint_temperature",
-    "soil_temperature_level_1",
-    "volumetric_soil_water_layer_1",
-}
+    "soil_temperature_level_3",
+    "volumetric_soil_water_layer_3",
+]
 
-CMIP5_VARIABLES = {
+CMIP5_VARIABLES = [
     "10m_u_component_of_wind",
     "10m_v_component_of_wind",
     "2m_temperature",
@@ -100,7 +95,9 @@ CMIP5_VARIABLES = {
     "surface_pressure",
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
-}
+]
+
+ERA5_EXCLUSIVE_VARIABLES = list(set(ERA5_VARIABLES) - set(CMIP5_VARIABLES))
 
 
 class CopernicusDataStoreAPI:
@@ -184,17 +181,6 @@ class CopernicusDataStoreAPI:
             df=result_df, columns_mappings={}
         )
 
-        # take only the FUTURE data
-        now = datetime.now(tz=timezone.utc)
-        # the past data includes only the data from the previous previous month onwards
-        result_df = result_df[
-            (result_df.index.get_level_values("year") > now.year)
-            | (
-                (result_df.index.get_level_values("year") == now.year)
-                & (result_df.index.get_level_values("month") > now.month - 2)
-            )
-        ]
-
         # convert from mm/s (aggregated over 24 hours) to m
         result_df["total_precipitation"] = (
             (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
@@ -252,7 +238,8 @@ class CopernicusDataStoreAPI:
             )
 
             tmp_df = common.process_copernicus_climate_data(
-                df=tmp_df, columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING
+                df=tmp_df,
+                columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
             os.remove(tmp_file_path)
             on_save_chunk(tmp_df)

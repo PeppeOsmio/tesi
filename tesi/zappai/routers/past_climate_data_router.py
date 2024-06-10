@@ -14,7 +14,7 @@ async def get_past_climate_data_of_location(
     location_id: UUID,
     past_climate_data_repository: Annotated[PastClimateDataRepository, Depends(get_past_climate_data_repository)]
 ):
-    data = await past_climate_data_repository.get_past_climate_data_for_location(location_id)
+    data = await past_climate_data_repository.get_past_climate_data(location_id)
     return [GetPastClimateDataOfLocationResponse(
         year=item.year,
         month=item.month,

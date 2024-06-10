@@ -23,11 +23,12 @@ class Location(Base):
 class ClimateGenerativeModel(Base):
     __tablename__ = "climate_generative_model"
 
-    id: Mapped[UUID]
+    id: Mapped[UUID] = mapped_column(primary_key=True)
 
     model: Mapped[bytes]
     x_scaler: Mapped[bytes]
     y_scaler: Mapped[bytes]
+    mse: Mapped[float]
     location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id", ondelete="CASCADE"))
 
     location: Mapped[Location] = relationship()
@@ -86,8 +87,8 @@ class PastClimateData(Base):
     snowfall: Mapped[float]
     total_cloud_cover: Mapped[float]
     dewpoint_temperature_2m: Mapped[float]
-    soil_temperature_level_1: Mapped[float]
-    volumetric_soil_water_layer_1: Mapped[float]
+    soil_temperature_level_3: Mapped[float]
+    volumetric_soil_water_layer_3: Mapped[float]
 
     location: Mapped[Location] = relationship()
 
