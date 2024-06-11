@@ -43,6 +43,21 @@ class ClimateGenerativeModelDTO:
     y_scaler: StandardScaler
     rmse: float
 
+    train_start_year: int
+    train_start_month: int
+    train_end_year: int
+    train_end_month: int
+
+    validation_start_year: int
+    validation_start_month: int
+    validation_end_year: int
+    validation_end_month: int
+
+    test_start_year: int
+    test_start_month: int
+    test_end_year: int
+    test_end_month: int
+
 
 @dataclass
 class FutureClimateDataDTO:

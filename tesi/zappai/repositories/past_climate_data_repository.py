@@ -191,11 +191,39 @@ class PastClimateDataRepository:
                 PROCESSED += len(rows)
             await session.commit()
 
-    async def get_past_climate_data(self, location_id: UUID) -> list[ClimateDataDTO]:
+    async def get_past_climate_data(
+        self,
+        location_id: UUID,
+        year_from: int | None = None,
+        month_from: int | None = None,
+        year_to: int | None = None,
+        month_to: int | None = None,
+    ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
-            stmt = select(
-                PastClimateData,
-            ).where(PastClimateData.location_id == location_id)
+            if year_from is None:
+                stmt = select(
+                    PastClimateData,
+                ).where(PastClimateData.location_id == location_id)
+            else:
+                stmt = select(PastClimateData).where(
+                    (PastClimateData.location_id == location_id)
+                    & (
+                        (
+                            (PastClimateData.year > year_from)
+                            | (
+                                (PastClimateData.year == year_from)
+                                & (PastClimateData.month >= month_from)
+                            )
+                        )
+                        & (
+                            (PastClimateData.year < year_to)
+                            | (
+                                (PastClimateData.year == year_to)
+                                & (PastClimateData.month <= month_to)
+                            )
+                        )
+                    )
+                )
             results = list(await session.scalars(stmt))
         if len(results) == 0:
             raise Exception(f"Can't find past climate data for location {location_id}")

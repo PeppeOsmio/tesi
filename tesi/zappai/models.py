@@ -28,7 +28,23 @@ class ClimateGenerativeModel(Base):
     model: Mapped[bytes]
     x_scaler: Mapped[bytes]
     y_scaler: Mapped[bytes]
-    mse: Mapped[float]
+    rmse: Mapped[float]
+
+    train_start_year: Mapped[int]
+    train_start_month: Mapped[int]
+    train_end_year: Mapped[int]
+    train_end_month: Mapped[int]
+
+    validation_start_year: Mapped[int]
+    validation_start_month: Mapped[int]
+    validation_end_year: Mapped[int]
+    validation_end_month: Mapped[int]
+
+    test_start_year: Mapped[int]
+    test_start_month: Mapped[int]
+    test_end_year: Mapped[int]
+    test_end_month: Mapped[int]
+
     location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id", ondelete="CASCADE"))
 
     location: Mapped[Location] = relationship()

@@ -36,11 +36,11 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 import joblib
 
 BLACKLISTED_TARGET = [
-    # "surface_net_solar_radiation",
-    # "surface_net_thermal_radiation",
-    # "snowfall",
-    # "total_cloud_cover",
-    # "2m_dewpoint_temperature",
+    "surface_net_solar_radiation",
+    "surface_net_thermal_radiation",
+    "snowfall",
+    "total_cloud_cover",
+    "2m_dewpoint_temperature",
 ]
 
 
@@ -128,10 +128,25 @@ class ClimateGenerativeModelRepository:
         y_train_scaled_for_model = np.array(y_train_scaled_for_model)
         return x_train_scaled_with_sequences, y_train_scaled_for_model
 
-    def __train_model(
-        self, past_climate_data_df: pd.DataFrame
-    ) -> tuple[
-        Sequential, StandardScaler, StandardScaler, float, pd.DataFrame, pd.DataFrame
+    def __train_model(self, past_climate_data_df: pd.DataFrame) -> tuple[
+        Sequential,
+        StandardScaler,
+        StandardScaler,
+        float,
+        pd.DataFrame,
+        pd.DataFrame,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
+        int,
     ]:
         """_summary_
 
@@ -139,7 +154,7 @@ class ClimateGenerativeModelRepository:
             past_climate_data_df (pd.DataFrame): _description_
 
         Returns:
-            tuple[Sequential, StandardScaler, StandardScaler, float, pd.DataFrame, pd.DataFrame]: _description_
+            model, x_scaler, y_scaler, rmse, x_train_from
         """
         past_climate_data_df = ClimateGenerativeModelRepository.__add_sin_cos_year(
             past_climate_data_df
@@ -223,7 +238,33 @@ class ClimateGenerativeModelRepository:
 
         rmse = model.evaluate(x=x_test_formatted, y=y_test_formatted)[1]
 
-        return model, x_scaler, y_scaler, rmse, x_df_test, y_df_test
+        train_start_year, train_start_month = x_df_train.index[0]
+        train_end_year, train_end_month = x_df_train.index[-1]
+
+        validation_start_year, validation_start_month = x_df_val.index[0]
+        validation_end_year, validation_end_month = x_df_val.index[-1]
+
+        test_start_year, test_start_month = x_df_test.index[0]
+        test_end_year, test_end_month = x_df_test.index[-1]
+
+        return (
+            model,
+            x_scaler,
+            y_scaler,
+            rmse,
+            train_start_year,
+            train_start_month,
+            train_end_year,
+            train_end_month,
+            validation_start_year,
+            validation_start_month,
+            validation_end_year,
+            validation_end_month,
+            test_start_year,
+            test_start_month,
+            test_end_year,
+            test_end_month,
+        )
 
     async def create_model_for_location(
         self,
@@ -435,7 +476,7 @@ class ClimateGenerativeModelRepository:
             model=self.__bytes_to_object(climate_generative_model.model),
             x_scaler=self.__bytes_to_object(climate_generative_model.x_scaler),
             y_scaler=self.__bytes_to_object(climate_generative_model.y_scaler),
-            rmse=climate_generative_model.mse,
+            rmse=climate_generative_model.rmse,
         )
 
     async def delete_climate_generative_model(self, location_id: UUID):
