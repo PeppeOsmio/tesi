@@ -5,7 +5,7 @@ import logging
 from uuid import UUID
 import uuid
 import pandas as pd
-from sqlalchemy import delete, desc, insert, select
+from sqlalchemy import asc, delete, desc, insert, select
 import sqlalchemy
 from tesi.zappai.repositories.dtos import LocationClimateYearsDTO, ClimateDataDTO
 from tesi.zappai.models import PastClimateData
@@ -33,7 +33,7 @@ class PastClimateDataRepository:
             stmt = (
                 select(PastClimateData)
                 .where(PastClimateData.location_id == location_id)
-                .order_by(desc(PastClimateData.year), desc(PastClimateData.month))
+                .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
                 .limit(1)
             )
             result = await session.scalar(stmt)
@@ -201,9 +201,13 @@ class PastClimateDataRepository:
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             if year_from is None:
-                stmt = select(
-                    PastClimateData,
-                ).where(PastClimateData.location_id == location_id)
+                stmt = (
+                    select(
+                        PastClimateData,
+                    )
+                    .where(PastClimateData.location_id == location_id)
+                    .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
+                )
             else:
                 stmt = select(PastClimateData).where(
                     (PastClimateData.location_id == location_id)
@@ -223,7 +227,7 @@ class PastClimateDataRepository:
                             )
                         )
                     )
-                )
+                ).order_by(asc(PastClimateData.year), asc(PastClimateData.month))
             results = list(await session.scalars(stmt))
         if len(results) == 0:
             raise Exception(f"Can't find past climate data for location {location_id}")
@@ -249,6 +253,12 @@ class PastClimateDataRepository:
             raise Exception(
                 f"Can't find past climate data of previous 12 months for location"
             )
+        results.sort(
+            key=lambda past_climate_data: (
+                past_climate_data.year,
+                past_climate_data.month,
+            )
+        )
         return [self.__past_climate_data_model_to_dto(result) for result in results]
 
     async def get_unique_location_climate_years(
@@ -260,7 +270,7 @@ class PastClimateDataRepository:
                     PastClimateData.location_id,
                     PastClimateData.year,
                 )
-                .order_by(PastClimateData.location_id, PastClimateData.year)
+                .order_by(asc(PastClimateData.location_id), asc(PastClimateData.year))
                 .distinct()
             )
             results = list(await session.execute(stmt))

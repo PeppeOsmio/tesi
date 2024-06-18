@@ -105,6 +105,21 @@ class FutureClimateDataRepository:
     async def get_future_climate_data_for_nearest_coordinates(
         self, longitude: float, latitude: float, start_year: int, start_month: int
     ) -> list[FutureClimateDataDTO]:
+        """Get the future climate data starting from the month after start_year/start_month
+
+        Args:
+            longitude (float): _description_
+            latitude (float): _description_
+            start_year (int): _description_
+            start_month (int): _description_
+
+        Raises:
+            ValueError: _description_
+            ValueError: _description_
+
+        Returns:
+            list[FutureClimateDataDTO]: _description_
+        """
         point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.session_maker() as session:
             coordinates_stmt = (
@@ -128,8 +143,13 @@ class FutureClimateDataRepository:
                 .where(
                     (FutureClimateData.longitude == nearest_longitude)
                     & (FutureClimateData.latitude == nearest_latitude)
-                    & (FutureClimateData.year >= start_year)
-                    & (FutureClimateData.month >= start_month)
+                    & (
+                        (FutureClimateData.year > start_year)
+                        | (
+                            (FutureClimateData.year == start_year)
+                            & (FutureClimateData.month > start_month)
+                        )
+                    )
                 )
                 .order_by(asc(FutureClimateData.year), asc(FutureClimateData.month))
             )

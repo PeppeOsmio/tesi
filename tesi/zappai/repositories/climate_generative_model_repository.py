@@ -340,6 +340,8 @@ class ClimateGenerativeModelRepository:
                 np.ndarray,
                 x_scaler.transform(current_step),
             )
+            
+            print(f"current_step.soil_temperature_level_3: {current_step[:, 0]}")
 
             # (len(get_target()),)
             scaled_prediction = cast(
@@ -354,6 +356,8 @@ class ClimateGenerativeModelRepository:
             # (len(get_features()),)
             enriched_prediction = np.concatenate([prediction, row.to_numpy()], axis=0)
             generated_data.append(enriched_prediction)
+
+            print(f"enriched_prediction.soil_temperature_level_3: {enriched_prediction[0]}")
 
             current_step = np.concatenate(
                 [current_step[1:], np.array([enriched_prediction])]
@@ -413,6 +417,10 @@ class ClimateGenerativeModelRepository:
                 & (future_climate_data_df.index.get_level_values("month") > start_month)
             )
         ]
+
+        print(last_n_months_seed_data.tail().index)
+        print(future_climate_data_df.head().index)
+        
 
         data = self.generate_data_from_seed(
             model=climate_generative_model.model,
