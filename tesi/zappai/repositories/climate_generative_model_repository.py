@@ -35,14 +35,67 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 import joblib
 
-BLACKLISTED_TARGET = [
-    "surface_net_solar_radiation",
-    "surface_net_thermal_radiation",
-    "snowfall",
-    "total_cloud_cover",
-    "2m_dewpoint_temperature",
+# These are the ERA5 variables
+FEATURES = [
+    # these are the TARGET
+    # "surface_net_solar_radiation",
+    # "surface_net_thermal_radiation",
+    # "snowfall",
+    # "total_cloud_cover",
+    # "2m_dewpoint_temperature",
+    # "volumetric_soil_water_layer_3",ù
+    "soil_temperature_level_3",
+    # CMIP5 variables
+    "sin_year",
+    "cos_year",
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "total_precipitation",
+    "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",    
 ]
 
+TARGET = [
+    # "surface_net_solar_radiation",
+    # "surface_net_thermal_radiation",
+    # "snowfall",
+    # "total_cloud_cover",
+    # "2m_dewpoint_temperature",
+    "soil_temperature_level_3",
+    # "volumetric_soil_water_layer_3",
+]
+
+# These are the variables of future climate data
+CMIP5_VARIABLES = [
+    "sin_year",
+    "cos_year",
+    "10m_u_component_of_wind",
+    "10m_v_component_of_wind",
+    "2m_temperature",
+    "evaporation",
+    "total_precipitation",
+    "surface_pressure",
+    "surface_solar_radiation_downwards",
+    "surface_thermal_radiation_downwards",
+]
+
+SEQ_LENGTH = 12
+
+def add_sin_cos_year(df: pd.DataFrame):
+    # Reset the index to access the multi-index columns
+    df_reset = df.reset_index()
+    # Convert year and month to a single time representation (fractional year)
+    df_reset.drop(columns=["sin_year"], errors="ignore")
+    df_reset.drop(columns=["cos_year"], errors="ignore")
+    # Create sin and cos features
+    df_reset["sin_year"] = np.sin(2 * np.pi * (df_reset["month"] - 1) / 12)
+    df_reset["cos_year"] = np.cos(2 * np.pi * (df_reset["month"] - 1) / 12)
+    # Optionally, set the index back to the original if needed
+    df_reset = df_reset.set_index(["year", "month"])
+    return df_reset
 
 class ClimateGenerativeModelRepository:
     def __init__(
@@ -56,51 +109,6 @@ class ClimateGenerativeModelRepository:
         self.location_repository = location_repository
         self.past_climate_data_repository = past_climate_data_repository
         self.future_climate_data_repository = future_climate_data_repository
-
-    @staticmethod
-    def get_cmip5_columns() -> list[str]:
-        return [
-            "sin_year",
-            "cos_year",
-            *copernicus_data_store_api.CMIP5_VARIABLES,
-        ]
-
-    @staticmethod
-    def get_features() -> list[str]:
-        return [
-            *ClimateGenerativeModelRepository.get_target(),
-            *ClimateGenerativeModelRepository.get_cmip5_columns(),
-        ]
-
-    @staticmethod
-    def get_target() -> list[str]:
-        target = copernicus_data_store_api.ERA5_EXCLUSIVE_VARIABLES
-        for item in BLACKLISTED_TARGET:
-            try:
-                target.remove(item)
-            except Exception:
-                pass
-        return target
-
-    @staticmethod
-    def get_seq_length() -> int:
-        return 12
-
-    @staticmethod
-    def add_sin_cos_year(df: pd.DataFrame):
-        # Reset the index to access the multi-index columns
-        df_reset = df.reset_index()
-
-        # Convert year and month to a single time representation (fractional year)
-        df_reset.drop(columns=["sin_year"], errors="ignore")
-        df_reset.drop(columns=["cos_year"], errors="ignore")
-        # Create sin and cos features
-        df_reset["sin_year"] = np.sin(2 * np.pi * (df_reset["month"] - 1) / 12)
-        df_reset["cos_year"] = np.cos(2 * np.pi * (df_reset["month"] - 1) / 12)
-
-        # Optionally, set the index back to the original if needed
-        df_reset = df_reset.set_index(["year", "month"])
-        return df_reset
 
     def __bytes_to_object(self, bts: bytes) -> Any:
         bytes_io = BytesIO(initial_bytes=bts)
@@ -116,12 +124,12 @@ class ClimateGenerativeModelRepository:
     def format_data(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
         x_train_scaled_with_sequences = []
         y_train_scaled_for_model = []
-        for i in range(len(x) - ClimateGenerativeModelRepository.get_seq_length()):
+        for i in range(len(x) - SEQ_LENGTH):
             x_train_scaled_with_sequences.append(
-                x[i : i + ClimateGenerativeModelRepository.get_seq_length()]
+                x[i : i + SEQ_LENGTH]
             )
             y_train_scaled_for_model.append(
-                y[i + ClimateGenerativeModelRepository.get_seq_length()]
+                y[i + SEQ_LENGTH]
             )
 
         x_train_scaled_with_sequences = np.array(x_train_scaled_with_sequences)
@@ -139,15 +147,15 @@ class ClimateGenerativeModelRepository:
         Returns:
             model, x_scaler, y_scaler, rmse, x_train_from
         """
-        past_climate_data_df = ClimateGenerativeModelRepository.add_sin_cos_year(
+        past_climate_data_df = add_sin_cos_year(
             past_climate_data_df
         )
         past_climate_data_df = past_climate_data_df[
-            ClimateGenerativeModelRepository.get_features()
+            FEATURES
         ]
 
-        x_df = past_climate_data_df[ClimateGenerativeModelRepository.get_features()]
-        y_df = past_climate_data_df[ClimateGenerativeModelRepository.get_target()]
+        x_df = past_climate_data_df[FEATURES]
+        y_df = past_climate_data_df[TARGET]
 
         perc_70 = int(len(x_df) * 0.7)
         perc_85 = int(len(x_df) * 0.85)
@@ -173,14 +181,14 @@ class ClimateGenerativeModelRepository:
         y_scaler = y_scaler.fit(y_df_train.to_numpy())
 
         x_train_scaled, x_val_scaled, x_test_scaled = (
-            cast(np.ndarray, x_scaler.transform(x_df_train)),
-            cast(np.ndarray, x_scaler.transform(x_df_val)),
-            cast(np.ndarray, x_scaler.transform(x_df_test)),
+            cast(np.ndarray, x_scaler.transform(x_df_train.to_numpy())),
+            cast(np.ndarray, x_scaler.transform(x_df_val.to_numpy())),
+            cast(np.ndarray, x_scaler.transform(x_df_test.to_numpy())),
         )
         y_train_scaled, y_val_scaled, y_test_scaled = (
-            cast(np.ndarray, y_scaler.transform(y_df_train)),
-            cast(np.ndarray, y_scaler.transform(y_df_val)),
-            cast(np.ndarray, y_scaler.transform(y_df_test)),
+            cast(np.ndarray, y_scaler.transform(y_df_train.to_numpy())),
+            cast(np.ndarray, y_scaler.transform(y_df_val.to_numpy())),
+            cast(np.ndarray, y_scaler.transform(y_df_test.to_numpy())),
         )
 
         x_train_formatted, y_train_formatted = (
@@ -201,14 +209,14 @@ class ClimateGenerativeModelRepository:
         model.add(
             InputLayer(
                 shape=(
-                    ClimateGenerativeModelRepository.get_seq_length(),
-                    len(ClimateGenerativeModelRepository.get_features()),
+                    SEQ_LENGTH,
+                    len(FEATURES),
                 )
             )
         )
         model.add(LSTM(units=64))
         model.add(Dense(units=8))
-        model.add(Dense(units=len(ClimateGenerativeModelRepository.get_target())))
+        model.add(Dense(units=len(TARGET)))
 
         model.compile(loss=MeanSquaredError(), optimizer=Adam(learning_rate=0.0001), metrics=[RootMeanSquaredError()])  # type: ignore
 
@@ -318,13 +326,13 @@ class ClimateGenerativeModelRepository:
         Returns:
             pd.DataFrame:
         """
-        seed_data = ClimateGenerativeModelRepository.add_sin_cos_year(seed_data)
-        seed_data = seed_data[ClimateGenerativeModelRepository.get_features()]
-        future_climate_data_df = ClimateGenerativeModelRepository.add_sin_cos_year(
+        seed_data = add_sin_cos_year(seed_data)
+        seed_data = seed_data[FEATURES]
+        future_climate_data_df = add_sin_cos_year(
             future_climate_data_df
         )
         future_climate_data_df = future_climate_data_df[
-            ClimateGenerativeModelRepository.get_cmip5_columns()
+            CMIP5_VARIABLES
         ]
         generated_data = []
         # (SEQ_LENGHT, len(get_features()))
@@ -340,7 +348,7 @@ class ClimateGenerativeModelRepository:
                 np.ndarray,
                 x_scaler.transform(current_step),
             )
-            
+
             print(f"current_step.soil_temperature_level_3: {current_step[:, 0]}")
 
             # (len(get_target()),)
@@ -357,14 +365,16 @@ class ClimateGenerativeModelRepository:
             enriched_prediction = np.concatenate([prediction, row.to_numpy()], axis=0)
             generated_data.append(enriched_prediction)
 
-            print(f"enriched_prediction.soil_temperature_level_3: {enriched_prediction[0]}")
+            print(
+                f"enriched_prediction.soil_temperature_level_3: {enriched_prediction[0]}"
+            )
 
             current_step = np.concatenate(
                 [current_step[1:], np.array([enriched_prediction])]
             )
 
         result = pd.DataFrame(
-            data=generated_data, columns=ClimateGenerativeModelRepository.get_features()
+            data=generated_data, columns=FEATURES
         )
         result["year"] = year_col
         result["month"] = month_col
@@ -392,7 +402,7 @@ class ClimateGenerativeModelRepository:
         last_n_months_seed_data = ClimateDataDTO.from_list_to_dataframe(
             await self.past_climate_data_repository.get_past_climate_data_of_previous_n_months(
                 location_id=location_id,
-                n=ClimateGenerativeModelRepository.get_seq_length(),
+                n=SEQ_LENGTH,
             )
         )
 
@@ -420,7 +430,6 @@ class ClimateGenerativeModelRepository:
 
         print(last_n_months_seed_data.tail().index)
         print(future_climate_data_df.head().index)
-        
 
         data = self.generate_data_from_seed(
             model=climate_generative_model.model,
@@ -430,7 +439,7 @@ class ClimateGenerativeModelRepository:
             future_climate_data_df=future_climate_data_df,
         )
 
-        result = pd.DataFrame(data=data, columns=self.get_features())
+        result = pd.DataFrame(data=data, columns=FEATURES)
         print(data.shape)
         print(future_climate_data_df.shape)
         result.index = future_climate_data_df.index
