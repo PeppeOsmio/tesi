@@ -19,7 +19,6 @@ async def main():
         session_maker=session_maker, cds_api=cds_api
     )
 
-    
     while True:
         try:
             await future_climate_data_repository.download_future_climate_data()

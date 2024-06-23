@@ -5,6 +5,7 @@ Revises: 687d2a7c16ac
 Create Date: 2024-06-06 09:43:32.404246
 
 """
+
 from typing import Sequence, Union
 
 from alembic import op
@@ -13,8 +14,8 @@ import geoalchemy2
 
 
 # revision identifiers, used by Alembic.
-revision: str = '98106aaf901a'
-down_revision: Union[str, None] = '687d2a7c16ac'
+revision: str = "98106aaf901a"
+down_revision: Union[str, None] = "687d2a7c16ac"
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 

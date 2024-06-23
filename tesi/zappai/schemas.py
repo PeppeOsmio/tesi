@@ -1,5 +1,6 @@
 from tesi.schemas import CustomBaseModel
 
+
 class GetPastClimateDataOfLocationResponse(CustomBaseModel):
     year: int
     month: int

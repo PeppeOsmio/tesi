@@ -58,21 +58,11 @@ MODEL_CMIP5_VARIABLES = [
 ]
 
 # These are the variables of future climate data
-MODEL_CMIP5_VARIABLES_WITH_SIN_COS = [
-    "sin_year",
-    "cos_year",
-    *MODEL_CMIP5_VARIABLES
-]
+MODEL_CMIP5_VARIABLES_WITH_SIN_COS = ["sin_year", "cos_year", *MODEL_CMIP5_VARIABLES]
 
-FEATURES = [
-    *TARGET,
-    *MODEL_CMIP5_VARIABLES
-]
+FEATURES = [*TARGET, *MODEL_CMIP5_VARIABLES]
 
-FEATURES_WITH_SIN_COS = [
-    *TARGET,
-    *MODEL_CMIP5_VARIABLES_WITH_SIN_COS
-]
+FEATURES_WITH_SIN_COS = [*TARGET, *MODEL_CMIP5_VARIABLES_WITH_SIN_COS]
 
 SEQ_LENGTH = 12
 
@@ -193,7 +183,7 @@ class ClimateGenerativeModelRepository:
                 test_end_year=test_end_year,
                 test_end_month=test_end_month,
             )
-        
+
         y_scaler = StandardScaler()
         y_scaler = y_scaler.fit(y_df_train.to_numpy())
 
@@ -374,7 +364,9 @@ class ClimateGenerativeModelRepository:
         seed_data_df = add_sin_cos_year(seed_data_df)
         seed_data_df = seed_data_df[FEATURES_WITH_SIN_COS]
         future_climate_data_df = add_sin_cos_year(future_climate_data_df)
-        future_climate_data_df = future_climate_data_df[MODEL_CMIP5_VARIABLES_WITH_SIN_COS]
+        future_climate_data_df = future_climate_data_df[
+            MODEL_CMIP5_VARIABLES_WITH_SIN_COS
+        ]
         generated_data = []
         # shape (SEQ_LENGHT, len(FEATURES))
         current_step = seed_data_df.to_numpy()

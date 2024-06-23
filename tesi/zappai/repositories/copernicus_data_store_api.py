@@ -113,9 +113,7 @@ class CopernicusDataStoreAPI:
             verify=1,
         )
 
-    def get_future_climate_data(
-        self, on_save_chunk: Callable[[pd.DataFrame], None]
-    ):
+    def get_future_climate_data(self, on_save_chunk: Callable[[pd.DataFrame], None]):
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
         Response headers:

@@ -20,6 +20,7 @@ class Location(Base):
         UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
     )
 
+
 class ClimateGenerativeModel(Base):
     __tablename__ = "climate_generative_model"
 
@@ -45,14 +46,13 @@ class ClimateGenerativeModel(Base):
     test_end_year: Mapped[int]
     test_end_month: Mapped[int]
 
-    location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id", ondelete="CASCADE"))
+    location_id: Mapped[UUID] = mapped_column(
+        ForeignKey(column="location.id", ondelete="CASCADE")
+    )
 
     location: Mapped[Location] = relationship()
 
-    __table_args__ = (
-        UniqueConstraint("location_id", name="_location_id_nc"),
-    )
-
+    __table_args__ = (UniqueConstraint("location_id", name="_location_id_nc"),)
 
 
 class Crop(Base):

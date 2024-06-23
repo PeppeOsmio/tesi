@@ -209,25 +209,29 @@ class PastClimateDataRepository:
                     .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
                 )
             else:
-                stmt = select(PastClimateData).where(
-                    (PastClimateData.location_id == location_id)
-                    & (
-                        (
-                            (PastClimateData.year > year_from)
-                            | (
-                                (PastClimateData.year == year_from)
-                                & (PastClimateData.month >= month_from)
-                            )
-                        )
+                stmt = (
+                    select(PastClimateData)
+                    .where(
+                        (PastClimateData.location_id == location_id)
                         & (
-                            (PastClimateData.year < year_to)
-                            | (
-                                (PastClimateData.year == year_to)
-                                & (PastClimateData.month <= month_to)
+                            (
+                                (PastClimateData.year > year_from)
+                                | (
+                                    (PastClimateData.year == year_from)
+                                    & (PastClimateData.month >= month_from)
+                                )
+                            )
+                            & (
+                                (PastClimateData.year < year_to)
+                                | (
+                                    (PastClimateData.year == year_to)
+                                    & (PastClimateData.month <= month_to)
+                                )
                             )
                         )
                     )
-                ).order_by(asc(PastClimateData.year), asc(PastClimateData.month))
+                    .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
+                )
             results = list(await session.scalars(stmt))
         if len(results) == 0:
             raise Exception(f"Can't find past climate data for location {location_id}")
