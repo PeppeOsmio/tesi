@@ -57,36 +57,22 @@ async def main():
         if len(item.years) > 0
     ]
 
-    semaphore = asyncio.Semaphore(CONCURRENT_REQUESTS)
     processed = 0
     logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
 
-    async def worker(
-        semaphore: asyncio.Semaphore, location_climate_years: LocationClimateYearsDTO
-    ):
-        async with semaphore:
-            retries = 0
-            while retries < 10:
-                try:
-                    await past_climate_data_repository.download_past_climate_data_for_years(
-                        location_id=location_climate_years.location_id,
-                        years=list(location_climate_years.years),
-                    )
-                    break
-                except Exception as e:
-                    logging.error(traceback.format_exc())
-                    logging.error("Failed to fetch past climate data, retrying...")
-                    retries += 1
-
-    for task in asyncio.as_completed(
-        [
-            worker(semaphore=semaphore, location_climate_years=location_climate_years)
-            for location_climate_years in location_climate_years_to_fetch
-        ]
-    ):
-        await task
-        processed += 1
-        logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
+    for location_climate_years in location_climate_years_to_fetch:
+        try:
+            await past_climate_data_repository.download_past_climate_data_for_years(
+                location_id=location_climate_years.location_id,
+                years=list(location_climate_years.years),
+            )
+            logging.info(
+                f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
+            )
+        except Exception as e:
+            logging.error(traceback.format_exc())
+            logging.error("Failed to fetch past climate data, retrying...")
+            retries += 1
 
 
 if __name__ == "__main__":
