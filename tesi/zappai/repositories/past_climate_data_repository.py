@@ -13,6 +13,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
 from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
+from tesi.zappai.utils.common import get_next_n_months
 
 
 class PastClimateDataRepository:
@@ -82,11 +83,9 @@ class PastClimateDataRepository:
             max_year = last_climate_data.year
             max_month = last_climate_data.month
 
-            year_from = max_year
-            month_from = max_month + 1
-            if month_from == 13:
-                year_from += 1
-                month_from = 1
+            year_from, month_from = get_next_n_months(
+                n=1, month=max_month, year=max_year
+            )
 
         location = await self.location_repository.get_location_by_id(location_id)
 
@@ -191,47 +190,53 @@ class PastClimateDataRepository:
                 PROCESSED += len(rows)
             await session.commit()
 
+    async def get_all_past_climate_data(
+        self,
+        location_id: UUID,
+    ) -> list[ClimateDataDTO]:
+        async with self.session_maker() as session:
+            stmt = (
+                select(PastClimateData)
+                .where(PastClimateData.location_id == location_id)
+                .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
+            )
+            results = list(await session.scalars(stmt))
+        if len(results) == 0:
+            raise Exception(f"Can't find past climate data for location {location_id}")
+        return [self.__past_climate_data_model_to_dto(result) for result in results]
+
     async def get_past_climate_data(
         self,
         location_id: UUID,
-        year_from: int | None = None,
-        month_from: int | None = None,
-        year_to: int | None = None,
-        month_to: int | None = None,
+        year_from: int,
+        month_from: int,
+        year_to: int,
+        month_to: int,
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
-            if year_from is None:
-                stmt = (
-                    select(
-                        PastClimateData,
-                    )
-                    .where(PastClimateData.location_id == location_id)
-                    .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
-                )
-            else:
-                stmt = (
-                    select(PastClimateData)
-                    .where(
-                        (PastClimateData.location_id == location_id)
-                        & (
-                            (
-                                (PastClimateData.year > year_from)
-                                | (
-                                    (PastClimateData.year == year_from)
-                                    & (PastClimateData.month >= month_from)
-                                )
+            stmt = (
+                select(PastClimateData)
+                .where(
+                    (PastClimateData.location_id == location_id)
+                    & (
+                        (
+                            (PastClimateData.year > year_from)
+                            | (
+                                (PastClimateData.year == year_from)
+                                & (PastClimateData.month >= month_from)
                             )
-                            & (
-                                (PastClimateData.year < year_to)
-                                | (
-                                    (PastClimateData.year == year_to)
-                                    & (PastClimateData.month <= month_to)
-                                )
+                        )
+                        & (
+                            (PastClimateData.year < year_to)
+                            | (
+                                (PastClimateData.year == year_to)
+                                & (PastClimateData.month <= month_to)
                             )
                         )
                     )
-                    .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
                 )
+                .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
+            )
             results = list(await session.scalars(stmt))
         if len(results) == 0:
             raise Exception(f"Can't find past climate data for location {location_id}")

@@ -9,7 +9,12 @@ import uuid
 import pandas as pd
 import requests
 from sqlalchemy import delete, insert, select
-from tesi.zappai.repositories.dtos import CropDTO, LocationClimateYearsDTO
+from tesi.zappai.exceptions import CropNotFoundError, LocationNotFoundError
+from tesi.zappai.repositories.dtos import (
+    CropDTO,
+    CropYieldDataDTO,
+    LocationClimateYearsDTO,
+)
 from tesi.zappai.models import Crop, CropYieldData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -234,14 +239,6 @@ class CropYieldDataRepository:
                 logging.info(f"{processed}/{len(crop_yield_data_df)}")
             await session.commit()
 
-    async def get_crop_by_name(self, name: str) -> CropDTO | None:
-        async with self.session_maker() as session:
-            stmt = select(Crop).where(Crop.name == name)
-            crop = await session.scalar(stmt)
-        if crop is None:
-            return None
-        return self.__crop_model_to_dto(crop)
-
     async def get_unique_location_climate_years(
         self,
     ) -> list[LocationClimateYearsDTO]:
@@ -274,5 +271,28 @@ class CropYieldDataRepository:
             for location_id, years in location_id_to_years_dict.items()
         ]
 
-    def __crop_model_to_dto(self, crop: Crop) -> CropDTO:
-        return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)
+    async def get_crop_yield_data(self, crop_id: uuid.UUID) -> list[CropYieldDataDTO]:
+        crop = await self.crop_repository.get_crop_by_id(crop_id)
+        if crop is None:
+            raise CropNotFoundError()
+        async with self.session_maker() as session:
+            stmt = select(CropYieldData).where(CropYieldData.crop_id == crop_id)
+            results = list(await session.scalars(stmt))
+        return [
+            self.__crop_yield_data_model_to_dto(crop_yield_data)
+            for crop_yield_data in results
+        ]
+
+    def __crop_yield_data_model_to_dto(
+        self, crop_yield_data: CropYieldData
+    ) -> CropYieldDataDTO:
+        return CropYieldDataDTO(
+            id=crop_yield_data.id,
+            location_id=crop_yield_data.location_id,
+            crop_id=crop_yield_data.crop_id,
+            sowing_year=crop_yield_data.sowing_year,
+            sowing_month=crop_yield_data.sowing_month,
+            harvest_year=crop_yield_data.harvest_year,
+            harvest_month=crop_yield_data.harvest_month,
+            _yield=crop_yield_data._yield,
+        )

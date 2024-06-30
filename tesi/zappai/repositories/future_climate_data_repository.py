@@ -5,7 +5,7 @@ import os
 import uuid
 from geoalchemy2 import Geography
 import pandas as pd
-from sqlalchemy import asc, delete, func, insert, select
+from sqlalchemy import BooleanClauseList, asc, delete, func, insert, select
 from tesi.zappai.repositories.dtos import FutureClimateDataDTO
 from tesi.zappai.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -103,24 +103,30 @@ class FutureClimateDataRepository:
             logging.info(f"Done.")
 
     async def get_future_climate_data_for_nearest_coordinates(
-        self, longitude: float, latitude: float, start_year: int, start_month: int
+        self,
+        longitude: float,
+        latitude: float,
+        year_from: int,
+        month_from: int,
+        year_to: int,
+        month_to: int,
     ) -> list[FutureClimateDataDTO]:
-        """Get the future climate data starting from the month after start_year/start_month
+        """Get the future climate data starting from the provided start and end.
 
         Args:
-            longitude (float): _description_
-            latitude (float): _description_
-            start_year (int): _description_
-            start_month (int): _description_
+            longitude (float):
+            latitude (float):
+            start_year (int):
+            start_month (int):
+            end_year (int):
+            end_month: (int):
 
         Raises:
-            ValueError: _description_
-            ValueError: _description_
+            ValueError:
 
         Returns:
-            list[FutureClimateDataDTO]: _description_
+            list[FutureClimateDataDTO]:
         """
-        point_well_known_text = f"POINT({longitude} {latitude})"
         async with self.session_maker() as session:
             coordinates_stmt = (
                 select(
@@ -129,7 +135,12 @@ class FutureClimateDataRepository:
                     asc(
                         ST_Distance(
                             FutureClimateData.coordinates,
-                            sqlalchemy.cast(point_well_known_text, Geography),
+                            sqlalchemy.cast(
+                                coordinates_to_well_known_text(
+                                    longitude=longitude, latitude=latitude
+                                ),
+                                Geography,
+                            ),
                         )
                     )
                 )
@@ -144,10 +155,17 @@ class FutureClimateDataRepository:
                     (FutureClimateData.longitude == nearest_longitude)
                     & (FutureClimateData.latitude == nearest_latitude)
                     & (
-                        (FutureClimateData.year > start_year)
+                        (FutureClimateData.year > year_from)
                         | (
-                            (FutureClimateData.year == start_year)
-                            & (FutureClimateData.month > start_month)
+                            (FutureClimateData.year == year_from)
+                            & (FutureClimateData.month >= month_from)
+                        )
+                    )
+                    & (
+                        (FutureClimateData.year < year_to)
+                        | (
+                            (FutureClimateData.year == year_to)
+                            & (FutureClimateData.month <= month_to)
                         )
                     )
                 )

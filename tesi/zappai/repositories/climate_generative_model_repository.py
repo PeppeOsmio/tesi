@@ -36,6 +36,8 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 import joblib
 
+from tesi.zappai.utils.common import get_next_n_months
+
 TARGET = [
     # "10m_u_component_of_wind",
     # "10m_v_component_of_wind",
@@ -283,7 +285,7 @@ class ClimateGenerativeModelRepository:
             raise LocationNotFoundError()
 
         past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
-            await self.past_climate_data_repository.get_past_climate_data(
+            await self.past_climate_data_repository.get_all_past_climate_data(
                 location_id=location.id
             )
         )
@@ -411,8 +413,7 @@ class ClimateGenerativeModelRepository:
         return result
 
     async def generate_climate_data_from_last_past_climate_data(
-        self,
-        location_id: UUID,
+        self, location_id: UUID, months: int
     ) -> pd.DataFrame:
         location = await self.location_repository.get_location_by_id(location_id)
         if location is None:
@@ -438,12 +439,18 @@ class ClimateGenerativeModelRepository:
         start_year = cast(int, start_year)
         start_month = cast(int, start_month)
 
+        year_to, month_to = get_next_n_months(
+            n=months, month=start_month, year=start_year
+        )
+
         future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
             await self.future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
                 longitude=location.longitude,
                 latitude=location.latitude,
-                start_year=start_year,
-                start_month=start_month,
+                year_from=start_year,
+                month_from=start_month,
+                year_to=year_to,
+                month_to=month_to,
             )
         )
 

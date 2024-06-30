@@ -25,6 +25,26 @@ class CropDTO:
 
 
 @dataclass
+class CropYieldDataDTO:
+    id: UUID
+    location_id: UUID
+    crop_id: UUID
+    sowing_year: int
+    sowing_month: int
+    harvest_year: int
+    harvest_month: int
+    _yield: float
+
+    @staticmethod
+    def from_list_to_dataframe(lst: list[CropYieldDataDTO]) -> pd.DataFrame:
+        df = pd.DataFrame([obj.__dict__ for obj in lst])
+        df = df.sort_values(by=["sowing_year", "sowing_month"])
+        df = df.reset_index()
+        return df
+
+
+
+@dataclass
 class LocationDTO:
     id: UUID
     country: str
@@ -76,8 +96,8 @@ class FutureClimateDataDTO:
     surface_thermal_radiation_downwards: float
 
     @staticmethod
-    def from_list_to_dataframe(list: list[FutureClimateDataDTO]) -> pd.DataFrame:
-        df = pd.DataFrame([obj.__dict__ for obj in list])
+    def from_list_to_dataframe(lst: list[FutureClimateDataDTO]) -> pd.DataFrame:
+        df = pd.DataFrame([obj.__dict__ for obj in lst])
         df = df.rename(
             columns={
                 "u_component_of_wind_10m": "10m_u_component_of_wind",

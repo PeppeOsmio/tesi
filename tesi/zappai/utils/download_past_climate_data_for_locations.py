@@ -75,7 +75,7 @@ async def main():
                     break
                 except Exception as e:
                     logging.error(traceback.format_exc())
-                    logging.info("Failed to fetch past climate data, retrying...")
+                    logging.error("Failed to fetch past climate data, retrying...")
                     retries += 1
 
     for task in asyncio.as_completed(

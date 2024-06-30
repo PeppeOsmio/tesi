@@ -11,6 +11,38 @@ EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
 
 
+def get_next_n_months(n: int, month: int, year: int) -> tuple[int, int]:
+    if n < 1:
+        raise ValueError(f"n can't be less than 1")
+
+    result_month, result_year = month, year
+
+    for _ in range(n):
+        if result_month == 12:
+            result_month = 1
+            result_year += 1
+            continue
+        result_month += 1
+
+    return result_month, result_year
+
+
+def get_previous_n_months(n: int, month: int, year: int) -> tuple[int, int]:
+    if n < 1:
+        raise ValueError(f"n can't be less than 1")
+
+    result_month, result_year = month, year
+
+    for _ in range(n):
+        if result_month == 1:
+            result_month = 12
+            result_year -= 1
+            continue
+        result_month -= 1
+
+    return result_month, result_year
+
+
 def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
     return f"POINT({longitude} {latitude})"
 

@@ -38,7 +38,7 @@ async def main():
         )
 
     past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
-        await past_climate_data_repository.get_past_climate_data(location.id)
+        await past_climate_data_repository.get_all_past_climate_data(location.id)
     )
 
     past_climate_data_df.to_csv("past_climate_data.csv")
@@ -47,8 +47,10 @@ async def main():
         await future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
             longitude=location.longitude,
             latitude=location.latitude,
-            start_year=1970,
-            start_month=1,
+            year_from=1970,
+            month_from=1,
+            year_to=9999,
+            month_to=12,
         )
     )
 
