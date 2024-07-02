@@ -126,69 +126,55 @@ class PastClimateDataRepository:
             return
         async with self.session_maker() as session:
             # delete the data of the same period as this dataframe
-            max_year, max_month = past_climate_data_df.index[-1]
-            min_year, min_month = past_climate_data_df.index[0]
+            years = cast(
+                list[int],
+                past_climate_data_df.index.get_level_values("year").unique().tolist(),
+            )
             stmt = delete(PastClimateData).where(
-                (
-                    (PastClimateData.year < max_year)
-                    | (
-                        (PastClimateData.year == max_year)
-                        & (PastClimateData.month <= max_month)
-                    )
-                )
-                & (
-                    (PastClimateData.year > min_year)
-                    | (
-                        (PastClimateData.year == min_year)
-                        & (PastClimateData.month >= min_month)
-                    )
-                )
+                (PastClimateData.location_id == location_id)
+                & (PastClimateData.year.in_(years))
             )
             await session.execute(stmt)
-            STEP = 1000
-            PROCESSED = 0
-            while PROCESSED < len(past_climate_data_df):
-                rows = past_climate_data_df[PROCESSED : PROCESSED + STEP]
-                values_dicts: list[dict[str, Any]] = []
-                for index, row in rows.iterrows():
-                    index = cast(pd.MultiIndex, index)
-                    year, month = index
-                    values_dicts.append(
-                        {
-                            "id": uuid.uuid4(),
-                            "location_id": location_id,
-                            "year": year,
-                            "month": month,
-                            "u_component_of_wind_10m": row["10m_u_component_of_wind"],
-                            "v_component_of_wind_10m": row["10m_v_component_of_wind"],
-                            "temperature_2m": row["2m_temperature"],
-                            "evaporation": row["evaporation"],
-                            "total_precipitation": row["total_precipitation"],
-                            "surface_pressure": row["surface_pressure"],
-                            "surface_solar_radiation_downwards": row[
-                                "surface_solar_radiation_downwards"
-                            ],
-                            "surface_thermal_radiation_downwards": row[
-                                "surface_thermal_radiation_downwards"
-                            ],
-                            "surface_net_solar_radiation": row[
-                                "surface_net_solar_radiation"
-                            ],
-                            "surface_net_thermal_radiation": row[
-                                "surface_net_thermal_radiation"
-                            ],
-                            "snowfall": row["snowfall"],
-                            "total_cloud_cover": row["total_cloud_cover"],
-                            "dewpoint_temperature_2m": row["2m_dewpoint_temperature"],
-                            "soil_temperature_level_3": row["soil_temperature_level_3"],
-                            "volumetric_soil_water_layer_3": row[
-                                "volumetric_soil_water_layer_3"
-                            ],
-                        }
-                    )
-                await session.execute(insert(PastClimateData), values_dicts)
-                PROCESSED += len(rows)
+            values_dicts: list[dict[str, Any]] = []
+            for index, row in past_climate_data_df.iterrows():
+                index = cast(pd.MultiIndex, index)
+                year, month = index
+                values_dicts.append(
+                    {
+                        "id": uuid.uuid4(),
+                        "location_id": location_id,
+                        "year": year,
+                        "month": month,
+                        "u_component_of_wind_10m": row["10m_u_component_of_wind"],
+                        "v_component_of_wind_10m": row["10m_v_component_of_wind"],
+                        "temperature_2m": row["2m_temperature"],
+                        "evaporation": row["evaporation"],
+                        "total_precipitation": row["total_precipitation"],
+                        "surface_pressure": row["surface_pressure"],
+                        "surface_solar_radiation_downwards": row[
+                            "surface_solar_radiation_downwards"
+                        ],
+                        "surface_thermal_radiation_downwards": row[
+                            "surface_thermal_radiation_downwards"
+                        ],
+                        "surface_net_solar_radiation": row[
+                            "surface_net_solar_radiation"
+                        ],
+                        "surface_net_thermal_radiation": row[
+                            "surface_net_thermal_radiation"
+                        ],
+                        "snowfall": row["snowfall"],
+                        "total_cloud_cover": row["total_cloud_cover"],
+                        "dewpoint_temperature_2m": row["2m_dewpoint_temperature"],
+                        "soil_temperature_level_3": row["soil_temperature_level_3"],
+                        "volumetric_soil_water_layer_3": row[
+                            "volumetric_soil_water_layer_3"
+                        ],
+                    }
+                )
+            await session.execute(insert(PastClimateData), values_dicts)
             await session.commit()
+            logging.info(f"Inserted {len(past_climate_data_df)} past climate data.")
 
     async def get_all_past_climate_data(
         self,

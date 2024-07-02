@@ -61,18 +61,24 @@ async def main():
     logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
 
     for location_climate_years in location_climate_years_to_fetch:
-        try:
-            await past_climate_data_repository.download_past_climate_data_for_years(
-                location_id=location_climate_years.location_id,
-                years=list(location_climate_years.years),
-            )
-            logging.info(
-                f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
-            )
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            logging.error("Failed to fetch past climate data, retrying...")
-            retries += 1
+        retries = 0
+        while True:
+            try:
+                await past_climate_data_repository.download_past_climate_data_for_years(
+                    location_id=location_climate_years.location_id,
+                    years=list(location_climate_years.years),
+                )
+                processed += 1
+                logging.info(
+                    f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
+                )
+                break
+            except Exception as e:
+                logging.error(traceback.format_exc())
+                logging.error("Failed to fetch past climate data, retrying...")
+                retries += 1
+                if retries >= 10:
+                    raise e
 
 
 if __name__ == "__main__":
