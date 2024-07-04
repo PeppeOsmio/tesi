@@ -43,7 +43,6 @@ class CropYieldDataDTO:
         return df
 
 
-
 @dataclass
 class LocationDTO:
     id: UUID

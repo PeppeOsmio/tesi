@@ -41,7 +41,9 @@ async def main():
             latitude=common.EXAMPLE_LATITUDE,
         )
 
-    location = await location_repository.get_location_by_id(location_id=UUID(hex="3d3b83c1-9dd2-4b5b-a06e-bd1f83a8188c"))
+    location = await location_repository.get_location_by_id(
+        location_id=UUID(hex="3d3b83c1-9dd2-4b5b-a06e-bd1f83a8188c")
+    )
     if location is None:
         raise Exception()
 

@@ -133,6 +133,15 @@ class CropYieldDataRepository:
             columns=columns_to_include
         )
 
+        # include only the rows where the sowing is before the harvest
+        df = df[
+            (df["sowing_year"] < df["harvest_year"])
+            | (
+                (df["sowing_year"] == df["harvest_year"])
+                & (df["sowing_month"] < df["harvest_month"])
+            )
+        ]
+
         df = df.dropna(
             subset=[
                 "longitude",
@@ -213,30 +222,23 @@ class CropYieldDataRepository:
             await session.execute(delete(CropYieldData))
 
             logging.info("Starting creating crop yield data")
-            processed = 0
-            STEP = 1000
-            logging.info(f"{processed}/{len(crop_yield_data_df)}")
-            while processed < len(crop_yield_data_df):
-                rows = crop_yield_data_df[processed : processed + STEP]
-                values_dicts: list[dict[str, Any]] = []
-                for index, row in rows.iterrows():
-                    values_dicts.append(
-                        {
-                            "id": uuid.uuid4(),
-                            "location_id": location_coordinates_to_ids[
-                                str((row["longitude"], row["latitude"]))
-                            ],
-                            "crop_id": crop_names_to_ids[row["crop"]],
-                            "sowing_year": row["sowing_year"],
-                            "sowing_month": row["sowing_month"],
-                            "harvest_year": row["harvest_year"],
-                            "harvest_month": row["harvest_month"],
-                            "_yield": row["yield"],
-                        }
-                    )
-                await session.execute(insert(CropYieldData), values_dicts)
-                processed += len(rows)
-                logging.info(f"{processed}/{len(crop_yield_data_df)}")
+            values_dicts: list[dict[str, Any]] = []
+            for index, row in crop_yield_data_df.iterrows():
+                values_dicts.append(
+                    {
+                        "id": uuid.uuid4(),
+                        "location_id": location_coordinates_to_ids[
+                            str((row["longitude"], row["latitude"]))
+                        ],
+                        "crop_id": crop_names_to_ids[row["crop"]],
+                        "sowing_year": row["sowing_year"],
+                        "sowing_month": row["sowing_month"],
+                        "harvest_year": row["harvest_year"],
+                        "harvest_month": row["harvest_month"],
+                        "_yield": row["yield"],
+                    }
+                )
+            await session.execute(insert(CropYieldData), values_dicts)
             await session.commit()
 
     async def get_unique_location_climate_years(
