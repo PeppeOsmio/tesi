@@ -6,6 +6,7 @@ import logging
 import os
 from typing import Any, cast
 import uuid
+import numpy as np
 import pandas as pd
 import requests
 from sqlalchemy import delete, insert, select
@@ -90,8 +91,8 @@ columns_to_include: dict[str, str] = {
     "Sowing month": "sowing_month",
     "Harvest year": "harvest_year",
     "Harvesting month": "harvest_month",
-    # "Yield of CT": "yield_ct",
-    "Yield of NT": "yield",
+    "Yield of CT": "yield",
+    # "Yield of NT": "yield",
     # "P": "P",
     # "E": "E",
     # "PB": "PB",
@@ -114,24 +115,30 @@ class CropYieldDataRepository:
         self.location_repository = location_repository
 
     def __download_crops_yield_data(self) -> pd.DataFrame:
-        pd.options.mode.chained_assignment = None  # default='warn'
 
-
-        url = "https://figshare.com/ndownloader/files/26690678"
-
-        logging.info(f"Downloading crop yield data from {url}")
-
-        response = requests.get(url)
-
-        if response.status_code != 200:
-            raise Exception(
-                f"Can't fetch crop database from {url}. Status {response.status_code}, details {response.text}"
-            )
+        # got from "https://figshare.com/ndownloader/files/26690678"
+        file_path = "./training_data/crops_yield_data.csv"
 
         df = pd.read_csv(
-            StringIO(initial_value=response.text),
-            usecols=list(columns_to_include.keys()),
+            file_path,
+            usecols=[
+                *list(columns_to_include.keys()),
+                "Outlier of CT",
+                "Outlier of NT",
+            ],
         )
+
+        # remove outliers
+        df = df[(df["Outlier of CT"] != "Yes") & (df["Outlier of NT"] != "Yes")]
+        # Calculate Z-scores
+        df["z_score"] = (df["Yield of CT"] - df["Yield of CT"].mean()) / df[
+            "Yield of CT"
+        ].std()
+        # Identify outliers
+        df = df[np.abs(df["z_score"]) < 3]
+        df = df.drop(columns="z_score")
+
+        # rename
         df = df.filter(items=list(columns_to_include.keys())).rename(
             columns=columns_to_include
         )
@@ -170,12 +177,24 @@ class CropYieldDataRepository:
         # value of the yield, aggregating them into a single row
 
         agg_df = pd.DataFrame(columns=df.columns)
-        unique_cols = ["country", "location", "crop", "sowing_year", "sowing_month", "harvest_year", "harvest_month"]
-        unique_tuples = cast(list[tuple], list(df[unique_cols].groupby(unique_cols).groups.keys()))
+        unique_cols = [
+            "country",
+            "location",
+            "crop",
+            "sowing_year",
+            "sowing_month",
+            "harvest_year",
+            "harvest_month",
+        ]
+        unique_tuples = cast(
+            list[tuple], list(df[unique_cols].groupby(unique_cols).groups.keys())
+        )
         processed = 0
 
         def print_processed():
-            print(f"\rProcessed unique tuples: {processed}/{len(unique_tuples)}", end="")
+            print(
+                f"\rProcessed unique tuples: {processed}/{len(unique_tuples)}", end=""
+            )
 
         print_processed()
         for unique_tuple in unique_tuples:
@@ -185,25 +204,19 @@ class CropYieldDataRepository:
                 if condition is None:
                     condition = cond
                 condition &= cond
-            tmp_df = df[
-                condition
-            ].reset_index(drop=True)
+            tmp_df = df[condition].reset_index(drop=True)
             mean_yield = tmp_df["yield"].mean()
             tmp_df.loc[0, "yield"] = mean_yield
             first_row = pd.DataFrame([tmp_df.iloc[0]])
             agg_df = pd.concat([agg_df, first_row], axis=0)
             processed += 1
             print_processed()
-            
 
         agg_df = agg_df.sort_values(
             by=["crop", "country", "location"], ascending=[True, True, True]
         )
-
         agg_df = agg_df.reset_index(drop=True)
-        agg_df.to_csv("tmp_agg_df.csv")
 
-        pd.options.mode.chained_assignment = "warn"  # default='warn'
         return agg_df
 
     async def download_crop_yield_data(self):
