@@ -114,6 +114,9 @@ class CropYieldDataRepository:
         self.location_repository = location_repository
 
     def __download_crops_yield_data(self) -> pd.DataFrame:
+        pd.options.mode.chained_assignment = None  # default='warn'
+
+
         url = "https://figshare.com/ndownloader/files/26690678"
 
         logging.info(f"Downloading crop yield data from {url}")
@@ -155,15 +158,53 @@ class CropYieldDataRepository:
             ],
         )
 
+        df = df.reset_index(drop=True)
+
         df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
         df["crop"] = df["crop"].str.replace(r"\.winter$", "", regex=True)
         df["crop"] = df["crop"].str.replace(r"\.spring$", "", regex=True)
         df["crop"] = df["crop"].str.replace(r"\.summer$", "", regex=True)
 
-        df.sort_values(by=["crop", "country", "location"], ascending=[True, True, True])
+        # in the downloaded CSV there is data referring to the same crop, same location, same sowing month and same harvest month
+        # that has different yield values. We now take all the rows with the same "unique_cols" that you can view below and take the mean
+        # value of the yield, aggregating them into a single row
 
-        df = df.reset_index(drop=True)
-        return df
+        agg_df = pd.DataFrame(columns=df.columns)
+        unique_cols = ["country", "location", "crop", "sowing_year", "sowing_month", "harvest_year", "harvest_month"]
+        unique_tuples = cast(list[tuple], list(df[unique_cols].groupby(unique_cols).groups.keys()))
+        processed = 0
+
+        def print_processed():
+            print(f"\rProcessed unique tuples: {processed}/{len(unique_tuples)}", end="")
+
+        print_processed()
+        for unique_tuple in unique_tuples:
+            condition = None
+            for i, col_name in enumerate(unique_cols):
+                cond = df[col_name] == unique_tuple[i]
+                if condition is None:
+                    condition = cond
+                condition &= cond
+            tmp_df = df[
+                condition
+            ].reset_index(drop=True)
+            mean_yield = tmp_df["yield"].mean()
+            tmp_df.loc[0, "yield"] = mean_yield
+            first_row = pd.DataFrame([tmp_df.iloc[0]])
+            agg_df = pd.concat([agg_df, first_row], axis=0)
+            processed += 1
+            print_processed()
+            
+
+        agg_df = agg_df.sort_values(
+            by=["crop", "country", "location"], ascending=[True, True, True]
+        )
+
+        agg_df = agg_df.reset_index(drop=True)
+        agg_df.to_csv("tmp_agg_df.csv")
+
+        pd.options.mode.chained_assignment = "warn"  # default='warn'
+        return agg_df
 
     async def download_crop_yield_data(self):
         loop = asyncio.get_running_loop()

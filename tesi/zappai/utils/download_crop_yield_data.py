@@ -24,14 +24,15 @@ async def main():
         crop_repository=crop_repository,
         location_repository=location_repository,
     )
-
-    while True:
+    retries = 0
+    while retries < 1:
         try:
             await crop_yield_data_repository.download_crop_yield_data()
             break
         except Exception as e:
             logging.error(traceback.format_exc())
             logging.info("Failed to fetch past climate data, retrying...")
+            retries += 1
 
 
 if __name__ == "__main__":
