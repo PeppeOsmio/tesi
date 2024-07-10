@@ -12,7 +12,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from geoalchemy2.functions import ST_Distance
 from typing import Any, cast
 import sqlalchemy
-from tesi.zappai.utils.common import coordinates_to_well_known_text
+from tesi.zappai.common import coordinates_to_well_known_text
 from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
 
 

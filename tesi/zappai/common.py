@@ -1,14 +1,27 @@
-import argparse
-import logging
-from typing import cast
+from typing import Any
 import pandas as pd
 import xarray
+from io import BytesIO
+import joblib
 
 # Policoro
 EXAMPLE_LOCATION_COUNTRY = "Italy"
 EXAMPLE_LOCATION_NAME = "Policoro"
 EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
+
+
+
+def bytes_to_object(bts: bytes) -> Any:
+    bytes_io = BytesIO(initial_bytes=bts)
+    return joblib.load(filename=bytes_io)
+
+
+def object_to_bytes(obj: Any) -> bytes:
+    bytes_io = BytesIO()
+    joblib.dump(value=obj, filename=bytes_io)
+    bytes_io.seek(0)
+    return bytes_io.read()
 
 
 def get_next_n_months(n: int, month: int, year: int) -> tuple[int, int]:

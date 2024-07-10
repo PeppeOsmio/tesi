@@ -1,5 +1,6 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from csv import DictWriter
 from datetime import datetime
 from io import StringIO
 import logging
@@ -10,8 +11,14 @@ import numpy as np
 import pandas as pd
 import requests
 from sqlalchemy import delete, insert, select
-from tesi.zappai.exceptions import CropNotFoundError, LocationNotFoundError
+from tesi.zappai.exceptions import (
+    CropNotFoundError,
+    CropYieldDataNotFoundError,
+    LocationNotFoundError,
+    PastClimateDataNotFoundError,
+)
 from tesi.zappai.repositories.dtos import (
+    ClimateDataDTO,
     CropDTO,
     CropYieldDataDTO,
     LocationClimateYearsDTO,
@@ -21,6 +28,9 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from tesi.zappai.repositories.crop_repository import CropRepository
 from tesi.zappai.repositories.location_repository import LocationRepository
+from tesi.zappai.repositories.past_climate_data_repository import (
+    PastClimateDataRepository,
+)
 
 all_columns = [
     "Author",
@@ -109,10 +119,12 @@ class CropYieldDataRepository:
         session_maker: async_sessionmaker[AsyncSession],
         crop_repository: CropRepository,
         location_repository: LocationRepository,
+        past_climate_data_repository: PastClimateDataRepository,
     ) -> None:
         self.session_maker = session_maker
         self.crop_repository = crop_repository
         self.location_repository = location_repository
+        self.past_climate_data_repository = past_climate_data_repository
 
     def __download_crops_yield_data(self) -> pd.DataFrame:
 
@@ -338,6 +350,79 @@ class CropYieldDataRepository:
             self.__crop_yield_data_model_to_dto(crop_yield_data)
             for crop_yield_data in results
         ]
+
+    async def export_data(
+        self,
+    ) -> None:
+        """Export all the past climate data for locations for which we have the crop yield data in a csv file.
+
+        Args:
+            csv_file (str):
+        """
+        location_ids: set[uuid.UUID] = set()
+        async with self.session_maker() as session:
+            with open(
+                "training_data/past_climate_data.csv", "w"
+            ) as past_climate_data_csv_file:
+                stmt = select(
+                    CropYieldData.location_id,
+                    CropYieldData.sowing_year,
+                    CropYieldData.sowing_month,
+                    CropYieldData.harvest_year,
+                    CropYieldData.harvest_month,
+                )
+                result = list([row.tuple() for row in await session.execute(stmt)])
+                if len(result) == 0:
+                    raise CropYieldDataNotFoundError()
+                csv_writer: DictWriter | None = None
+                for tple in result:
+                    (
+                        location_id,
+                        sowing_year,
+                        sowing_month,
+                        harvest_year,
+                        harvest_month,
+                    ) = tple
+                    location_ids.add(location_id)
+                    past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
+                        (
+                            await self.past_climate_data_repository.get_past_climate_data(
+                                location_id=location_id,
+                                year_from=sowing_year,
+                                month_from=sowing_month,
+                                year_to=harvest_year,
+                                month_to=harvest_month,
+                            )
+                        )
+                    )
+                    if len(past_climate_data_df) == 0:
+                        raise PastClimateDataNotFoundError(
+                            f"No past climate data found for location {location_id}"
+                        )
+                    if csv_writer is None:
+                        csv_writer = DictWriter(
+                            past_climate_data_csv_file,
+                            fieldnames=past_climate_data_df.columns,
+                        )
+                        csv_writer.writeheader()
+                    dicts = past_climate_data_df.to_dict(orient="records")
+                    csv_writer.writerows(dicts)
+
+            with open("training_data/locations.csv", "w") as locations_csv_file:
+                csv_writer: None | DictWriter = None
+                for location_id in location_ids:
+                    location = await self.location_repository.get_location_by_id(
+                        location_id
+                    )
+                    if location is None:
+                        raise LocationNotFoundError(str(location_id))
+                    location_dict = location.to_dict()
+                    if csv_writer is None:
+                        csv_writer = DictWriter(
+                            locations_csv_file, fieldnames=location_dict.keys()
+                        )
+                        csv_writer.writeheader()
+                    csv_writer.writerow(location_dict)
 
     def __crop_yield_data_model_to_dto(
         self, crop_yield_data: CropYieldData

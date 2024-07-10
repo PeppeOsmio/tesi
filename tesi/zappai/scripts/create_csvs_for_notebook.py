@@ -9,7 +9,7 @@ from tesi.zappai.di import (
     get_past_climate_data_repository,
     get_future_climate_data_repository,
 )
-from tesi.zappai.utils import common
+from tesi.zappai import common
 import matplotlib.pyplot as plt
 
 

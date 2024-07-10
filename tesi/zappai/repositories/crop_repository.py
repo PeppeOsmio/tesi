@@ -1,6 +1,8 @@
 from datetime import datetime, timezone
 import uuid
-from sqlalchemy import insert, select
+from sklearn.ensemble import RandomForestRegressor
+from sqlalchemy import insert, select, update
+from tesi.zappai.common import object_to_bytes
 from tesi.zappai.repositories.dtos import CropDTO
 from tesi.zappai.models import Crop
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -39,6 +41,30 @@ class CropRepository:
         if crop is None:
             return None
         return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)
+
+    async def save_crop_yield_model(
+        self,
+        crop_id: uuid.UUID,
+        crop_yield_model: RandomForestRegressor,
+        mse: float,
+        r2: float,
+    ):
+        async with self.session_maker() as session:
+            stmt = (
+                update(Crop)
+                .where(Crop.id == crop_id)
+                .values(
+                    crop_yield_model=object_to_bytes(crop_yield_model), mse=mse, r2=r2
+                )
+            )
+            await session.execute(stmt)
+            await session.commit()
+
+    async def get_all_crops(self) -> list[CropDTO]:
+        async with self.session_maker() as session:
+            stmt = select(Crop)
+            results = list(await session.scalars(stmt))
+        return [self.__crop_model_to_dto(crop) for crop in results]
 
     def __crop_model_to_dto(self, crop: Crop) -> CropDTO:
         return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)

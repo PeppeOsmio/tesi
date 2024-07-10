@@ -6,7 +6,7 @@ from uuid import UUID
 from keras.src.models import Sequential
 import pandas as pd
 
-from typing import cast
+from typing import Any, cast
 
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
@@ -51,6 +51,16 @@ class LocationDTO:
     longitude: float
     latitude: float
     created_at: datetime
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "id": str(self.id),
+            "country": self.country,
+            "name": self.name,
+            "longitude": self.longitude,
+            "latitude": self.latitude,
+            "created_at": self.created_at.isoformat()
+        }
 
 
 @dataclass
@@ -158,7 +168,6 @@ class ClimateDataDTO:
                 "dewpoint_temperature_2m": "2m_dewpoint_temperature",
             },
         )
-        df = df.drop(columns=["location_id"])
         df = df.set_index(keys=["year", "month"], drop=True)
         df = df.sort_index(ascending=[True, True])
         return df

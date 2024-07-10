@@ -36,7 +36,7 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 import joblib
 
-from tesi.zappai.utils.common import get_next_n_months
+from tesi.zappai.common import bytes_to_object, get_next_n_months, object_to_bytes
 
 TARGET = [
     # "10m_u_component_of_wind",
@@ -95,16 +95,6 @@ class ClimateGenerativeModelRepository:
         self.location_repository = location_repository
         self.past_climate_data_repository = past_climate_data_repository
         self.future_climate_data_repository = future_climate_data_repository
-
-    def __bytes_to_object(self, bts: bytes) -> Any:
-        bytes_io = BytesIO(initial_bytes=bts)
-        return joblib.load(filename=bytes_io)
-
-    def __object_to_bytes(self, obj: Any) -> bytes:
-        bytes_io = BytesIO()
-        joblib.dump(value=obj, filename=bytes_io)
-        bytes_io.seek(0)
-        return bytes_io.read()
 
     @staticmethod
     def format_data(x: np.ndarray, y: np.ndarray) -> tuple[np.ndarray, np.ndarray]:
@@ -480,9 +470,9 @@ class ClimateGenerativeModelRepository:
         return ClimateGenerativeModelDTO(
             id=climate_generative_model.id,
             location_id=location_id,
-            model=self.__bytes_to_object(climate_generative_model.model),
-            x_scaler=self.__bytes_to_object(climate_generative_model.x_scaler),
-            y_scaler=self.__bytes_to_object(climate_generative_model.y_scaler),
+            model=bytes_to_object(climate_generative_model.model),
+            x_scaler=bytes_to_object(climate_generative_model.x_scaler),
+            y_scaler=bytes_to_object(climate_generative_model.y_scaler),
             rmse=climate_generative_model.rmse,
             train_start_year=climate_generative_model.test_start_year,
             train_start_month=climate_generative_model.train_start_month,
@@ -514,9 +504,9 @@ class ClimateGenerativeModelRepository:
             stmt = insert(ClimateGenerativeModel).values(
                 id=climate_generative_model.id,
                 location_id=climate_generative_model.location_id,
-                model=self.__object_to_bytes(climate_generative_model.model),
-                x_scaler=self.__object_to_bytes(climate_generative_model.x_scaler),
-                y_scaler=self.__object_to_bytes(climate_generative_model.y_scaler),
+                model=object_to_bytes(climate_generative_model.model),
+                x_scaler=object_to_bytes(climate_generative_model.x_scaler),
+                y_scaler=object_to_bytes(climate_generative_model.y_scaler),
                 rmse=climate_generative_model.rmse,
                 train_start_year=climate_generative_model.test_start_year,
                 train_start_month=climate_generative_model.train_start_month,

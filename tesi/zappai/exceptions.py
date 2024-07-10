@@ -8,3 +8,10 @@ class CropNotFoundError(Exception):
 
 class ClimateGenerativeModelNotFoundError(Exception):
     pass
+
+
+class CropYieldDataNotFoundError(Exception):
+    pass
+
+class PastClimateDataNotFoundError(Exception):
+    pass

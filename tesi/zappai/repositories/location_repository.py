@@ -1,10 +1,13 @@
 from datetime import datetime, timezone
+from typing import Any, cast
 from uuid import UUID
 import uuid
 from sqlalchemy import delete, insert, select
+from sqlalchemy.exc import IntegrityError
 from tesi.zappai.repositories.dtos import LocationDTO
 from tesi.zappai.models import Location
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+import pandas as pd
 
 
 class LocationRepository:
@@ -76,6 +79,21 @@ class LocationRepository:
         if location is None:
             return None
         return self.__location_model_to_dto(location)
+
+    async def import_from_csv(self):
+        async with self.session_maker() as session:
+            data = pd.read_csv(
+                "training_data/locations.csv", parse_dates=["created_at"]
+            )
+            dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
+            for dct in dicts:
+                stmt = insert(Location).values(**dct)
+                try:
+                    async with session.begin():
+                        await session.execute(stmt)
+                        await session.commit()
+                except IntegrityError:
+                    continue
 
     def __location_model_to_dto(self, location: Location) -> LocationDTO:
         return LocationDTO(

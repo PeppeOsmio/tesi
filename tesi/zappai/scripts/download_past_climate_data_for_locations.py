@@ -17,8 +17,6 @@ from tesi.database.di import get_session_maker
 
 
 async def main():
-    CONCURRENT_REQUESTS = 1
-
     session_maker = get_session_maker()
     location_repository = get_location_repository(session_maker=session_maker)
     cds_api = get_cds_api()
@@ -33,6 +31,7 @@ async def main():
         session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
+        past_climate_data_repository=past_climate_data_repository,
     )
 
     logging.info("Getting location and climate data from Crop Yields table")

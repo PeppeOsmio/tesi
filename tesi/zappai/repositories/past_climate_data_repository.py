@@ -7,13 +7,14 @@ import uuid
 import pandas as pd
 from sqlalchemy import asc, delete, desc, insert, select
 import sqlalchemy
+from sqlalchemy.exc import IntegrityError
 from tesi.zappai.repositories.dtos import LocationClimateYearsDTO, ClimateDataDTO
 from tesi.zappai.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
 from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
-from tesi.zappai.utils.common import get_next_n_months
+from tesi.zappai.common import get_next_n_months
 
 
 class PastClimateDataRepository:
@@ -283,6 +284,29 @@ class PastClimateDataRepository:
             LocationClimateYearsDTO(location_id=location_id, years=years)
             for location_id, years in location_id_to_years_dict.items()
         ]
+
+    async def import_from_csv(self):
+        async with self.session_maker() as session:
+            data = pd.read_csv("training_data/past_climate_data.csv")
+            dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
+            for dct in dicts:
+                columns_mappings = {
+                    "10m_u_component_of_wind": "u_component_of_wind_10m",
+                    "10m_v_component_of_wind": "v_component_of_wind_10m",
+                    "2m_temperature": "temperature_2m",
+                    "2m_dewpoint_temperature": "dewpoint_temperature_2m",
+                }
+                for key, value in columns_mappings.items():
+                    dct[value] = dct[key]
+                    dct.pop(key)
+                dct.update({"id": uuid.uuid4()})
+                stmt = insert(PastClimateData).values(**dct)
+                try:
+                    async with session.begin() as transaction:
+                        await session.execute(stmt)
+                        await transaction.commit()
+                except IntegrityError:
+                    continue
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData

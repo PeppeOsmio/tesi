@@ -59,8 +59,11 @@ class Crop(Base):
     __tablename__ = "crop"
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
-    name: Mapped[str] = mapped_column(unique=True)
+    name: Mapped[str] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(index=True)
+    crop_yield_model: Mapped[bytes | None]
+    mse: Mapped[float | None]
+    r2: Mapped[float | None]
 
 
 class CropYieldData(Base):
