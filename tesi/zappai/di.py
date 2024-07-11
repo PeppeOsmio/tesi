@@ -123,11 +123,11 @@ def get_crop_yield_model_repository(
     crop_yield_data_repository: Annotated[
         CropYieldDataRepository, Depends(get_crop_yield_data_repository)
     ],
-    crop_repository: Annotated[CropRepository, Depends(get_crop_repository)]
+    crop_repository: Annotated[CropRepository, Depends(get_crop_repository)],
 ) -> CropYieldModelRepository:
     return CropYieldModelRepository(
         past_climate_data_repository=past_climate_data_repository,
         location_repository=location_repository,
         crop_yield_data_repository=crop_yield_data_repository,
-        crop_repository=crop_repository
+        crop_repository=crop_repository,
     )

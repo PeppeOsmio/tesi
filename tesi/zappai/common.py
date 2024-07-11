@@ -11,7 +11,6 @@ EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
 
 
-
 def bytes_to_object(bts: bytes) -> Any:
     bytes_io = BytesIO(initial_bytes=bts)
     return joblib.load(filename=bytes_io)

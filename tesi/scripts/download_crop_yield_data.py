@@ -47,7 +47,7 @@ async def main():
         past_climate_data_repository=past_climate_data_repository,
         location_repository=location_repository,
         crop_yield_data_repository=crop_yield_data_repository,
-        crop_repository=crop_repository
+        crop_repository=crop_repository,
     )
 
     await crop_yield_model_repository.create_crop_yield_model_for_all_crops()

@@ -13,5 +13,6 @@ class ClimateGenerativeModelNotFoundError(Exception):
 class CropYieldDataNotFoundError(Exception):
     pass
 
+
 class PastClimateDataNotFoundError(Exception):
     pass

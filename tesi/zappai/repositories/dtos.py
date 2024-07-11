@@ -59,7 +59,7 @@ class LocationDTO:
             "name": self.name,
             "longitude": self.longitude,
             "latitude": self.latitude,
-            "created_at": self.created_at.isoformat()
+            "created_at": self.created_at.isoformat(),
         }
 
 
