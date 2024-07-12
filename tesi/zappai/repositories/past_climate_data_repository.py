@@ -1,13 +1,16 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
+from csv import DictWriter
 from datetime import datetime, timezone
 import logging
+import os
 from uuid import UUID
 import uuid
 import pandas as pd
 from sqlalchemy import asc, delete, desc, insert, select
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
+from tesi.zappai.exceptions import PastClimateDataNotFoundError
 from tesi.zappai.repositories.dtos import LocationClimateYearsDTO, ClimateDataDTO
 from tesi.zappai.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -285,11 +288,82 @@ class PastClimateDataRepository:
             for location_id, years in location_id_to_years_dict.items()
         ]
 
-    async def import_from_csv(self):
+    async def export_to_csv(
+        self,
+        csv_path: str,
+        location_id_and_periods: list[tuple[UUID, int, int, int, int]],
+    ):
+
+        def open_csv_file():
+            return open(csv_path, "w")
+
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+            csv_file = await loop.run_in_executor(executor=pool, func=open_csv_file)
+            with csv_file:
+                csv_writer: DictWriter | None = None
+                for (
+                    location_id,
+                    sowing_year,
+                    sowing_month,
+                    harvest_year,
+                    harvest_month,
+                ) in location_id_and_periods:
+                    past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
+                        (
+                            await self.get_past_climate_data(
+                                location_id=location_id,
+                                year_from=sowing_year,
+                                month_from=sowing_month,
+                                year_to=harvest_year,
+                                month_to=harvest_month,
+                            )
+                        )
+                    )
+
+                    if len(past_climate_data_df) == 0:
+                        raise PastClimateDataNotFoundError(
+                            f"No past climate data found for location {location_id}"
+                        )
+                    # so year and month will be columns
+                    past_climate_data_df = past_climate_data_df.reset_index()
+                    dicts = cast(
+                        list[dict[str, Any]],
+                        past_climate_data_df.to_dict(orient="records"),
+                    )
+
+                    def write_to_csv():
+                        nonlocal csv_writer
+                        if csv_writer is None:
+                            csv_writer = DictWriter(
+                                csv_file,
+                                fieldnames=past_climate_data_df.columns,
+                            )
+                            csv_writer.writeheader()
+                        csv_writer.writerows(dicts)
+
+                    await loop.run_in_executor(executor=pool, func=write_to_csv)
+
+    async def import_from_csv(self, csv_path: str):
+        def read_csv() -> pd.DataFrame:
+            return pd.read_csv(csv_path)
+
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+            data = await loop.run_in_executor(executor=pool, func=read_csv)
+
         async with self.session_maker() as session:
-            data = pd.read_csv("training_data/past_climate_data.csv")
             dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
             for dct in dicts:
+                past_climate_data = await session.scalar(
+                    select(PastClimateData).where(
+                        (PastClimateData.location_id == dct["location_id"])
+                        & (PastClimateData.year == dct["year"])
+                        & (PastClimateData.month == dct["month"])
+                    )
+                )
+                if past_climate_data is not None:
+                    continue
                 columns_mappings = {
                     "10m_u_component_of_wind": "u_component_of_wind_10m",
                     "10m_v_component_of_wind": "v_component_of_wind_10m",
@@ -301,12 +375,8 @@ class PastClimateDataRepository:
                     dct.pop(key)
                 dct.update({"id": uuid.uuid4()})
                 stmt = insert(PastClimateData).values(**dct)
-                try:
-                    async with session.begin() as transaction:
-                        await session.execute(stmt)
-                        await transaction.commit()
-                except IntegrityError:
-                    continue
+                await session.execute(stmt)
+                await session.commit()
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData

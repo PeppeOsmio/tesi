@@ -1,5 +1,7 @@
 import asyncio
+import logging
 
+from tesi import logging_conf
 from tesi.database.di import get_session_maker
 from tesi.zappai.di import (
     get_cds_api,
@@ -19,9 +21,14 @@ async def main():
         cds_api=cds_api,
         location_repository=location_repository,
     )
-    await location_repository.import_from_csv()
-    await past_climate_data_repository.import_from_csv()
+
+    logging.info("Import locations")
+    await location_repository.import_from_csv(csv_path="training_data/locations.csv")
+
+    logging.info("Importing past climate data")
+    await past_climate_data_repository.import_from_csv(csv_path="training_data/past_climate_data.csv")
 
 
 if __name__ == "__main__":
+    logging_conf.create_logger(config=logging_conf.get_default_conf())
     asyncio.run(main())

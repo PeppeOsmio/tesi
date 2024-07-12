@@ -1,3 +1,4 @@
+import asyncio
 from typing import Any
 import pandas as pd
 import xarray
@@ -9,6 +10,18 @@ EXAMPLE_LOCATION_COUNTRY = "Italy"
 EXAMPLE_LOCATION_NAME = "Policoro"
 EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
+
+def get_or_create_event_loop():
+    try:
+        # Try to get the running event loop
+        return asyncio.get_running_loop()
+    except RuntimeError:
+        # No running loop, so create a new one
+        loop = asyncio.new_event_loop()
+        # Setting the loop as the current event loop for this thread
+        asyncio.set_event_loop(loop)
+        return loop
+
 
 
 def bytes_to_object(bts: bytes) -> Any:

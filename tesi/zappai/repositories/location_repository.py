@@ -1,13 +1,18 @@
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from typing import Any, cast
 from uuid import UUID
 import uuid
 from sqlalchemy import delete, insert, select
 from sqlalchemy.exc import IntegrityError
+from tesi.zappai.common import get_or_create_event_loop
+from tesi.zappai.exceptions import LocationNotFoundError
 from tesi.zappai.repositories.dtos import LocationDTO
 from tesi.zappai.models import Location
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 import pandas as pd
+import asyncio
+from csv import DictWriter
 
 
 class LocationRepository:
@@ -80,20 +85,51 @@ class LocationRepository:
             return None
         return self.__location_model_to_dto(location)
 
-    async def import_from_csv(self):
+    async def export_to_csv(
+        self,
+        csv_path: str,
+        location_ids: list[UUID],
+    ):
+
+        def open_csv_file():
+            return open(csv_path, "w")
+
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+            csv_file = await loop.run_in_executor(executor=pool, func=open_csv_file)
+            with csv_file:
+                async with self.session_maker() as session:
+                    stmt = select(Location).where(Location.id.in_(location_ids))
+                    results = list(await session.scalars(stmt))
+                if len(results) == 0:
+                    raise LocationNotFoundError(f"No locations found")
+                locations = [self.__location_model_to_dto(model) for model in results]
+                dicts = [location.to_dict() for location in locations]
+
+                def write_to_csv():
+                    csv_writer = DictWriter(f=csv_file, fieldnames=dicts[0].keys())
+                    csv_writer.writeheader()
+                    csv_writer.writerows(dicts)
+
+                await loop.run_in_executor(executor=pool, func=write_to_csv)
+
+    async def import_from_csv(self, csv_path: str):
+        def read_csv() -> pd.DataFrame:
+            return pd.read_csv(csv_path, parse_dates=["created_at"])
+
+        loop = asyncio.get_running_loop()
+        with ThreadPoolExecutor() as pool:
+            data = await loop.run_in_executor(executor=pool, func=read_csv)
+
         async with self.session_maker() as session:
-            data = pd.read_csv(
-                "training_data/locations.csv", parse_dates=["created_at"]
-            )
             dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
             for dct in dicts:
-                stmt = insert(Location).values(**dct)
-                try:
-                    async with session.begin():
-                        await session.execute(stmt)
-                        await session.commit()
-                except IntegrityError:
+                location = await session.scalar(select(Location.id).where(Location.id == dct["id"])) 
+                if location is not None:
                     continue
+                stmt = insert(Location).values(**dct)
+                await session.execute(stmt)
+                await session.commit()
 
     def __location_model_to_dto(self, location: Location) -> LocationDTO:
         return LocationDTO(
