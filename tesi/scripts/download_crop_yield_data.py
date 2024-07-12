@@ -50,7 +50,7 @@ async def main():
         crop_repository=crop_repository,
     )
 
-    await crop_yield_model_repository.create_crop_yield_model_for_all_crops()
+    await crop_yield_model_repository.save_crop_yield_model_for_all_crops()
 
 
 if __name__ == "__main__":

@@ -78,7 +78,7 @@ class CropYieldModelRepository:
         self.crop_yield_data_repository = crop_yield_data_repository
         self.crop_repository = crop_repository
 
-    async def create_crop_yield_model(self, crop_id: UUID) -> tuple[
+    async def train_crop_yield_model(self, crop_id: UUID) -> tuple[
         RandomForestRegressor,
         float,
         float,
@@ -160,7 +160,7 @@ class CropYieldModelRepository:
 
         return model, mse, r2, x_train, x_test, y_train, y_test
 
-    async def create_crop_yield_model_for_all_crops(self):
+    async def save_crop_yield_model_for_all_crops(self):
         crops = await self.crop_repository.get_all_crops()
 
         processed = 0
@@ -170,7 +170,7 @@ class CropYieldModelRepository:
 
         print_processed()
         for crop in crops:
-            model, mse, r2, _, _, _, _ = await self.create_crop_yield_model(
+            model, mse, r2, _, _, _, _ = await self.train_crop_yield_model(
                 crop_id=crop.id
             )
             await self.crop_repository.save_crop_yield_model(
