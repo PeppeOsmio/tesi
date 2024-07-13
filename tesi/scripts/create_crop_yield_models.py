@@ -4,7 +4,7 @@ from tesi.zappai.di import (
     get_cds_api,
     get_crop_repository,
     get_crop_yield_data_repository,
-    get_crop_yield_model_repository,
+    get_crop_yield_model_service,
     get_location_repository,
     get_past_climate_data_repository,
 )
@@ -26,7 +26,7 @@ async def main():
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
     )
-    crop_yield_model_repository = get_crop_yield_model_repository(
+    crop_yield_model_repository = get_crop_yield_model_service(
         past_climate_data_repository=past_climate_data_repository,
         location_repository=location_repository,
         crop_yield_data_repository=crop_yield_data_repository,

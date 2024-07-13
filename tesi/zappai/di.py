@@ -8,8 +8,8 @@ from tesi.zappai.repositories.climate_generative_model_repository import (
 )
 from tesi.zappai.repositories.crop_repository import CropRepository
 from tesi.zappai.repositories.crop_yield_data_repository import CropYieldDataRepository
-from tesi.zappai.repositories.crop_yield_model_repository import (
-    CropYieldModelRepository,
+from tesi.zappai.services.crop_yield_model_service import (
+    CropYieldModelService,
 )
 from tesi.zappai.repositories.future_climate_data_repository import (
     FutureClimateDataRepository,
@@ -113,7 +113,7 @@ def get_climate_generative_model_repository(
     )
 
 
-def get_crop_yield_model_repository(
+def get_crop_yield_model_service(
     past_climate_data_repository: Annotated[
         PastClimateDataRepository, Depends(get_past_climate_data_repository)
     ],
@@ -124,8 +124,8 @@ def get_crop_yield_model_repository(
         CropYieldDataRepository, Depends(get_crop_yield_data_repository)
     ],
     crop_repository: Annotated[CropRepository, Depends(get_crop_repository)],
-) -> CropYieldModelRepository:
-    return CropYieldModelRepository(
+) -> CropYieldModelService:
+    return CropYieldModelService(
         past_climate_data_repository=past_climate_data_repository,
         location_repository=location_repository,
         crop_yield_data_repository=crop_yield_data_repository,

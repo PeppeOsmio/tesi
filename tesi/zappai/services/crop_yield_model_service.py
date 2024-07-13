@@ -65,7 +65,7 @@ FEATURES = [
 TARGET = ["_yield"]
 
 
-class CropYieldModelRepository:
+class CropYieldModelService:
     def __init__(
         self,
         past_climate_data_repository: PastClimateDataRepository,
