@@ -2,7 +2,7 @@ from datetime import datetime, timezone
 import uuid
 from sklearn.ensemble import RandomForestRegressor
 from sqlalchemy import insert, select, update
-from tesi.zappai.common import object_to_bytes
+from tesi.zappai.utils.common import object_to_bytes
 from tesi.zappai.repositories.dtos import CropDTO
 from tesi.zappai.models import Crop
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker

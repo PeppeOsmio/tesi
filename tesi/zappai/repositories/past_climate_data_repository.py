@@ -17,7 +17,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
 from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
-from tesi.zappai.common import get_next_n_months
+from tesi.zappai.utils.common import get_next_n_months
 
 
 class PastClimateDataRepository:

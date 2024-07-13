@@ -160,7 +160,7 @@ class CropYieldModelRepository:
 
         return model, mse, r2, x_train, x_test, y_train, y_test
 
-    async def save_crop_yield_model_for_all_crops(self):
+    async def train_and_save_crop_yield_model_for_all_crops(self):
         crops = await self.crop_repository.get_all_crops()
 
         processed = 0

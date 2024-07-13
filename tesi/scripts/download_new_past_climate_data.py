@@ -13,7 +13,7 @@ from tesi.zappai.di import (
 )
 from tesi.zappai.repositories.dtos import ClimateDataDTO
 from tesi.database.di import get_session_maker
-from tesi.zappai import common
+from tesi.zappai.utils import common
 
 import traceback
 

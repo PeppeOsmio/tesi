@@ -2,10 +2,10 @@ import logging
 from typing import Annotated
 from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
 from tesi.auth_tokens.repositories import AuthTokenRepository
-from tesi.database.engine import get_db_session
+from tesi.database.di import get_session_maker
 from tesi.users.di import get_user_repository
 from tesi.users.repositories.dtos import UserDTO
 from tesi.users.models import User
@@ -16,10 +16,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth", auto_error=False)
 
 
 def get_auth_token_repository(
-    db_session: Annotated[AsyncSession, Depends(get_db_session)],
+    db_session: Annotated[async_sessionmaker, Depends(get_session_maker)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> AuthTokenRepository:
-    return AuthTokenRepository(db_session=db_session, user_repository=user_repository)
+    return AuthTokenRepository(session_maker=db_session, user_repository=user_repository)
 
 
 async def get_current_user(

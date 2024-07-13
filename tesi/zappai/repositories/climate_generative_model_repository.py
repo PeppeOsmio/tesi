@@ -36,7 +36,7 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 import joblib
 
-from tesi.zappai.common import bytes_to_object, get_next_n_months, object_to_bytes
+from tesi.zappai.utils.common import bytes_to_object, get_next_n_months, object_to_bytes
 
 TARGET = [
     # "10m_u_component_of_wind",

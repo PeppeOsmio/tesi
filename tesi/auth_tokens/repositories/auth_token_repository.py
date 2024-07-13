@@ -2,7 +2,7 @@ from datetime import datetime, timedelta, timezone
 import logging
 from uuid import UUID
 from sqlalchemy import delete, select, update
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from tesi.auth_tokens.repositories.dtos import AuthTokenDTO
 from tesi.auth_tokens.models import AuthToken
 import secrets
@@ -22,9 +22,9 @@ from tesi.users.repositories import UserRepository
 
 class AuthTokenRepository:
     def __init__(
-        self, db_session: AsyncSession, user_repository: UserRepository
+        self, session_maker: async_sessionmaker, user_repository: UserRepository
     ) -> None:
-        self.db_session = db_session
+        self.session_maker = session_maker
         self.user_repository = user_repository
 
     async def create_auth_token(
@@ -44,7 +44,7 @@ class AuthTokenRepository:
         user_id = await self.user_repository.get_user_id_from_username(username)
         if user_id is None:
             raise WrongCredentialsError()
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
             if not await self.user_repository.check_password(
                 username=username, password=password
@@ -78,7 +78,7 @@ class AuthTokenRepository:
         Returns:
             AuthToken | None:
         """
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(AuthToken).where(AuthToken.token == token.encode())
             auth_token = await session.scalar(stmt)
         if auth_token is None:
@@ -106,7 +106,7 @@ class AuthTokenRepository:
         """
         if not await self.user_repository.check_user_exists(user_id):
             raise UserNotFoundError()
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(AuthToken).where(AuthToken.user_id == user_id)
             auth_tokens = await session.scalars(stmt)
         return [
@@ -135,7 +135,7 @@ class AuthTokenRepository:
             AuthToken:
         """
         is_admin = self.user_repository.check_is_admin(executor_id)
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             exists_stmt = select(AuthToken.user_id).where(
                 AuthToken.token == token.encode()
             )
@@ -163,7 +163,7 @@ class AuthTokenRepository:
         """
         if not await self.user_repository.check_user_exists(user_id):
             raise UserNotFoundError()
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 update(AuthToken)
                 .where(AuthToken.user_id == user_id)
@@ -174,7 +174,7 @@ class AuthTokenRepository:
 
     async def get_user_from_auth_token(self, token: str) -> UserDTO | None:
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 select(User, AuthToken.expires_at)
                 .join(

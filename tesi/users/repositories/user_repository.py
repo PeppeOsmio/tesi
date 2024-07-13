@@ -8,7 +8,7 @@ import uuid
 
 import bcrypt
 from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from sqlalchemy.sql.functions import count
 from tesi.users.repositories.dtos import UserDTO
 from tesi.users.models import User
@@ -22,8 +22,8 @@ from tesi.users.schemas import UserCreateBody
 
 class UserRepository:
 
-    def __init__(self, db_session: AsyncSession) -> None:
-        self.db_session = db_session
+    def __init__(self, session_maker: async_sessionmaker) -> None:
+        self.session_maker = session_maker
 
     async def get_user_by_id(self, user_id: UUID) -> UserDTO | None:
         """
@@ -34,7 +34,7 @@ class UserRepository:
         Returns:
             User | None:
         """
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(User).where(User.id == user_id)
             user = await session.scalar(stmt)
         if user is None:
@@ -59,7 +59,7 @@ class UserRepository:
         Returns:
             list[User]:
         """
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 select(User)
                 .order_by(User.created_at, User.id)
@@ -89,7 +89,7 @@ class UserRepository:
         Returns:
             int:
         """
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(count(User.id))
             result = await session.scalar(stmt)
         if result is None:
@@ -99,7 +99,7 @@ class UserRepository:
     async def create_user(
         self, username: str, password: str, name: str, email: str | None
     ) -> UserDTO:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             exists_username_stmt = select(User.id).where(User.username == username)
             user_id = await session.scalar(exists_username_stmt)
             if user_id is not None:
@@ -132,7 +132,7 @@ class UserRepository:
         )
 
     async def check_password(self, username: str, password: str) -> bool:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(User.password).where(User.username == username)
             hashed_pw = await session.scalar(stmt)
             if hashed_pw is None:
@@ -142,7 +142,7 @@ class UserRepository:
             )
 
     async def get_user_id_from_username(self, username: str) -> UUID | None:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(User.id).where(User.username == username)
             result = (await session.execute(stmt)).first()
         if result is None:
@@ -150,7 +150,7 @@ class UserRepository:
         return result.tuple()[0]
 
     async def check_user_exists(self, user_id: UUID) -> bool:
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(User.id).where(User.id == user_id)
             result = await session.execute(stmt)
         return result.first() is None
@@ -167,7 +167,7 @@ class UserRepository:
         Returns:
             bool | None: whether the user is an admin or None if the user does not exist.
         """
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = select(User.is_admin).where(User.id == executor_id)
             is_admin = await session.scalar(stmt)
         return is_admin
@@ -192,7 +192,7 @@ class UserRepository:
             raise PermissionError()
         if not is_admin:
             raise PermissionError()
-        async with self.db_session as session:
+        async with self.session_maker() as session:
             stmt = (
                 update(User)
                 .where(User.id == user_id)
