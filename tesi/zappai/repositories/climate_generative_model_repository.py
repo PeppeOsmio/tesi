@@ -1,19 +1,12 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from datetime import datetime, timedelta
-import os
-from typing import Any, cast
+from typing import cast
 from uuid import UUID
-from io import BytesIO
 import uuid
-from keras.src.losses import mean_squared_error
 import numpy as np
 import pandas as pd
 from keras.src.models import Sequential
 from keras.src.layers import Dropout, InputLayer, LSTM, Dense
-from keras.src.losses import MeanSquaredError
-from keras.src.metrics import RootMeanSquaredError
-from keras.src.optimizers import Adam
 from sklearn.preprocessing import StandardScaler
 from sqlalchemy import delete, insert, select
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
@@ -34,7 +27,6 @@ from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
 )
-import joblib
 
 from tesi.zappai.utils.common import bytes_to_object, get_next_n_months, object_to_bytes
 
@@ -145,6 +137,7 @@ class ClimateGenerativeModelRepository:
         x_scaler = StandardScaler()
         x_scaler = x_scaler.fit(x_df_train.to_numpy())
 
+        # descending order
         train_start_year, train_start_month = x_df_train.index[0]
         train_end_year, train_end_month = x_df_train.index[-1]
 
@@ -279,10 +272,6 @@ class ClimateGenerativeModelRepository:
                 location_id=location.id
             )
         )
-
-        start_year, start_month = past_climate_data_df.index[-1]
-        start_year = cast(int, start_year)
-        start_month = cast(int, start_month)
 
         # train in thread
         loop = asyncio.get_running_loop()

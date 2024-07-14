@@ -41,15 +41,13 @@ async def main():
             latitude=common.EXAMPLE_LATITUDE,
         )
 
-    location = await location_repository.get_location_by_id(
-        location_id=UUID(hex="3d3b83c1-9dd2-4b5b-a06e-bd1f83a8188c")
-    )
     if location is None:
         raise Exception()
 
     retries = 0
     while retries < 10:
         try:
+            logging.info(f"Starting download")
             await past_climate_data_repository.download_new_past_climate_data(
                 location_id=location.id
             )

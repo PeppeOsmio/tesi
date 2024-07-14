@@ -15,12 +15,22 @@ class CropRepository:
     ) -> None:
         self.session_maker = session_maker
 
-    async def create_crop(self, name: str) -> CropDTO:
+    async def create_crop(
+        self, name: str, min_farming_months: int, max_farming_months: int
+    ) -> CropDTO:
         crop_id = uuid.uuid4()
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
         async with self.session_maker() as session:
             stmt = insert(Crop).values(
-                [{"id": crop_id, "name": name, "created_at": now}]
+                [
+                    {
+                        "id": crop_id,
+                        "name": name,
+                        "min_farming_months": min_farming_months,
+                        "max_farming_months": max_farming_months,
+                        "created_at": now,
+                    }
+                ]
             )
             await session.execute(stmt)
             await session.commit()

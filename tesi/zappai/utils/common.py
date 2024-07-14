@@ -35,8 +35,10 @@ def object_to_bytes(obj: Any) -> bytes:
     bytes_io.seek(0)
     return bytes_io.read()
 
+def calculate_months_delta(start_year: int, start_month: int, end_year: int, end_month: int) -> int:
+    pass
 
-def get_next_n_months(n: int, month: int, year: int) -> tuple[int, int]:
+def get_next_n_months(n: int,  year: int, month: int) -> tuple[int, int]:
     if n < 1:
         raise ValueError(f"n can't be less than 1")
 
@@ -49,7 +51,7 @@ def get_next_n_months(n: int, month: int, year: int) -> tuple[int, int]:
             continue
         result_month += 1
 
-    return result_month, result_year
+    return result_year, result_month
 
 
 def get_previous_n_months(n: int, month: int, year: int) -> tuple[int, int]:

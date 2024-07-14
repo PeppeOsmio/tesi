@@ -61,6 +61,8 @@ class Crop(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(index=True)
+    min_farming_months: Mapped[int]
+    max_farming_months: Mapped[int]
     crop_yield_model: Mapped[bytes | None]
     mse: Mapped[float | None]
     r2: Mapped[float | None]
@@ -72,6 +74,7 @@ class CropYieldData(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id"))
     crop_id: Mapped[UUID] = mapped_column(ForeignKey(column="crop.id"))
+    surface: Mapped[float]
     sowing_year: Mapped[int]
     sowing_month: Mapped[int]
     harvest_year: Mapped[int]

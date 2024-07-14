@@ -96,6 +96,7 @@ columns_to_include: dict[str, str] = {
     "Longitude": "longitude",
     # "Soil information recorded in the paper": "soil",
     # "pH (surface layer)": "ph",
+    "Soil cover in CT": "surface",
     "Crop": "crop",
     "Sowing year": "sowing_year",
     "Sowing month": "sowing_month",
@@ -245,12 +246,14 @@ class CropYieldDataRepository:
 
             crop_names = set(cast(list[str], list(crop_yield_data_df["crop"])))
             for crop_name in crop_names:
+                sub_df = crop_yield_data_df[crop_yield_data_df["crop"] == crop_name]
+
                 crop = await self.crop_repository.get_crop_by_name(crop_name)
                 if crop is not None:
                     crop_names_to_ids.update({crop_name: crop.id})
                     continue
                 logging.info(f"Creating crop {crop_name}")
-                crop = await self.crop_repository.create_crop(crop_name)
+                crop = await self.crop_repository.create_crop(crop_name,0,0)
                 crop_names_to_ids.update({crop_name: crop.id})
 
             logging.info("Checking locations to create")
