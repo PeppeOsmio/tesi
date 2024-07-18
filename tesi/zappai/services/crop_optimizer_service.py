@@ -79,14 +79,14 @@ class CropOptimizerService:
         Returns:
             CropOptimizerResultDTO:
         """
-        location = await self.location_repository.get_location_by_country_and_name(
-            "Italy", "Policoro"
+        location = await self.location_repository.get_location_by_id(
+            location_id
         )
 
         if location is None:
             raise Exception()
 
-        crop = await self.crop_repository.get_crop_by_name("maize")
+        crop = await self.crop_repository.get_crop_by_id(crop_id)
         if crop is None:
             raise Exception()
 
