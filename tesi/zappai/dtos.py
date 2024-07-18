@@ -8,6 +8,7 @@ import pandas as pd
 
 from typing import Any, cast
 
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import MinMaxScaler, StandardScaler
 
 
@@ -22,6 +23,11 @@ class CropDTO:
     id: UUID
     name: str
     created_at: datetime
+    min_farming_months: int
+    max_farming_months: int
+    crop_yield_model: RandomForestRegressor | None
+    mse: float | None
+    r2: float | None
 
 
 @dataclass
@@ -33,7 +39,8 @@ class CropYieldDataDTO:
     sowing_month: int
     harvest_year: int
     harvest_month: int
-    _yield: float
+    duration_months: int
+    yield_per_unit_surface: float
 
     @staticmethod
     def from_list_to_dataframe(lst: list[CropYieldDataDTO]) -> pd.DataFrame:

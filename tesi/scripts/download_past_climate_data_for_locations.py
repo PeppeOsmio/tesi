@@ -12,7 +12,7 @@ from tesi.zappai.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
-from tesi.zappai.repositories.dtos import LocationClimateYearsDTO
+from tesi.zappai.dtos import LocationClimateYearsDTO
 from tesi.database.di import get_session_maker
 
 
@@ -28,16 +28,18 @@ async def main():
     crop_repository = get_crop_repository(session_maker=session_maker)
 
     crop_yield_data_repository = get_crop_yield_data_repository(
-        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
     )
 
     logging.info("Getting location and climate data from Crop Yields table")
-    location_climate_years_from_crop_yield_data = (
-        await crop_yield_data_repository.get_unique_location_climate_years()
-    )
+    async with session_maker() as session:
+        location_climate_years_from_crop_yield_data = (
+            await crop_yield_data_repository.get_unique_location_climate_years(
+                session=session
+            )
+        )
 
     logging.info("Getting location and climate data from Past Climate Data table")
     location_climate_years_from_past_climate_data = (

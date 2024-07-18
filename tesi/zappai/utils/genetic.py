@@ -15,7 +15,7 @@ class GeneticAlgorithm:
         mutation_rate: float,
         crossover_rate: float,
         generations: int,
-        on_population_created: Callable[[Population], None] | None = None,
+        on_population_created: Callable[[int, Population], None] | None = None,
     ) -> None:
         self.fitness = fitness
         self.chromosome_length = chromosome_length
@@ -23,7 +23,7 @@ class GeneticAlgorithm:
         self.mutation_rate = mutation_rate
         self.crossover_rate = crossover_rate
         self.generations = generations
-        self.on_population_created = on_population_created
+        self.on_population_processed = on_population_created
 
     def __generate_individual(self) -> Individual:
         return [randbool() for _ in range(self.chromosome_length)]
@@ -34,10 +34,9 @@ class GeneticAlgorithm:
         return [self.__generate_individual() for _ in range(self.population_size)]
 
     def __select(self, population: Population):
-        total_fitness = sum(fitness(individual) for individual in population)
-        selection_probs = [
-            self.fitness(individual) / total_fitness for individual in population
-        ]
+        fitnesses: list[float] = [self.fitness(individual) for individual in population]
+        total_fitness = sum(fitnesses)
+        selection_probs = [fitness / total_fitness for fitness in fitnesses]
         return population[
             random.choices(range(len(population)), weights=selection_probs, k=1)[0]
         ]
@@ -56,11 +55,11 @@ class GeneticAlgorithm:
 
     def run(
         self,
-    ) -> Individual:
-        population = self.__generate_population()
-        if on_population_created is not None:
-            on_population_created(population)
-        for _ in range(self.generations):
+    ) -> tuple[list[Individual], list[float]]:
+        best_individuals: list[Individual] = []
+        best_fitnesses: list[float] = []
+        population: Population = self.__generate_population()
+        for i in range(self.generations - 1):
             new_population: Population = []
             for _ in range(len(population) // 2):
                 parent1 = self.__select(population)
@@ -69,10 +68,18 @@ class GeneticAlgorithm:
                 new_population.append(self.__mutate(child1))
                 new_population.append(self.__mutate(child2))
             population = new_population
-            if on_population_created is not None:
-                on_population_created(population)
-        best_individual = max(population, key=fitness)
-        return best_individual
+            if self.on_population_processed is not None:
+                self.on_population_processed(i + 1, population)
+        if self.on_population_processed is not None:
+            self.on_population_processed(self.generations, population)
+        fitnesses: list[float] = [self.fitness(individual) for individual in population]
+        best_fitness = max(fitnesses)
+        best_individual_index = fitnesses.index(best_fitness)
+        best_individual = population[best_individual_index]
+
+        best_fitnesses.append(best_fitness)
+        best_individuals.append(best_individual)
+        return best_individuals, best_fitnesses
 
 
 def randbool() -> bool:
@@ -99,7 +106,7 @@ if __name__ == "__main__":
         x = individual_to_int(individual)
         return x**2
 
-    def on_population_created(population: Population):
+    def on_population_created(i: int, population: Population):
         print([individual_to_int(individual) for individual in population])
         print(f"Best fitness: {fitness(max(population, key=fitness))}")
 
@@ -113,5 +120,5 @@ if __name__ == "__main__":
         on_population_created=on_population_created,
     )
 
-    result = ga.run()
-    print(f"Result: {individual_to_str(result)}")
+    results, fitnesses = ga.run()
+    print(f"Result: {individual_to_str(results[-1])}, fitness: {fitnesses[-1]}")

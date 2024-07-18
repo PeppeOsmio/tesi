@@ -1,13 +1,14 @@
 from typing import cast
 import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from tesi.zappai.exceptions import LocationNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     FEATURES as CLIMATE_GENERATIVE_MODEL_FEATURES,
 )
 from tesi.zappai.repositories.crop_repository import CropRepository
 from tesi.zappai.repositories.crop_yield_data_repository import CropYieldDataRepository
-from tesi.zappai.repositories.dtos import ClimateDataDTO, CropYieldDataDTO
+from tesi.zappai.dtos import ClimateDataDTO, CropYieldDataDTO
 from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
@@ -15,12 +16,14 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from uuid import UUID
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
+from tesi.zappai.utils.common import calc_months_delta, enrich_data_frame_with_stats
 
 FEATURES = [
     "sowing_year",
     "sowing_month",
     "harvest_year",
     "harvest_month",
+    "duration_months",
     "surface_solar_radiation_downwards_mean",
     "surface_solar_radiation_downwards_std",
     "surface_solar_radiation_downwards_min",
@@ -62,7 +65,7 @@ FEATURES = [
     "total_precipitation_min",
     "total_precipitation_max",
 ]
-TARGET = ["_yield"]
+TARGET = ["yield_per_unit_surface"]
 
 
 class CropYieldModelService:
@@ -78,7 +81,9 @@ class CropYieldModelService:
         self.crop_yield_data_repository = crop_yield_data_repository
         self.crop_repository = crop_repository
 
-    async def train_crop_yield_model(self, crop_id: UUID) -> tuple[
+    async def train_crop_yield_model(
+        self, session: AsyncSession, crop_id: UUID
+    ) -> tuple[
         RandomForestRegressor,
         float,
         float,
@@ -88,7 +93,7 @@ class CropYieldModelService:
         pd.DataFrame,
     ]:
         crop_yield_data = await self.crop_yield_data_repository.get_crop_yield_data(
-            crop_id=crop_id
+            session=session, crop_id=crop_id
         )
         crop_yield_data_df = CropYieldDataDTO.from_list_to_dataframe(crop_yield_data)
 
@@ -112,17 +117,9 @@ class CropYieldModelService:
             past_climate_data_df = past_climate_data_df[
                 CLIMATE_GENERATIVE_MODEL_FEATURES
             ]
-            stats = ["mean", "std", "min", "max"]
-            climate_data_stats = past_climate_data_df.agg(
-                {feature: stats for feature in CLIMATE_GENERATIVE_MODEL_FEATURES},  # type: ignore
-                axis=0,
-            )  # type: ignore
-            result_climate_data_stats_df = pd.DataFrame()
-            for feature in CLIMATE_GENERATIVE_MODEL_FEATURES:
-                for stat in stats:
-                    result_climate_data_stats_df[f"{feature}_{stat}"] = [
-                        climate_data_stats.loc[stat][feature]
-                    ]
+            result_climate_data_stats_df = enrich_data_frame_with_stats(
+                df=past_climate_data_df, ignore=["sin_year", "cos_year"]
+            )
             # convert the row to a DataFrame
             crop_yield_data_row_df = pd.DataFrame([row])
             # since the row was a Series, remove the useless index column that the DataFrame inherited
@@ -160,7 +157,9 @@ class CropYieldModelService:
 
         return model, mse, r2, x_train, x_test, y_train, y_test
 
-    async def train_and_save_crop_yield_model_for_all_crops(self):
+    async def train_and_save_crop_yield_model_for_all_crops(
+        self, session: AsyncSession
+    ):
         crops = await self.crop_repository.get_all_crops()
 
         processed = 0
@@ -171,7 +170,7 @@ class CropYieldModelService:
         print_processed()
         for crop in crops:
             model, mse, r2, _, _, _, _ = await self.train_crop_yield_model(
-                crop_id=crop.id
+                crop_id=crop.id, session=session
             )
             await self.crop_repository.save_crop_yield_model(
                 crop_id=crop.id, crop_yield_model=model, mse=mse, r2=r2

@@ -24,14 +24,16 @@ async def main():
         location_repository=location_repository,
     )
     crop_yield_data_repository = get_crop_yield_data_repository(
-        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
     )
-    location_ids_and_periods = (
-        await crop_yield_data_repository.get_unique_location_and_period_tuples()
-    )
+    async with session_maker() as session:
+        location_ids_and_periods = (
+            await crop_yield_data_repository.get_unique_location_and_period_tuples(
+                session=session
+            )
+        )
 
     os.makedirs("training_data", exist_ok=True)
 

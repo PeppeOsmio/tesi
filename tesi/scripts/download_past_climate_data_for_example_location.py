@@ -11,7 +11,7 @@ from tesi.zappai.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
-from tesi.zappai.repositories.dtos import ClimateDataDTO
+from tesi.zappai.dtos import ClimateDataDTO
 from tesi.database.di import get_session_maker
 from tesi.zappai.utils import common
 

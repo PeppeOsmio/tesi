@@ -15,7 +15,7 @@ from tesi.zappai.exceptions import (
     LocationNotFoundError,
 )
 from tesi.zappai.models import ClimateGenerativeModel
-from tesi.zappai.repositories.dtos import (
+from tesi.zappai.dtos import (
     ClimateGenerativeModelDTO,
     FutureClimateDataDTO,
     ClimateDataDTO,
@@ -417,6 +417,8 @@ class ClimateGenerativeModelRepository:
         start_year, start_month = index
         start_year = cast(int, start_year)
         start_month = cast(int, start_month)
+
+        start_year, start_month = get_next_n_months(n=1, year=start_year, month=start_month)
 
         year_to, month_to = get_next_n_months(
             n=months, month=start_month, year=start_year

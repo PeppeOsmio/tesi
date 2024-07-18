@@ -11,7 +11,7 @@ from sqlalchemy import asc, delete, desc, insert, select
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from tesi.zappai.exceptions import PastClimateDataNotFoundError
-from tesi.zappai.repositories.dtos import LocationClimateYearsDTO, ClimateDataDTO
+from tesi.zappai.dtos import LocationClimateYearsDTO, ClimateDataDTO
 from tesi.zappai.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
@@ -30,21 +30,6 @@ class PastClimateDataRepository:
         self.session_maker = session_maker
         self.copernicus_data_store_api = copernicus_data_store_api
         self.location_repository = location_repository
-
-    async def get_last_past_climate_data(
-        self, location_id: UUID
-    ) -> ClimateDataDTO | None:
-        async with self.session_maker() as session:
-            stmt = (
-                select(PastClimateData)
-                .where(PastClimateData.location_id == location_id)
-                .order_by(asc(PastClimateData.year), asc(PastClimateData.month))
-                .limit(1)
-            )
-            result = await session.scalar(stmt)
-        if result is None:
-            return None
-        return self.__past_climate_data_model_to_dto(result)
 
     async def download_past_climate_data_for_years(
         self, location_id: UUID, years: list[int]
@@ -79,10 +64,12 @@ class PastClimateDataRepository:
         year_from = 1940
         month_from = 1
 
-        last_climate_data = await self.get_last_past_climate_data(
-            location_id=location_id
-        )
-
+        last_climate_data: ClimateDataDTO | None = None
+        try:
+            last_climate_data = (await self.get_past_climate_data_of_previous_n_months(location_id=location_id, n=1))[0]
+        except PastClimateDataNotFoundError:
+            pass
+        
         if last_climate_data is not None:
             max_year = last_climate_data.year
             max_month = last_climate_data.month
@@ -181,8 +168,7 @@ class PastClimateDataRepository:
             logging.info(f"Inserted {len(past_climate_data_df)} past climate data.")
 
     async def get_all_past_climate_data(
-        self,
-        location_id: UUID,
+        self, location_id: UUID
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = (
@@ -235,7 +221,7 @@ class PastClimateDataRepository:
         return [self.__past_climate_data_model_to_dto(result) for result in results]
 
     async def get_past_climate_data_of_previous_n_months(
-        self, location_id: UUID, n: int
+        self, location_id: UUID, n: int | None = None
     ) -> list[ClimateDataDTO]:
         async with self.session_maker() as session:
             stmt = (
@@ -247,11 +233,12 @@ class PastClimateDataRepository:
                     desc(PastClimateData.year),
                     desc(PastClimateData.month),
                 )
-                .limit(n)
             )
+            if n is not None:
+                stmt = stmt.limit(n)
             results = list(await session.scalars(stmt))
         if len(results) is None:
-            raise Exception(
+            raise PastClimateDataNotFoundError(
                 f"Can't find past climate data of previous 12 months for location"
             )
         results.sort(

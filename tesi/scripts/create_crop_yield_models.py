@@ -21,7 +21,6 @@ async def main():
         location_repository=location_repository,
     )
     crop_yield_data_repository = get_crop_yield_data_repository(
-        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
@@ -33,7 +32,8 @@ async def main():
         crop_repository=crop_repository,
     )
 
-    await crop_yield_model_repository.train_and_save_crop_yield_model_for_all_crops()
+    async with session_maker() as session:
+        await crop_yield_model_repository.train_and_save_crop_yield_model_for_all_crops(session=session)
 
 if __name__ == "__main__":
     asyncio.run(main())

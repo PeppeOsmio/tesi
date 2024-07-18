@@ -11,17 +11,22 @@ EXAMPLE_LOCATION_NAME = "Policoro"
 EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
 
-def get_or_create_event_loop():
-    try:
-        # Try to get the running event loop
-        return asyncio.get_running_loop()
-    except RuntimeError:
-        # No running loop, so create a new one
-        loop = asyncio.new_event_loop()
-        # Setting the loop as the current event loop for this thread
-        asyncio.set_event_loop(loop)
-        return loop
-
+def enrich_data_frame_with_stats(df: pd.DataFrame, ignore: list[str]) -> pd.DataFrame:
+    stats = ["mean", "std", "min", "max"]
+    original_columns = list(df.columns)
+    climate_data_stats = df.agg(
+        {column: stats for column in original_columns},  # type: ignore
+        axis=0,
+    )  # type: ignore
+    result_df = pd.DataFrame()
+    for column in original_columns:
+        if column in ignore:
+            continue
+        for stat in stats:
+            result_df[f"{column}_{stat}"] = [
+                climate_data_stats.loc[stat][column]
+            ]
+    return result_df
 
 
 def bytes_to_object(bts: bytes) -> Any:
@@ -35,10 +40,29 @@ def object_to_bytes(obj: Any) -> bytes:
     bytes_io.seek(0)
     return bytes_io.read()
 
-def calculate_months_delta(start_year: int, start_month: int, end_year: int, end_month: int) -> int:
-    pass
 
-def get_next_n_months(n: int,  year: int, month: int) -> tuple[int, int]:
+def calc_months_delta(
+    start_year: int, start_month: int, end_year: int, end_month: int
+) -> int:
+    result = (end_year - start_year) * 12
+    result += end_month - start_month
+    return result
+
+
+def get_next_n_months(n: int, year: int, month: int) -> tuple[int, int]:
+    """_summary_
+
+    Args:
+        n (int):
+        year (int):
+        month (int):
+
+    Raises:
+        ValueError:
+
+    Returns:
+        tuple[int, int]: year, month
+    """
     if n < 1:
         raise ValueError(f"n can't be less than 1")
 

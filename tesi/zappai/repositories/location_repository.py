@@ -5,9 +5,8 @@ from uuid import UUID
 import uuid
 from sqlalchemy import delete, insert, select
 from sqlalchemy.exc import IntegrityError
-from tesi.zappai.utils.common import get_or_create_event_loop
 from tesi.zappai.exceptions import LocationNotFoundError
-from tesi.zappai.repositories.dtos import LocationDTO
+from tesi.zappai.dtos import LocationDTO
 from tesi.zappai.models import Location
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 import pandas as pd

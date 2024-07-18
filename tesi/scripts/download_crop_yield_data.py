@@ -28,29 +28,19 @@ async def main():
         location_repository=location_repository,
     )
     crop_yield_data_repository = get_crop_yield_data_repository(
-        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
     )
-    retries = 0
-    while retries < 1:
-        try:
-            await crop_yield_data_repository.download_crop_yield_data()
-            break
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            logging.info("Failed to fetch past climate data, retrying...")
-            retries += 1
-
     crop_yield_model_repository = get_crop_yield_model_service(
         past_climate_data_repository=past_climate_data_repository,
         location_repository=location_repository,
         crop_yield_data_repository=crop_yield_data_repository,
         crop_repository=crop_repository,
     )
-
-    await crop_yield_model_repository.train_and_save_crop_yield_model_for_all_crops()
+    async with session_maker() as session:
+        await crop_yield_data_repository.download_crop_yield_data(session=session)
+        await crop_yield_model_repository.train_and_save_crop_yield_model_for_all_crops(session=session)
 
 
 if __name__ == "__main__":

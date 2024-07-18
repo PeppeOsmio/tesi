@@ -1,9 +1,9 @@
 from datetime import datetime, timezone
 import uuid
 from sklearn.ensemble import RandomForestRegressor
-from sqlalchemy import insert, select, update
-from tesi.zappai.utils.common import object_to_bytes
-from tesi.zappai.repositories.dtos import CropDTO
+from sqlalchemy import delete, insert, select, update
+from tesi.zappai.utils.common import bytes_to_object, object_to_bytes
+from tesi.zappai.dtos import CropDTO
 from tesi.zappai.models import Crop
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -14,6 +14,11 @@ class CropRepository:
         session_maker: async_sessionmaker[AsyncSession],
     ) -> None:
         self.session_maker = session_maker
+
+    async def delete_crop_by_name(self, session: AsyncSession, name: str):
+        async with session:
+            await session.execute(delete(Crop).where(Crop.name == name))
+            await session.commit()
 
     async def create_crop(
         self, name: str, min_farming_months: int, max_farming_months: int
@@ -34,7 +39,16 @@ class CropRepository:
             )
             await session.execute(stmt)
             await session.commit()
-        return CropDTO(id=crop_id, name=name, created_at=now)
+        return CropDTO(
+            id=crop_id,
+            name=name,
+            created_at=now,
+            min_farming_months=min_farming_months,
+            max_farming_months=max_farming_months,
+            crop_yield_model=None,
+            mse=None,
+            r2=None,
+        )
 
     async def get_crop_by_name(self, name: str) -> CropDTO | None:
         async with self.session_maker() as session:
@@ -50,7 +64,7 @@ class CropRepository:
             crop = await session.scalar(stmt)
         if crop is None:
             return None
-        return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)
+        return self.__crop_model_to_dto(crop)
 
     async def save_crop_yield_model(
         self,
@@ -77,4 +91,17 @@ class CropRepository:
         return [self.__crop_model_to_dto(crop) for crop in results]
 
     def __crop_model_to_dto(self, crop: Crop) -> CropDTO:
-        return CropDTO(id=crop.id, name=crop.name, created_at=crop.created_at)
+        return CropDTO(
+            id=crop.id,
+            name=crop.name,
+            created_at=crop.created_at,
+            min_farming_months=crop.min_farming_months,
+            max_farming_months=crop.max_farming_months,
+            crop_yield_model=(
+                bytes_to_object(crop.crop_yield_model)
+                if crop.crop_yield_model is not None
+                else None
+            ),
+            mse=crop.mse,
+            r2=crop.r2,
+        )

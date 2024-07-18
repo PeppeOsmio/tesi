@@ -61,9 +61,6 @@ def get_past_climate_data_repository(
 
 
 def get_crop_yield_data_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
     crop_repository: Annotated[CropRepository, Depends(get_crop_repository)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
@@ -73,7 +70,6 @@ def get_crop_yield_data_repository(
     ],
 ) -> CropYieldDataRepository:
     return CropYieldDataRepository(
-        session_maker=session_maker,
         crop_repository=crop_repository,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,

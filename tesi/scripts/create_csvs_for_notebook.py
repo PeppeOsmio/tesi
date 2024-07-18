@@ -1,7 +1,7 @@
 import asyncio
 import logging
 import pandas as pd
-from tesi.zappai.repositories.dtos import FutureClimateDataDTO, ClimateDataDTO
+from tesi.zappai.dtos import FutureClimateDataDTO, ClimateDataDTO
 from tesi.zappai.di import (
     get_location_repository,
     get_session_maker,

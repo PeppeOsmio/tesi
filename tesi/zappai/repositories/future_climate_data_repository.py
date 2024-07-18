@@ -6,7 +6,7 @@ import uuid
 from geoalchemy2 import Geography
 import pandas as pd
 from sqlalchemy import BooleanClauseList, asc, delete, func, insert, select
-from tesi.zappai.repositories.dtos import FutureClimateDataDTO
+from tesi.zappai.dtos import FutureClimateDataDTO
 from tesi.zappai.models import FutureClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from geoalchemy2.functions import ST_Distance
@@ -20,7 +20,7 @@ class FutureClimateDataRepository:
     def __init__(
         self,
         session_maker: async_sessionmaker[AsyncSession],
-        copernicus_data_store_api: CopernicusDataStoreAPI,
+        copernicus_data_store_api: CopernicusDataStoreAPI
     ) -> None:
         self.session_maker = session_maker
         self.copernicus_data_store_api = copernicus_data_store_api

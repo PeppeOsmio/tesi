@@ -74,12 +74,12 @@ class CropYieldData(Base):
     id: Mapped[UUID] = mapped_column(primary_key=True)
     location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id"))
     crop_id: Mapped[UUID] = mapped_column(ForeignKey(column="crop.id"))
-    surface: Mapped[float]
     sowing_year: Mapped[int]
     sowing_month: Mapped[int]
     harvest_year: Mapped[int]
     harvest_month: Mapped[int]
-    _yield: Mapped[float]
+    duration_months: Mapped[int]
+    yield_per_unit_surface: Mapped[float]
 
     location: Mapped[Location] = relationship()
 
