@@ -79,9 +79,7 @@ class CropOptimizerService:
         Returns:
             CropOptimizerResultDTO:
         """
-        location = await self.location_repository.get_location_by_id(
-            location_id
-        )
+        location = await self.location_repository.get_location_by_id(location_id)
 
         if location is None:
             raise Exception()
@@ -97,6 +95,8 @@ class CropOptimizerService:
         forecast = await self.climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
             location_id=location.id, months=24
         )
+        forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
+        forecast_df = forecast_df.drop(columns=["location_id"])
 
         POPULATIONS = 20
 
@@ -109,8 +109,8 @@ class CropOptimizerService:
             if (sowing >= len(forecast)) | (harvesting >= len(forecast)):
                 return 0
 
-            sowing_year, sowing_month = forecast.index[sowing]
-            harvest_year, harvest_month = forecast.index[harvesting]
+            sowing_year, sowing_month = forecast_df.index[sowing]
+            harvest_year, harvest_month = forecast_df.index[harvesting]
 
             duration = calc_months_delta(
                 start_year=sowing_year,
@@ -126,26 +126,24 @@ class CropOptimizerService:
             ):
                 return 0
 
-            forecast_for_individual = forecast[
+            forecast_for_individual = forecast_df[
                 (
-                    (forecast.index.get_level_values("year") < harvest_year)
+                    (forecast_df.index.get_level_values("year") < harvest_year)
                     | (
-                        (forecast.index.get_level_values("year") == harvest_year)
-                        & (forecast.index.get_level_values("year") <= harvest_month)
+                        (forecast_df.index.get_level_values("year") == harvest_year)
+                        & (forecast_df.index.get_level_values("year") <= harvest_month)
                     )
                 )
                 | (
-                    (forecast.index.get_level_values("year") > sowing_year)
+                    (forecast_df.index.get_level_values("year") > sowing_year)
                     | (
-                        (forecast.index.get_level_values("year") == sowing_year)
-                        & (forecast.index.get_level_values("year") >= sowing_month)
+                        (forecast_df.index.get_level_values("year") == sowing_year)
+                        & (forecast_df.index.get_level_values("year") >= sowing_month)
                     )
                 )
             ]
 
-            enriched_forecast = enrich_data_frame_with_stats(
-                df=forecast_for_individual, ignore=["sin_year, cos_year"]
-            )
+            enriched_forecast = enrich_data_frame_with_stats(df=forecast_for_individual, ignore=[])
 
             x_df = pd.DataFrame(
                 {
@@ -162,8 +160,6 @@ class CropOptimizerService:
                 }
             )
             x_df = pd.concat([x_df, enriched_forecast], axis=1)
-
-            x_df.to_csv("x_df.csv")
 
             pred = cast(RandomForestRegressor, model).predict(
                 x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
@@ -197,8 +193,8 @@ class CropOptimizerService:
             sowing = individual_to_int(result[:5])
             harvesting = individual_to_int(result[5:])
 
-            sowing_year, sowing_month = forecast.index[sowing]
-            harvest_year, harvest_month = forecast.index[harvesting]
+            sowing_year, sowing_month = forecast_df.index[sowing]
+            harvest_year, harvest_month = forecast_df.index[harvesting]
             duration = calc_months_delta(
                 start_year=sowing_year,
                 start_month=sowing_month,
@@ -217,5 +213,5 @@ class CropOptimizerService:
             )
         return CropOptimizerResultDTO(
             best_combinations=combinations,
-            forecast=ClimateDataDTO.from_dataframe_to_list(forecast),
+            forecast=forecast,
         )

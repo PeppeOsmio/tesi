@@ -66,10 +66,14 @@ class PastClimateDataRepository:
 
         last_climate_data: ClimateDataDTO | None = None
         try:
-            last_climate_data = (await self.get_past_climate_data_of_previous_n_months(location_id=location_id, n=1))[0]
+            last_climate_data = (
+                await self.get_past_climate_data_of_previous_n_months(
+                    location_id=location_id, n=1
+                )
+            )[0]
         except PastClimateDataNotFoundError:
             pass
-        
+
         if last_climate_data is not None:
             max_year = last_climate_data.year
             max_month = last_climate_data.month
@@ -372,17 +376,17 @@ class PastClimateDataRepository:
             location_id=past_climate_data.location_id,
             year=past_climate_data.year,
             month=past_climate_data.month,
-            u_component_of_wind_10m=past_climate_data.u_component_of_wind_10m,
-            v_component_of_wind_10m=past_climate_data.v_component_of_wind_10m,
+            # u_component_of_wind_10m=past_climate_data.u_component_of_wind_10m,
+            # v_component_of_wind_10m=past_climate_data.v_component_of_wind_10m,
+            # evaporation=past_climate_data.evaporation,
+            # surface_pressure=past_climate_data.surface_pressure,
             temperature_2m=past_climate_data.temperature_2m,
-            evaporation=past_climate_data.evaporation,
             total_precipitation=past_climate_data.total_precipitation,
-            surface_pressure=past_climate_data.surface_pressure,
             surface_solar_radiation_downwards=past_climate_data.surface_solar_radiation_downwards,
             surface_thermal_radiation_downwards=past_climate_data.surface_thermal_radiation_downwards,
             surface_net_solar_radiation=past_climate_data.surface_net_solar_radiation,
             surface_net_thermal_radiation=past_climate_data.surface_net_thermal_radiation,
-            snowfall=past_climate_data.snowfall,
+            # snowfall=past_climate_data.snowfall,
             total_cloud_cover=past_climate_data.total_cloud_cover,
             dewpoint_temperature_2m=past_climate_data.dewpoint_temperature_2m,
             soil_temperature_level_3=past_climate_data.soil_temperature_level_3,

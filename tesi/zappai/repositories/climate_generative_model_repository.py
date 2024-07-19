@@ -393,7 +393,7 @@ class ClimateGenerativeModelRepository:
 
     async def generate_climate_data_from_last_past_climate_data(
         self, location_id: UUID, months: int
-    ) -> pd.DataFrame:
+    ) -> list[ClimateDataDTO]:
         location = await self.location_repository.get_location_by_id(location_id)
         if location is None:
             raise LocationNotFoundError()
@@ -443,9 +443,10 @@ class ClimateGenerativeModelRepository:
             future_climate_data_df=future_climate_data_df,
         )
 
-        result = pd.DataFrame(data=data, columns=FEATURES_WITH_SIN_COS)
+        result = pd.DataFrame(data=data, columns=[*FEATURES, *TARGET])
         result.index = future_climate_data_df.index
-        return result
+        result["location_id"] = location_id
+        return ClimateDataDTO.from_dataframe_to_list(result)
 
     async def get_climate_generative_model_by_location_id(
         self, location_id: UUID
