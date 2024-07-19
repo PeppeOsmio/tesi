@@ -1,3 +1,5 @@
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
+import multiprocessing
 import random
 from typing import Callable
 
@@ -16,6 +18,7 @@ class GeneticAlgorithm:
         crossover_rate: float,
         generations: int,
         on_population_created: Callable[[int, Population], None] | None = None,
+        parallel_workers: int | None = None,
     ) -> None:
         self.fitness = fitness
         self.chromosome_length = chromosome_length
@@ -24,6 +27,11 @@ class GeneticAlgorithm:
         self.crossover_rate = crossover_rate
         self.generations = generations
         self.on_population_processed = on_population_created
+        self.parallel_workers = (
+            parallel_workers
+            if parallel_workers is not None
+            else multiprocessing.cpu_count()
+        )
 
     def __generate_individual(self) -> Individual:
         return [randbool() for _ in range(self.chromosome_length)]
@@ -33,10 +41,45 @@ class GeneticAlgorithm:
     ) -> Population:
         return [self.__generate_individual() for _ in range(self.population_size)]
 
+    def __calc_fitnesses_in_pool(self, population: Population) -> list[float]:
+        if self.parallel_workers == 1:
+            fitnesses = [self.fitness(individual) for individual in population]
+        else:
+            chunk_size = len(population) // self.parallel_workers
+            chunks: list[list[Individual]] = []
+            remainder = len(population) % self.parallel_workers
+            start = 0
+            end = 0
+            for i in range(self.parallel_workers):
+                end = start + chunk_size + (1 if i < remainder else 0)
+                chunks.append(population[start:end])
+                start = end
+
+            def process_chunk(position: int, chunk: Population):
+                return position, [self.fitness(individual) for individual in chunk]
+
+            with ThreadPoolExecutor(max_workers=self.parallel_workers) as pool:
+                futures = [
+                    pool.submit(process_chunk, position=i, chunk=chunk)
+                    for i, chunk in enumerate(chunks)
+                ]
+                results = [future.result() for future in as_completed(futures)]
+
+            results = sorted(results, key=lambda result: result[0])
+            fitnesses = [
+                fitness
+                for position, chunk_fitnesses in results
+                for fitness in chunk_fitnesses
+            ]
+        return fitnesses
+
     def __select(self, population: Population):
-        fitnesses: list[float] = [self.fitness(individual) for individual in population]
+        fitnesses: list[float] = self.__calc_fitnesses_in_pool(population)
         total_fitness = sum(fitnesses)
-        selection_probs = [fitness / total_fitness for fitness in fitnesses]
+        if total_fitness == 0:
+            selection_probs = [1 / len(population) for i in range(len(population))]
+        else:
+            selection_probs = [fitness / total_fitness for fitness in fitnesses]
         return population[
             random.choices(range(len(population)), weights=selection_probs, k=1)[0]
         ]
@@ -72,7 +115,8 @@ class GeneticAlgorithm:
                 self.on_population_processed(i + 1, population)
         if self.on_population_processed is not None:
             self.on_population_processed(self.generations, population)
-        fitnesses: list[float] = [self.fitness(individual) for individual in population]
+
+        fitnesses = self.__calc_fitnesses_in_pool(population)
         best_fitness = max(fitnesses)
         best_individual_index = fitnesses.index(best_fitness)
         best_individual = population[best_individual_index]

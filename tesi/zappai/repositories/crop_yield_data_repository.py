@@ -140,20 +140,40 @@ class CropYieldDataRepository:
             ],
         )
 
-        # remove outliers
-        df = df[(df["Outlier of CT"] != "Yes") & (df["Outlier of NT"] != "Yes")]
-        # Calculate Z-scores
-        df["z_score"] = (df["Yield of CT"] - df["Yield of CT"].mean()) / df[
-            "Yield of CT"
-        ].std()
-        # Identify outliers
-        df = df[np.abs(df["z_score"]) < 3]
-        df = df.drop(columns="z_score")
-
         # rename
         df = df.filter(items=list(columns_to_include.keys())).rename(
             columns=columns_to_include
         )
+
+        def calc_duration(row: pd.Series):
+            return calc_months_delta(
+                start_year=row["sowing_year"],
+                start_month=row["sowing_month"],
+                end_year=row["harvest_year"],
+                end_month=row["harvest_month"],
+            )
+
+        df["duration_months"] = df.apply(calc_duration, axis=1)
+
+        def remove_outliers(df: pd.DataFrame, column: str, crop: str) -> pd.DataFrame:
+            # Calculate Z-scores
+            df["z_score"] = (df[column] - df[column].mean()) / df[column].std()
+            # Identify outliers
+            df = df[np.abs(df["z_score"]) < 3]
+            df = df.drop(columns="z_score")
+            return df
+        
+        df_no_outliers = pd.DataFrame(c)
+        
+        for crop in df["crop"].unique():
+            sub_df = df[df["crop"] == crop]
+
+
+
+        df = df.sort_values(
+            by=["crop", "country", "location"], ascending=[True, True, True]
+        )
+        df = df.reset_index(drop=True)
 
         # include only the rows where the sowing is before the harvest
         df = df[
@@ -223,21 +243,6 @@ class CropYieldDataRepository:
             agg_df = pd.concat([agg_df, first_row], axis=0)
             processed += 1
             print_processed()
-
-        def calc_duration(row: pd.Series):
-            return calc_months_delta(
-                start_year=row["sowing_year"],
-                start_month=row["sowing_month"],
-                end_year=row["harvest_year"],
-                end_month=row["harvest_month"],
-            )
-
-        agg_df["duration_months"] = agg_df.apply(calc_duration, axis=1)
-
-        agg_df = agg_df.sort_values(
-            by=["crop", "country", "location"], ascending=[True, True, True]
-        )
-        agg_df = agg_df.reset_index(drop=True)
 
         return agg_df
 

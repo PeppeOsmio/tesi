@@ -98,16 +98,14 @@ class CropOptimizerService:
         forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
         forecast_df = forecast_df.drop(columns=["location_id"])
 
-        POPULATIONS = 20
-
         def fitness_func(individual: Individual) -> float:
             if len(individual) != 10:
                 raise Exception(f"Bro individual must be of size 10...")
             sowing = individual_to_int(individual[:5])
             harvesting = individual_to_int(individual[5:])
 
-            if (sowing >= len(forecast)) | (harvesting >= len(forecast)):
-                return 0
+            if (sowing >= len(forecast_df)) | (harvesting >= len(forecast_df)):
+                return 0.0
 
             sowing_year, sowing_month = forecast_df.index[sowing]
             harvest_year, harvest_month = forecast_df.index[harvesting]
@@ -120,11 +118,11 @@ class CropOptimizerService:
             )
 
             if duration <= 0:
-                return 0
+                return 0.0
             if (duration < cast(int, cast(CropDTO, crop).min_farming_months)) | (
                 duration > cast(int, cast(CropDTO, crop).max_farming_months)
             ):
-                return 0
+                return 0.0
 
             forecast_for_individual = forecast_df[
                 (
@@ -167,19 +165,19 @@ class CropOptimizerService:
             return pred[0]
 
         def on_population_created(i: int, population: Population):
-            return
-            print(f"\rPOPULATION {i}/{POPULATIONS} PROCESSED!!!", end="")
-            if i == POPULATIONS:
+            print(f"\rPopulation {i}/20 processed", end="")
+            if i == 20:
                 print()
 
         ga = GeneticAlgorithm(
             fitness=fitness_func,
             chromosome_length=10,
-            population_size=POPULATIONS,
+            population_size=20,
             mutation_rate=0.01,
             crossover_rate=0.7,
             generations=20,
             on_population_created=on_population_created,
+            parallel_workers=None
         )
 
         combinations: list[SowingAndHarvestingDTO] = []
