@@ -292,26 +292,41 @@ class CropYieldDataRepository:
                 session=session, name=soil_type_name
             )
             if soil_type is not None:
-                await self.location_repository.delete_soil_type(session=session,soil_type_id=soil_type.id)
-            soil_type = await self.location_repository.create_soil_type(session=session, name=soil_type_name)
+                await self.location_repository.delete_soil_type(
+                    session=session, soil_type_id=soil_type.id
+                )
+            soil_type = await self.location_repository.create_soil_type(
+                session=session, name=soil_type_name
+            )
             soil_type_names_to_ids.update({soil_type.name: soil_type.id})
 
         logging.info("Checking locations to create")
         location_coordinates_to_ids: dict[str, uuid.UUID] = {}
 
         locations_df = crop_yield_data_df[
-            ["country", "location", "latitude", "longitude", "soil_type"]
+            ["country", "location", "latitude", "longitude"]
         ].drop_duplicates()
         locations_tuples = cast(
-            list[tuple[str, str, float, float, str]],
+            list[tuple[str, str, float, float]],
             list(locations_df.itertuples(index=False, name=None)),
         )
-        for country, location_name, latitude, longitude, soil_type in locations_tuples:
-            location = await self.location_repository.get_location_by_coordinates(session=session,
-                longitude=longitude, latitude=latitude
+        for country, location_name, latitude, longitude in locations_tuples:
+            soil_type = cast(
+                str,
+                crop_yield_data_df[
+                    (crop_yield_data_df["country"] == country)
+                    & (crop_yield_data_df["location"] == location_name)
+                    & (crop_yield_data_df["latitude"] == latitude)
+                    & (crop_yield_data_df["longitude"] == longitude)
+                ].iloc[0]["soil_type"],
+            )
+            location = await self.location_repository.get_location_by_coordinates(
+                session=session, longitude=longitude, latitude=latitude
             )
             if location is not None:
-                await self.location_repository.delete_location(session=session, location_id=location.id)
+                await self.location_repository.delete_location(
+                    session=session, location_id=location.id
+                )
 
             logging.info(f"Creating location {location_name} at {longitude} {latitude}")
             location = await self.location_repository.create_location(
