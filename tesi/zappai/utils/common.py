@@ -11,7 +11,7 @@ EXAMPLE_LOCATION_NAME = "Policoro"
 EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
 
-def enrich_data_frame_with_stats(df: pd.DataFrame, ignore: list[str]) -> pd.DataFrame:
+def create_stats_dataframe(df: pd.DataFrame, ignore: list[str]) -> pd.DataFrame:
     stats = ["mean", "std", "min", "max"]
     original_columns = list(df.columns)
     climate_data_stats = df.agg(

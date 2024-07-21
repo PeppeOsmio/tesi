@@ -3,6 +3,7 @@ from typing import cast
 from uuid import UUID
 
 import pandas as pd
+from sqlalchemy.ext.asyncio import AsyncSession
 from tesi.zappai.exceptions import LocationNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
@@ -18,7 +19,7 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 )
 from tesi.zappai.utils.common import (
     calc_months_delta,
-    enrich_data_frame_with_stats,
+    create_stats_dataframe,
     get_next_n_months,
 )
 from tesi.zappai.utils.genetic import (
@@ -66,7 +67,7 @@ class CropOptimizerService:
         self.climate_generative_model_repository = climate_generative_model_repository
 
     async def get_best_crop_sowing_and_harvesting(
-        self, crop_id: UUID, location_id: UUID
+        self, session: AsyncSession, crop_id: UUID, location_id: UUID
     ) -> CropOptimizerResultDTO:
         """_summary_
 
@@ -79,12 +80,16 @@ class CropOptimizerService:
         Returns:
             CropOptimizerResultDTO:
         """
-        location = await self.location_repository.get_location_by_id(location_id)
+        location = await self.location_repository.get_location_by_id(
+            session=session, location_id=location_id
+        )
 
         if location is None:
             raise Exception()
 
-        crop = await self.crop_repository.get_crop_by_id(crop_id)
+        crop = await self.crop_repository.get_crop_by_id(
+            session=session, crop_id=crop_id
+        )
         if crop is None:
             raise Exception()
 
@@ -93,7 +98,7 @@ class CropOptimizerService:
             raise Exception()
 
         forecast = await self.climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
-            location_id=location.id, months=24
+            session=session, location_id=location.id, months=24
         )
         forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
         forecast_df = forecast_df.drop(columns=["location_id"])
@@ -141,7 +146,9 @@ class CropOptimizerService:
                 )
             ]
 
-            enriched_forecast = enrich_data_frame_with_stats(df=forecast_for_individual, ignore=[])
+            stats_forecast = create_stats_dataframe(
+                df=forecast_for_individual, ignore=[]
+            )
 
             x_df = pd.DataFrame(
                 {
@@ -157,7 +164,7 @@ class CropOptimizerService:
                     ),
                 }
             )
-            x_df = pd.concat([x_df, enriched_forecast], axis=1)
+            x_df = pd.concat([x_df, stats_forecast], axis=1)
 
             pred = cast(RandomForestRegressor, model).predict(
                 x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
@@ -177,7 +184,7 @@ class CropOptimizerService:
             crossover_rate=0.7,
             generations=20,
             on_population_created=on_population_created,
-            parallel_workers=None
+            parallel_workers=1,
         )
 
         combinations: list[SowingAndHarvestingDTO] = []
@@ -212,4 +219,102 @@ class CropOptimizerService:
         return CropOptimizerResultDTO(
             best_combinations=combinations,
             forecast=forecast,
+        )
+
+    async def optimize_regular(
+        self, session: AsyncSession, crop_id: UUID, location_id: UUID
+    ) -> CropOptimizerResultDTO:
+        location = await self.location_repository.get_location_by_id(
+            session=session, location_id=location_id
+        )
+
+        if location is None:
+            raise Exception()
+
+        crop = await self.crop_repository.get_crop_by_id(
+            session=session, crop_id=crop_id
+        )
+        if crop is None:
+            raise Exception()
+
+        model = crop.crop_yield_model
+        if model is None:
+            raise Exception()
+
+        forecast = await self.climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
+            session=session, location_id=location.id, months=24
+        )
+        forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
+        forecast_df = forecast_df.drop(columns=["location_id"])
+
+        best_combinations: list[SowingAndHarvestingDTO] = []
+
+        for i in range(len(forecast_df)):
+            for j in range(i + 1, len(forecast_df)):
+                sowing_year, sowing_month = forecast_df.index[i]
+                harvest_year, harvest_month = forecast_df.index[j]
+
+                duration = calc_months_delta(
+                    start_year=sowing_year,
+                    start_month=sowing_month,
+                    end_year=harvest_year,
+                    end_month=harvest_month,
+                )
+
+                print(
+                    f"Trying {sowing_year}/{sowing_month} - {harvest_year}/{harvest_month}, duration={duration}"
+                )
+
+                if duration < crop.min_farming_months:
+                    print(f"Too short")
+                    continue
+                if duration > crop.max_farming_months:
+                    print(f"Too long")
+                    continue
+
+                forecast_for_combination = forecast_df.iloc[i:j]
+                stats_forecast = create_stats_dataframe(
+                    df=forecast_for_combination, ignore=["location_id"]
+                )
+                stats_forecast = create_stats_dataframe(
+                    df=forecast_for_combination, ignore=[]
+                )
+
+                x_df = pd.DataFrame(
+                    {
+                        "sowing_year": [sowing_year],
+                        "sowing_month": [sowing_month],
+                        "harvest_year": [harvest_year],
+                        "harvest_month": [harvest_month],
+                        "duration_months": calc_months_delta(
+                            start_year=sowing_year,
+                            start_month=sowing_month,
+                            end_year=harvest_year,
+                            end_month=harvest_month,
+                        ),
+                    }
+                )
+                x_df = pd.concat([x_df, stats_forecast], axis=1)
+
+                estimated_yield_per_hectar = cast(RandomForestRegressor, model).predict(
+                    x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
+                )[0]
+                print(f"Est. yield: {estimated_yield_per_hectar}")
+                best_combinations.append(
+                    SowingAndHarvestingDTO(
+                        sowing_year=sowing_year,
+                        sowing_month=sowing_month,
+                        harvest_year=harvest_year,
+                        harvest_month=harvest_month,
+                        duration=duration,
+                        estimated_yield_per_hectar=estimated_yield_per_hectar,
+                    )
+                )
+
+        best_combinations = sorted(
+            best_combinations, key=lambda comb: comb.estimated_yield_per_hectar
+        )
+
+        return CropOptimizerResultDTO(
+            best_combinations=best_combinations, forecast=forecast
         )

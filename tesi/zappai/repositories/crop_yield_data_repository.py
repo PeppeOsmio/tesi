@@ -103,7 +103,8 @@ columns_to_include: dict[str, str] = {
     "Sowing month": "sowing_month",
     "Harvest year": "harvest_year",
     "Harvesting month": "harvest_month",
-    "Yield of CT": "yield_per_unit_surface",
+    "Yield of CT": "yield_per_hectar",
+    "ST": "soil_type",
     # "Yield of NT": "yield",
     # "P": "P",
     # "E": "E",
@@ -111,7 +112,6 @@ columns_to_include: dict[str, str] = {
     # "Tave": "Tave",
     # "Tmax": "Tmax",
     # "Tmin": "Tmin",
-    # "ST": "ST",
 }
 
 
@@ -129,7 +129,7 @@ class CropYieldDataRepository:
     def __download_crops_yield_data(self) -> pd.DataFrame:
 
         # got from "https://figshare.com/ndownloader/files/26690678"
-        file_path = "./training_data/crops_yield_data.csv"
+        file_path = "./training_data/raw/crops_yield_data.csv"
 
         df = pd.read_csv(
             file_path,
@@ -145,6 +145,11 @@ class CropYieldDataRepository:
             columns=columns_to_include
         )
 
+        df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
+        df["crop"] = df["crop"].str.replace(r"\.winter$", "", regex=True)
+        df["crop"] = df["crop"].str.replace(r"\.spring$", "", regex=True)
+        df["crop"] = df["crop"].str.replace(r"\.summer$", "", regex=True)
+
         def calc_duration(row: pd.Series):
             return calc_months_delta(
                 start_year=row["sowing_year"],
@@ -155,20 +160,28 @@ class CropYieldDataRepository:
 
         df["duration_months"] = df.apply(calc_duration, axis=1)
 
-        def remove_outliers(df: pd.DataFrame, column: str, crop: str) -> pd.DataFrame:
+        def remove_outliers(df: pd.DataFrame, columns: list[str]) -> pd.DataFrame:
             # Calculate Z-scores
-            df["z_score"] = (df[column] - df[column].mean()) / df[column].std()
-            # Identify outliers
-            df = df[np.abs(df["z_score"]) < 3]
-            df = df.drop(columns="z_score")
+            for column in columns:
+                df[f"z_score_{column}"] = (df[column] - df[column].mean()) / df[
+                    column
+                ].std()
+                df = df[np.abs(df[f"z_score_{column}"]) < 3]
+                df = df.drop(columns=[f"z_score_{column}"])
             return df
-        
-        df_no_outliers = pd.DataFrame(c)
-        
+
+        df_no_outliers = pd.DataFrame(columns=df.columns)
+
+        soil_types = cast(list[str], list(df["soil_type"].unique()))
+
         for crop in df["crop"].unique():
             sub_df = df[df["crop"] == crop]
-
-
+            for soil_type in soil_types:
+                tmp_df = remove_outliers(
+                    df=sub_df[sub_df["soil_type"] == soil_type],
+                    columns=["duration_months", "yield_per_hectar"],
+                )
+                df_no_outliers = pd.concat([df_no_outliers, tmp_df], axis=0)
 
         df = df.sort_values(
             by=["crop", "country", "location"], ascending=[True, True, True]
@@ -189,7 +202,7 @@ class CropYieldDataRepository:
                 "longitude",
                 "latitude",
                 "crop",
-                "yield_per_unit_surface",
+                "yield_per_hectar",
                 "sowing_month",
                 "harvest_month",
                 "sowing_year",
@@ -198,11 +211,6 @@ class CropYieldDataRepository:
         )
 
         df = df.reset_index(drop=True)
-
-        df["crop"] = df["crop"].str.replace(r"\.autumn$", "", regex=True)
-        df["crop"] = df["crop"].str.replace(r"\.winter$", "", regex=True)
-        df["crop"] = df["crop"].str.replace(r"\.spring$", "", regex=True)
-        df["crop"] = df["crop"].str.replace(r"\.summer$", "", regex=True)
 
         # in the downloaded CSV there is data referring to the same crop, same location, same sowing month and same harvest month
         # that has different yield values. We now take all the rows with the same "unique_cols" that you can view below and take the mean
@@ -237,8 +245,8 @@ class CropYieldDataRepository:
                     condition = cond
                 condition &= cond
             tmp_df = df[condition].reset_index(drop=True)
-            mean_yield_per_unit_surface = tmp_df["yield_per_unit_surface"].mean()
-            tmp_df.loc[0, "yield_per_unit_surface"] = mean_yield_per_unit_surface
+            mean_yield_per_unit_surface = tmp_df["yield_per_hectar"].mean()
+            tmp_df.loc[0, "yield_per_hectar"] = mean_yield_per_unit_surface
             first_row = pd.DataFrame([tmp_df.iloc[0]])
             agg_df = pd.concat([agg_df, first_row], axis=0)
             processed += 1
@@ -269,37 +277,50 @@ class CropYieldDataRepository:
             )
             logging.info(f"Creating crop {crop_name}")
             crop = await self.crop_repository.create_crop(
+                session=session,
                 name=crop_name,
                 min_farming_months=min_farming_months,
                 max_farming_months=max_farming_months,
             )
             crop_names_to_ids.update({crop_name: crop.id})
 
+        soil_type_names_to_ids: dict[str, uuid.UUID] = {}
+
+        soil_types = cast(list[str], list(crop_yield_data_df["soil_type"].unique()))
+        for soil_type_name in soil_types:
+            soil_type = await self.location_repository.get_soil_type_by_name(
+                session=session, name=soil_type_name
+            )
+            if soil_type is not None:
+                await self.location_repository.delete_soil_type(session=session,soil_type_id=soil_type.id)
+            soil_type = await self.location_repository.create_soil_type(session=session, name=soil_type_name)
+            soil_type_names_to_ids.update({soil_type.name: soil_type.id})
+
         logging.info("Checking locations to create")
         location_coordinates_to_ids: dict[str, uuid.UUID] = {}
 
         locations_df = crop_yield_data_df[
-            ["country", "location", "latitude", "longitude"]
+            ["country", "location", "latitude", "longitude", "soil_type"]
         ].drop_duplicates()
         locations_tuples = cast(
-            list[tuple[str, str, float, float]],
+            list[tuple[str, str, float, float, str]],
             list(locations_df.itertuples(index=False, name=None)),
         )
-        for country, location_name, latitude, longitude in locations_tuples:
-            location = await self.location_repository.get_location_by_coordinates(
+        for country, location_name, latitude, longitude, soil_type in locations_tuples:
+            location = await self.location_repository.get_location_by_coordinates(session=session,
                 longitude=longitude, latitude=latitude
             )
             if location is not None:
-                location_coordinates_to_ids.update(
-                    {str((longitude, latitude)): location.id}
-                )
-                continue
+                await self.location_repository.delete_location(session=session, location_id=location.id)
+
             logging.info(f"Creating location {location_name} at {longitude} {latitude}")
             location = await self.location_repository.create_location(
+                session=session,
                 country=country,
                 name=location_name,
                 longitude=longitude,
                 latitude=latitude,
+                soil_type_id=soil_type_names_to_ids[soil_type],
             )
             location_coordinates_to_ids.update(
                 {str((longitude, latitude)): location.id}
@@ -320,11 +341,10 @@ class CropYieldDataRepository:
                     "harvest_year": row["harvest_year"],
                     "harvest_month": row["harvest_month"],
                     "duration_months": row["duration_months"],
-                    "yield_per_unit_surface": row["yield_per_unit_surface"],
+                    "yield_per_hectar": row["yield_per_hectar"],
                 }
             )
         await session.execute(insert(CropYieldData), values_dicts)
-        await session.commit()
 
     async def get_unique_location_climate_years(
         self, session: AsyncSession
@@ -360,7 +380,9 @@ class CropYieldDataRepository:
     async def get_crop_yield_data(
         self, session: AsyncSession, crop_id: uuid.UUID
     ) -> list[CropYieldDataDTO]:
-        crop = await self.crop_repository.get_crop_by_id(crop_id)
+        crop = await self.crop_repository.get_crop_by_id(
+            session=session, crop_id=crop_id
+        )
         if crop is None:
             raise CropNotFoundError()
         stmt = select(CropYieldData).where(CropYieldData.crop_id == crop_id)
@@ -397,5 +419,5 @@ class CropYieldDataRepository:
             harvest_year=crop_yield_data.harvest_year,
             harvest_month=crop_yield_data.harvest_month,
             duration_months=crop_yield_data.duration_months,
-            yield_per_unit_surface=crop_yield_data.yield_per_unit_surface,
+            yield_per_hectar=crop_yield_data.yield_per_hectar,
         )

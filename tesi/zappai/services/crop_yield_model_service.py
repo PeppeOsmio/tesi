@@ -16,7 +16,7 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from uuid import UUID
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
-from tesi.zappai.utils.common import calc_months_delta, enrich_data_frame_with_stats
+from tesi.zappai.utils.common import calc_months_delta, create_stats_dataframe
 
 FEATURES = [
     "sowing_year",
@@ -65,7 +65,7 @@ FEATURES = [
     "total_precipitation_min",
     "total_precipitation_max",
 ]
-TARGET = ["yield_per_unit_surface"]
+TARGET = ["yield_per_hectar"]
 
 
 class CropYieldModelService:
@@ -101,12 +101,14 @@ class CropYieldModelService:
 
         for _, row in crop_yield_data_df.iterrows():
             location = await self.location_repository.get_location_by_id(
-                row["location_id"]
+                session=session,
+                location_id=row["location_id"]
             )
             if location is None:
                 raise LocationNotFoundError()
             past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
                 await self.past_climate_data_repository.get_past_climate_data(
+                    session=session,
                     location_id=location.id,
                     year_from=row["sowing_year"],
                     month_from=row["sowing_month"],
@@ -117,7 +119,7 @@ class CropYieldModelService:
             past_climate_data_df = past_climate_data_df[
                 CLIMATE_GENERATIVE_MODEL_FEATURES
             ]
-            result_climate_data_stats_df = enrich_data_frame_with_stats(
+            result_climate_data_stats_df = create_stats_dataframe(
                 df=past_climate_data_df, ignore=["sin_year", "cos_year"]
             )
             # convert the row to a DataFrame
@@ -160,7 +162,7 @@ class CropYieldModelService:
     async def train_and_save_crop_yield_model_for_all_crops(
         self, session: AsyncSession
     ):
-        crops = await self.crop_repository.get_all_crops()
+        crops = await self.crop_repository.get_all_crops(session)
 
         processed = 0
 
@@ -173,7 +175,7 @@ class CropYieldModelService:
                 crop_id=crop.id, session=session
             )
             await self.crop_repository.save_crop_yield_model(
-                crop_id=crop.id, crop_yield_model=model, mse=mse, r2=r2
+                session=session, crop_id=crop.id, crop_yield_model=model, mse=mse, r2=r2
             )
             processed += 1
             print_processed()

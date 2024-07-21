@@ -23,20 +23,12 @@ from tesi.zappai.repositories.copernicus_data_store_api import CopernicusDataSto
 from tesi.database.di import get_session_maker
 
 
-def get_location_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
-) -> LocationRepository:
-    return LocationRepository(session_maker=session_maker)
+def get_location_repository() -> LocationRepository:
+    return LocationRepository()
 
 
-def get_crop_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
-) -> CropRepository:
-    return CropRepository(session_maker=session_maker)
+def get_crop_repository() -> CropRepository:
+    return CropRepository()
 
 
 def get_cds_api() -> CopernicusDataStoreAPI:
@@ -46,16 +38,12 @@ def get_cds_api() -> CopernicusDataStoreAPI:
 
 
 def get_past_climate_data_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
     cds_api: Annotated[CopernicusDataStoreAPI, Depends(get_cds_api)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
     ],
 ) -> PastClimateDataRepository:
     return PastClimateDataRepository(
-        session_maker=session_maker,
         copernicus_data_store_api=cds_api,
         location_repository=location_repository,
     )
@@ -78,20 +66,12 @@ def get_crop_yield_data_repository(
 
 
 def get_future_climate_data_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
     cds_api: Annotated[CopernicusDataStoreAPI, Depends(get_cds_api)],
 ) -> FutureClimateDataRepository:
-    return FutureClimateDataRepository(
-        session_maker=session_maker, copernicus_data_store_api=cds_api
-    )
+    return FutureClimateDataRepository(copernicus_data_store_api=cds_api)
 
 
 def get_climate_generative_model_repository(
-    session_maker: Annotated[
-        async_sessionmaker[AsyncSession], Depends(get_session_maker)
-    ],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
     ],
@@ -103,7 +83,6 @@ def get_climate_generative_model_repository(
     ],
 ) -> ClimateGenerativeModelRepository:
     return ClimateGenerativeModelRepository(
-        session_maker=session_maker,
         location_repository=location_repository,
         past_climate_data_repository=past_climate_data_repository,
         future_climate_data_repository=future_climate_data_repository,

@@ -9,8 +9,12 @@ import pandas as pd
 from typing import Any, cast
 
 from sklearn.ensemble import RandomForestRegressor
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+from sklearn.preprocessing import StandardScaler
 
+@dataclass
+class SoilTypeDTO:
+    id: UUID
+    name: str
 
 @dataclass
 class LocationClimateYearsDTO:
@@ -40,7 +44,7 @@ class CropYieldDataDTO:
     harvest_year: int
     harvest_month: int
     duration_months: int
-    yield_per_unit_surface: float
+    yield_per_hectar: float
 
     @staticmethod
     def from_list_to_dataframe(lst: list[CropYieldDataDTO]) -> pd.DataFrame:
@@ -58,6 +62,7 @@ class LocationDTO:
     longitude: float
     latitude: float
     created_at: datetime
+    soil_type_id: UUID
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -67,6 +72,7 @@ class LocationDTO:
             "longitude": self.longitude,
             "latitude": self.latitude,
             "created_at": self.created_at.isoformat(),
+            "soil_type_id": str(self.soil_type_id)
         }
 
 

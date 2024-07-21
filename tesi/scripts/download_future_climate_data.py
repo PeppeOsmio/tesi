@@ -15,17 +15,13 @@ async def main():
 
     cds_api = get_cds_api()
 
-    future_climate_data_repository = get_future_climate_data_repository(
-        session_maker=session_maker, cds_api=cds_api
-    )
+    future_climate_data_repository = get_future_climate_data_repository(cds_api=cds_api)
 
-    while True:
-        try:
-            await future_climate_data_repository.download_future_climate_data()
-            break
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            logging.info("Failed to fetch past climate data, retrying...")
+    with session_maker() as session:
+        await future_climate_data_repository.download_future_climate_data(
+            session=session
+        )
+        await session.commit()
 
 
 if __name__ == "__main__":

@@ -22,40 +22,37 @@ async def main():
     logging.basicConfig(level=logging.INFO)
 
     session_maker = get_session_maker()
-    location_repository = get_location_repository(session_maker=session_maker)
+    location_repository = get_location_repository()
     cds_api = get_cds_api()
     past_climate_data_repository = get_past_climate_data_repository(
-        session_maker=session_maker,
         cds_api=cds_api,
         location_repository=location_repository,
     )
 
-    location = await location_repository.get_location_by_country_and_name(
-        country=common.EXAMPLE_LOCATION_COUNTRY, name=common.EXAMPLE_LOCATION_NAME
-    )
-    if location is None:
-        location = await location_repository.create_location(
+    async with session_maker() as session:
+        location = await location_repository.get_location_by_country_and_name(
+            session=session,
             country=common.EXAMPLE_LOCATION_COUNTRY,
             name=common.EXAMPLE_LOCATION_NAME,
-            longitude=common.EXAMPLE_LONGITUDE,
-            latitude=common.EXAMPLE_LATITUDE,
         )
 
-    if location is None:
-        raise Exception()
+        if location is None:
+            raise Exception()
 
-    retries = 0
-    while retries < 10:
-        try:
-            logging.info(f"Starting download")
-            await past_climate_data_repository.download_new_past_climate_data(
-                location_id=location.id
-            )
-            break
-        except Exception as e:
-            logging.error(traceback.format_exc())
-            logging.info("Failed to fetch past climate data, retrying...")
-            retries += 1
+        retries = 0
+        while retries < 10:
+            try:
+                logging.info(f"Starting download")
+                await past_climate_data_repository.download_new_past_climate_data(
+                    session=session,
+                    location_id=location.id
+                )
+                break
+            except Exception as e:
+                logging.error(traceback.format_exc())
+                logging.info("Failed to fetch past climate data, retrying...")
+                retries += 1
+        await session.commit()
 
 
 if __name__ == "__main__":

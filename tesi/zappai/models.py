@@ -6,6 +6,15 @@ from tesi.database.base import Base
 from geoalchemy2 import Geography
 
 
+class SoilType(Base):
+    __tablename__ = "soil_type"
+
+    id: Mapped[UUID] = mapped_column(primary_key=True)
+    name: Mapped[str]
+
+    __table_args__ = (UniqueConstraint("name", name="_name_nc"),)
+
+
 class Location(Base):
     __tablename__ = "location"
 
@@ -15,6 +24,9 @@ class Location(Base):
     longitude: Mapped[float]
     latitude: Mapped[float]
     created_at: Mapped[datetime] = mapped_column(index=True)
+    soil_type_id: Mapped[UUID] = mapped_column(
+        ForeignKey(column="soil_type.id", ondelete="CASCADE")
+    )
 
     __table_args__ = (
         UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
@@ -79,7 +91,7 @@ class CropYieldData(Base):
     harvest_year: Mapped[int]
     harvest_month: Mapped[int]
     duration_months: Mapped[int]
-    yield_per_unit_surface: Mapped[float]
+    yield_per_hectar: Mapped[float]
 
     location: Mapped[Location] = relationship()
 

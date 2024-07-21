@@ -78,12 +78,10 @@ def add_sin_cos_year(df: pd.DataFrame):
 class ClimateGenerativeModelRepository:
     def __init__(
         self,
-        session_maker: async_sessionmaker[AsyncSession],
         location_repository: LocationRepository,
         past_climate_data_repository: PastClimateDataRepository,
         future_climate_data_repository: FutureClimateDataRepository,
     ) -> None:
-        self.session_maker = session_maker
         self.location_repository = location_repository
         self.past_climate_data_repository = past_climate_data_repository
         self.future_climate_data_repository = future_climate_data_repository
@@ -249,6 +247,7 @@ class ClimateGenerativeModelRepository:
 
     async def create_model_for_location(
         self,
+        session: AsyncSession,
         location_id: UUID,
     ) -> ClimateGenerativeModelDTO:
         """Creates as Sequential model
@@ -262,14 +261,14 @@ class ClimateGenerativeModelRepository:
             LocationNotFoundError:
         """
         location = await self.location_repository.get_location_by_id(
-            location_id=location_id
+            session=session, location_id=location_id
         )
         if location is None:
             raise LocationNotFoundError()
 
         past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
             await self.past_climate_data_repository.get_all_past_climate_data(
-                location_id=location.id
+                session=session, location_id=location.id
             )
         )
 
@@ -285,7 +284,7 @@ class ClimateGenerativeModelRepository:
             )
 
         await self.__save_climate_generative_model(
-            climate_generative_model=climate_generative_model
+            session=session, climate_generative_model=climate_generative_model
         )
 
         return climate_generative_model
@@ -392,15 +391,17 @@ class ClimateGenerativeModelRepository:
         return result
 
     async def generate_climate_data_from_last_past_climate_data(
-        self, location_id: UUID, months: int
+        self, session: AsyncSession, location_id: UUID, months: int
     ) -> list[ClimateDataDTO]:
-        location = await self.location_repository.get_location_by_id(location_id)
+        location = await self.location_repository.get_location_by_id(
+            session=session, location_id=location_id
+        )
         if location is None:
             raise LocationNotFoundError()
 
         climate_generative_model = (
             await self.get_climate_generative_model_by_location_id(
-                location_id=location_id
+                session=session, location_id=location_id
             )
         )
         if climate_generative_model is None:
@@ -408,6 +409,7 @@ class ClimateGenerativeModelRepository:
 
         last_n_months_seed_data = ClimateDataDTO.from_list_to_dataframe(
             await self.past_climate_data_repository.get_past_climate_data_of_previous_n_months(
+                session=session,
                 location_id=location_id,
                 n=SEQ_LENGTH,
             )
@@ -418,7 +420,9 @@ class ClimateGenerativeModelRepository:
         start_year = cast(int, start_year)
         start_month = cast(int, start_month)
 
-        start_year, start_month = get_next_n_months(n=1, year=start_year, month=start_month)
+        start_year, start_month = get_next_n_months(
+            n=1, year=start_year, month=start_month
+        )
 
         year_to, month_to = get_next_n_months(
             n=months, month=start_month, year=start_year
@@ -426,6 +430,7 @@ class ClimateGenerativeModelRepository:
 
         future_climate_data_df = FutureClimateDataDTO.from_list_to_dataframe(
             await self.future_climate_data_repository.get_future_climate_data_for_nearest_coordinates(
+                session=session,
                 longitude=location.longitude,
                 latitude=location.latitude,
                 year_from=start_year,
@@ -449,13 +454,12 @@ class ClimateGenerativeModelRepository:
         return ClimateDataDTO.from_dataframe_to_list(result)
 
     async def get_climate_generative_model_by_location_id(
-        self, location_id: UUID
+        self, session: AsyncSession, location_id: UUID
     ) -> ClimateGenerativeModelDTO | None:
-        async with self.session_maker() as session:
-            stmt = select(ClimateGenerativeModel).where(
-                ClimateGenerativeModel.location_id == location_id
-            )
-            climate_generative_model = await session.scalar(stmt)
+        stmt = select(ClimateGenerativeModel).where(
+            ClimateGenerativeModel.location_id == location_id
+        )
+        climate_generative_model = await session.scalar(stmt)
         if climate_generative_model is None:
             return None
 
@@ -480,39 +484,37 @@ class ClimateGenerativeModelRepository:
             test_end_month=climate_generative_model.test_end_month,
         )
 
-    async def delete_climate_generative_model(self, location_id: UUID):
-        async with self.session_maker() as session:
-            stmt = delete(ClimateGenerativeModel).where(
-                ClimateGenerativeModel.location_id == location_id
-            )
-            await session.execute(stmt)
-            await session.commit()
+    async def delete_climate_generative_model(
+        self, session: AsyncSession, location_id: UUID
+    ):
+        stmt = delete(ClimateGenerativeModel).where(
+            ClimateGenerativeModel.location_id == location_id
+        )
+        await session.execute(stmt)
 
     async def __save_climate_generative_model(
-        self, climate_generative_model: ClimateGenerativeModelDTO
+        self, session: AsyncSession, climate_generative_model: ClimateGenerativeModelDTO
     ) -> UUID:
         model_id = uuid.uuid4()
-        async with self.session_maker() as session:
-            stmt = insert(ClimateGenerativeModel).values(
-                id=climate_generative_model.id,
-                location_id=climate_generative_model.location_id,
-                model=object_to_bytes(climate_generative_model.model),
-                x_scaler=object_to_bytes(climate_generative_model.x_scaler),
-                y_scaler=object_to_bytes(climate_generative_model.y_scaler),
-                rmse=climate_generative_model.rmse,
-                train_start_year=climate_generative_model.test_start_year,
-                train_start_month=climate_generative_model.train_start_month,
-                validation_start_year=climate_generative_model.validation_start_year,
-                validation_start_month=climate_generative_model.validation_start_month,
-                test_start_year=climate_generative_model.test_start_year,
-                test_start_month=climate_generative_model.test_start_month,
-                train_end_year=climate_generative_model.train_end_year,
-                train_end_month=climate_generative_model.train_end_month,
-                validation_end_year=climate_generative_model.validation_end_year,
-                validation_end_month=climate_generative_model.validation_end_month,
-                test_end_year=climate_generative_model.test_end_year,
-                test_end_month=climate_generative_model.test_end_month,
-            )
-            await session.execute(stmt)
-            await session.commit()
+        stmt = insert(ClimateGenerativeModel).values(
+            id=climate_generative_model.id,
+            location_id=climate_generative_model.location_id,
+            model=object_to_bytes(climate_generative_model.model),
+            x_scaler=object_to_bytes(climate_generative_model.x_scaler),
+            y_scaler=object_to_bytes(climate_generative_model.y_scaler),
+            rmse=climate_generative_model.rmse,
+            train_start_year=climate_generative_model.test_start_year,
+            train_start_month=climate_generative_model.train_start_month,
+            validation_start_year=climate_generative_model.validation_start_year,
+            validation_start_month=climate_generative_model.validation_start_month,
+            test_start_year=climate_generative_model.test_start_year,
+            test_start_month=climate_generative_model.test_start_month,
+            train_end_year=climate_generative_model.train_end_year,
+            train_end_month=climate_generative_model.train_end_month,
+            validation_end_year=climate_generative_model.validation_end_year,
+            validation_end_month=climate_generative_model.validation_end_month,
+            test_end_year=climate_generative_model.test_end_year,
+            test_end_month=climate_generative_model.test_end_month,
+        )
+        await session.execute(stmt)
         return model_id

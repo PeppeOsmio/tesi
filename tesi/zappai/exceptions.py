@@ -16,3 +16,6 @@ class CropYieldDataNotFoundError(Exception):
 
 class PastClimateDataNotFoundError(Exception):
     pass
+
+class SoilTypeNotFoundError(Exception):
+    pass
