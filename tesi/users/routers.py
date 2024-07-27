@@ -2,8 +2,10 @@ from typing import Annotated
 from uuid import UUID
 from fastapi import Depends, HTTPException, Query
 from fastapi.routing import APIRouter
+from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from tesi.auth_tokens.di import get_current_user
+from tesi.database.di import get_session_maker
 from tesi.users.repositories.dtos import UserDTO
 from tesi.users.repositories.exceptions import (
     EmailExistsError,
@@ -28,16 +30,20 @@ user_router = APIRouter(prefix="/user")
     },
 )
 async def create_user(
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
     data: UserCreateBody,
 ):
     try:
-        user = await user_repository.create_user(
-            username=data.username,
-            password=data.password,
-            name=data.name,
-            email=data.email,
-        )
+        async with session_maker() as session:
+            user = await user_repository.create_user(
+                session=session,
+                username=data.username,
+                password=data.password,
+                name=data.name,
+                email=data.email,
+            )
+            await session.commit()
         return UserDetailsResponse.model_construct(
             id=user.id,
             username=user.username,
@@ -64,10 +70,12 @@ async def create_user(
     },
 )
 async def get_user_details(
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
     user_id: UUID,
 ):
-    user = await user_repository.get_user_by_id(user_id)
+    async with session_maker() as session:
+        user = await user_repository.get_user_by_id(session=session, user_id=user_id)
     if user is None:
         raise HTTPException(status_code=404, detail="not_found")
     return UserDetailsResponse.model_construct(
@@ -83,14 +91,16 @@ async def get_user_details(
 
 @user_router.get("/", response_model=list[UserDetailsResponse])
 async def get_users(
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     _: Annotated[UserDTO | None, Depends(get_current_user)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
     page_number: int = Query(default=1, ge=1),
     page_size: int = Query(default=1, ge=1),
 ):
-    users = await user_repository.get_users(
-        page_number=page_number, page_size=page_size
-    )
+    async with session_maker() as session:
+        users = await user_repository.get_users(
+            session=session, page_number=page_number, page_size=page_size
+        )
     return [
         UserDetailsResponse.model_construct(
             id=user.id,
@@ -107,7 +117,9 @@ async def get_users(
 
 @user_router.get("/count", response_model=UsersCountResponse)
 async def get_users_count(
-    user_repository: Annotated[UserRepository, Depends(get_user_repository)]
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
+    user_repository: Annotated[UserRepository, Depends(get_user_repository)],
 ):
-    count = await user_repository.get_users_count()
+    async with session_maker() as session:
+        count = await user_repository.get_users_count(session=session)
     return UsersCountResponse.model_construct(count=count)

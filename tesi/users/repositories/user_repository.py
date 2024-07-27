@@ -22,10 +22,12 @@ from tesi.users.schemas import UserCreateBody
 
 class UserRepository:
 
-    def __init__(self, session_maker: async_sessionmaker) -> None:
-        self.session_maker = session_maker
+    def __init__(self) -> None:
+        pass
 
-    async def get_user_by_id(self, user_id: UUID) -> UserDTO | None:
+    async def get_user_by_id(
+        self, session: AsyncSession, user_id: UUID
+    ) -> UserDTO | None:
         """
 
         Args:
@@ -34,9 +36,8 @@ class UserRepository:
         Returns:
             User | None:
         """
-        async with self.session_maker() as session:
-            stmt = select(User).where(User.id == user_id)
-            user = await session.scalar(stmt)
+        stmt = select(User).where(User.id == user_id)
+        user = await session.scalar(stmt)
         if user is None:
             return None
         return UserDTO(
@@ -49,7 +50,9 @@ class UserRepository:
             is_active=user.is_active,
         )
 
-    async def get_users(self, page_number: int, page_size: int) -> list[UserDTO]:
+    async def get_users(
+        self, session: AsyncSession, page_number: int, page_size: int
+    ) -> list[UserDTO]:
         """Get users with pagination and page size.
 
         Args:
@@ -59,14 +62,13 @@ class UserRepository:
         Returns:
             list[User]:
         """
-        async with self.session_maker() as session:
-            stmt = (
-                select(User)
-                .order_by(User.created_at, User.id)
-                .offset((page_number - 1) * page_size)
-                .limit(page_size)
-            )
-            results = await session.scalars(stmt)
+        stmt = (
+            select(User)
+            .order_by(User.created_at, User.id)
+            .offset((page_number - 1) * page_size)
+            .limit(page_size)
+        )
+        results = await session.scalars(stmt)
         return [
             UserDTO(
                 id=user.id,
@@ -80,7 +82,7 @@ class UserRepository:
             for user in results
         ]
 
-    async def get_users_count(self) -> int:
+    async def get_users_count(self, session: AsyncSession) -> int:
         """
 
         Raises:
@@ -89,7 +91,7 @@ class UserRepository:
         Returns:
             int:
         """
-        async with self.session_maker() as session:
+        async with session:
             stmt = select(count(User.id))
             result = await session.scalar(stmt)
         if result is None:
@@ -97,30 +99,33 @@ class UserRepository:
         return result
 
     async def create_user(
-        self, username: str, password: str, name: str, email: str | None
+        self,
+        session: AsyncSession,
+        username: str,
+        password: str,
+        name: str,
+        email: str | None,
     ) -> UserDTO:
-        async with self.session_maker() as session:
-            exists_username_stmt = select(User.id).where(User.username == username)
-            user_id = await session.scalar(exists_username_stmt)
-            if user_id is not None:
-                raise UsernameExistsError()
-            exists_email_stmt = select(User.email).where(User.email == email)
-            email = await session.scalar(exists_email_stmt)
-            if email is not None:
-                raise EmailExistsError()
-            now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
-            user = User(
-                id=uuid.uuid4(),
-                username=username,
-                name=name,
-                email=email,
-                password=self.__hash_password(password),
-                created_at=now,
-                modified_at=now,
-                is_active=True,
-            )
-            session.add(user)
-            await session.commit()
+        exists_username_stmt = select(User.id).where(User.username == username)
+        user_id = await session.scalar(exists_username_stmt)
+        if user_id is not None:
+            raise UsernameExistsError()
+        exists_email_stmt = select(User.email).where(User.email == email)
+        email = await session.scalar(exists_email_stmt)
+        if email is not None:
+            raise EmailExistsError()
+        now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
+        user = User(
+            id=uuid.uuid4(),
+            username=username,
+            name=name,
+            email=email,
+            password=self.__hash_password(password),
+            created_at=now,
+            modified_at=now,
+            is_active=True,
+        )
+        session.add(user)
         return UserDTO(
             id=user.id,
             username=user.username,
@@ -131,34 +136,37 @@ class UserRepository:
             is_active=user.is_active,
         )
 
-    async def check_password(self, username: str, password: str) -> bool:
-        async with self.session_maker() as session:
-            stmt = select(User.password).where(User.username == username)
-            hashed_pw = await session.scalar(stmt)
-            if hashed_pw is None:
-                raise UserNotFoundError()
-            return bcrypt.checkpw(
-                password=password.encode(), hashed_password=hashed_pw.encode()
-            )
+    async def check_password(
+        self, session: AsyncSession, username: str, password: str
+    ) -> bool:
+        stmt = select(User.password).where(User.username == username)
+        hashed_pw = await session.scalar(stmt)
+        if hashed_pw is None:
+            raise UserNotFoundError()
+        return bcrypt.checkpw(
+            password=password.encode(), hashed_password=hashed_pw.encode()
+        )
 
-    async def get_user_id_from_username(self, username: str) -> UUID | None:
-        async with self.session_maker() as session:
-            stmt = select(User.id).where(User.username == username)
-            result = (await session.execute(stmt)).first()
+    async def get_user_id_from_username(
+        self, session: AsyncSession, username: str
+    ) -> UUID | None:
+        stmt = select(User.id).where(User.username == username)
+        result = (await session.execute(stmt)).first()
         if result is None:
             return None
         return result.tuple()[0]
 
-    async def check_user_exists(self, user_id: UUID) -> bool:
-        async with self.session_maker() as session:
-            stmt = select(User.id).where(User.id == user_id)
-            result = await session.execute(stmt)
+    async def check_user_exists(self, session: AsyncSession, user_id: UUID) -> bool:
+        stmt = select(User.id).where(User.id == user_id)
+        result = await session.execute(stmt)
         return result.first() is None
 
     def __hash_password(self, password: str) -> str:
         return bcrypt.hashpw(password=password.encode(), salt=bcrypt.gensalt()).decode()
 
-    async def check_is_admin(self, executor_id: UUID) -> bool | None:
+    async def check_is_admin(
+        self, session: AsyncSession, executor_id: UUID
+    ) -> bool | None:
         """Check if a user is an admin.
 
         Args:
@@ -167,13 +175,12 @@ class UserRepository:
         Returns:
             bool | None: whether the user is an admin or None if the user does not exist.
         """
-        async with self.session_maker() as session:
-            stmt = select(User.is_admin).where(User.id == executor_id)
-            is_admin = await session.scalar(stmt)
+        stmt = select(User.is_admin).where(User.id == executor_id)
+        is_admin = await session.scalar(stmt)
         return is_admin
 
     async def deactivate_user(
-        self, user_id: UUID, executor_id: UUID
+        self, session: AsyncSession, user_id: UUID, executor_id: UUID
     ) -> Literal[True] | None:
         """Deactivate a user.
 
@@ -187,19 +194,18 @@ class UserRepository:
         Returns:
             Literal[True] | None: True if the user was found and deactivated, otherwise None
         """
-        is_admin = await self.check_is_admin(executor_id)
+        is_admin = await self.check_is_admin(session=session, executor_id=executor_id)
         if is_admin is None:
             raise PermissionError()
         if not is_admin:
             raise PermissionError()
-        async with self.session_maker() as session:
-            stmt = (
-                update(User)
-                .where(User.id == user_id)
-                .values(is_active=False)
-                .returning(User.id)
-            )
-            result = (await session.execute(stmt)).first()
+        stmt = (
+            update(User)
+            .where(User.id == user_id)
+            .values(is_active=False)
+            .returning(User.id)
+        )
+        result = (await session.execute(stmt)).first()
         if result is None:
             return None
         return None

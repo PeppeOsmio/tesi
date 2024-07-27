@@ -9,4 +9,4 @@ from tesi.users.repositories import UserRepository
 def get_user_repository(
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)]
 ) -> UserRepository:
-    return UserRepository(session_maker=session_maker)
+    return UserRepository()

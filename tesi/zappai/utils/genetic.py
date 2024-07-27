@@ -41,6 +41,9 @@ class GeneticAlgorithm:
     ) -> Population:
         return [self.__generate_individual() for _ in range(self.population_size)]
 
+    def process_chunk(self, position: int, chunk: Population):
+        return position, [self.fitness(individual) for individual in chunk]
+
     def __calc_fitnesses_in_pool(self, population: Population) -> list[float]:
         if self.parallel_workers == 1:
             fitnesses = [self.fitness(individual) for individual in population]
@@ -55,12 +58,9 @@ class GeneticAlgorithm:
                 chunks.append(population[start:end])
                 start = end
 
-            def process_chunk(position: int, chunk: Population):
-                return position, [self.fitness(individual) for individual in chunk]
-
-            with ThreadPoolExecutor(max_workers=self.parallel_workers) as pool:
+            with ProcessPoolExecutor(max_workers=self.parallel_workers) as pool:
                 futures = [
-                    pool.submit(process_chunk, position=i, chunk=chunk)
+                    pool.submit(self.process_chunk, position=i, chunk=chunk)
                     for i, chunk in enumerate(chunks)
                 ]
                 results = [future.result() for future in as_completed(futures)]

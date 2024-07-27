@@ -19,10 +19,11 @@ def get_auth_token_repository(
     db_session: Annotated[async_sessionmaker, Depends(get_session_maker)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> AuthTokenRepository:
-    return AuthTokenRepository(session_maker=db_session, user_repository=user_repository)
+    return AuthTokenRepository(user_repository=user_repository)
 
 
 async def get_current_user(
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     auth_token_repository: Annotated[
         AuthTokenRepository, Depends(get_auth_token_repository)
     ],
@@ -30,12 +31,16 @@ async def get_current_user(
 ) -> UserDTO | None:
     if token is None:
         return None
-    return await auth_token_repository.get_user_from_auth_token(token)
+    async with session_maker() as session:
+        user = await auth_token_repository.get_user_from_auth_token(
+            session=session, token=token
+        )
+    return user
 
 
 async def get_current_user_with_error(
-    user: Annotated[User, Depends(get_current_user)]
-) -> User:
+    user: Annotated[UserDTO | None, Depends(get_current_user)]
+) -> UserDTO:
     if user is None:
         raise HTTPException(status_code=401, detail="Unauthorized")
     return user

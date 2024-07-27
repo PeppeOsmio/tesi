@@ -386,13 +386,6 @@ class PastClimateDataRepository:
 
         dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
         for dct in dicts:
-            await session.delete(
-                select(PastClimateData).where(
-                    (PastClimateData.location_id == dct["location_id"])
-                    & (PastClimateData.year == dct["year"])
-                    & (PastClimateData.month == dct["month"])
-                )
-            )
             location = await self.location_repository.get_location_by_country_and_name(
                 session=session,
                 country=dct["location_country"],
@@ -400,6 +393,13 @@ class PastClimateDataRepository:
             )
             if location is None:
                 raise LocationNotFoundError()
+            await session.execute(
+                delete(PastClimateData).where(
+                    (PastClimateData.location_id == location.id)
+                    & (PastClimateData.year == dct["year"])
+                    & (PastClimateData.month == dct["month"])
+                )
+            )
             columns_mappings = {
                 "10m_u_component_of_wind": "u_component_of_wind_10m",
                 "10m_v_component_of_wind": "v_component_of_wind_10m",
@@ -415,7 +415,6 @@ class PastClimateDataRepository:
             dct.update({"id": uuid.uuid4()})
             stmt = insert(PastClimateData).values(**dct)
             await session.execute(stmt)
-            await session.commit()
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData

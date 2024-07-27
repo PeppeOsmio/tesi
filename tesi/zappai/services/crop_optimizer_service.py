@@ -1,5 +1,8 @@
+from __future__ import annotations
+from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import dataclass
-from typing import cast
+import multiprocessing
+from typing import Callable, cast
 from uuid import UUID
 
 import pandas as pd
@@ -22,17 +25,225 @@ from tesi.zappai.utils.common import (
     create_stats_dataframe,
     get_next_n_months,
 )
-from tesi.zappai.utils.genetic import (
-    GeneticAlgorithm,
-    Individual,
-    Population,
-    individual_to_int,
-)
 from sklearn.ensemble import RandomForestRegressor
 from tesi.zappai.services.crop_yield_model_service import (
     FEATURES as CROP_YIELD_MODEL_FEATURES,
     TARGET as CROP_YIELD_MODEL_TARGET,
 )
+import random
+
+Individual = list[bool]
+Population = list[Individual]
+FitnessCallback = Callable[[Individual], float]
+
+
+class CropGeneticAlgorithm:
+    def __init__(
+        self,
+        chromosome_length: int,
+        population_size: int,
+        mutation_rate: float,
+        crossover_rate: float,
+        generations: int,
+        forecast_df: pd.DataFrame, 
+        crop: CropDTO, 
+        model: RandomForestRegressor,
+        on_population_created: Callable[[int, Population], None] | None = None,
+        parallel_workers: int | None = None,
+        
+    ) -> None:
+        self.chromosome_length = chromosome_length
+        self.population_size = population_size
+        self.mutation_rate = mutation_rate
+        self.crossover_rate = crossover_rate
+        self.generations = generations
+        self.forecast_df = forecast_df
+        self.crop = crop
+        self.model = model
+        self.on_population_processed = on_population_created
+        self.parallel_workers = (
+            parallel_workers
+            if parallel_workers is not None
+            else multiprocessing.cpu_count()
+        )
+
+    def fitness_func(self, individual: Individual) -> float:
+            if len(individual) != 10:
+                raise Exception(f"Bro individual must be of size 10...")
+            sowing = individual_to_int(individual[:5])
+            harvesting = individual_to_int(individual[5:])
+
+            if (sowing >= len(self.forecast_df)) | (harvesting >= len(self.forecast_df)):
+                return 0.0
+
+            sowing_year, sowing_month = self.forecast_df.index[sowing]
+            harvest_year, harvest_month = self.forecast_df.index[harvesting]
+
+            duration = calc_months_delta(
+                start_year=sowing_year,
+                start_month=sowing_month,
+                end_year=harvest_year,
+                end_month=harvest_month,
+            )
+
+            if duration <= 0:
+                return 0.0
+            if (duration < cast(int, self.crop.min_farming_months)) | (
+                duration > cast(int, self.crop.max_farming_months)
+            ):
+                return 0.0
+
+            forecast_for_individual = self.forecast_df[
+                (
+                    (self.forecast_df.index.get_level_values("year") < harvest_year)
+                    | (
+                        (self.forecast_df.index.get_level_values("year") == harvest_year)
+                        & (self.forecast_df.index.get_level_values("year") <= harvest_month)
+                    )
+                )
+                | (
+                    (self.forecast_df.index.get_level_values("year") > sowing_year)
+                    | (
+                        (self.forecast_df.index.get_level_values("year") == sowing_year)
+                        & (self.forecast_df.index.get_level_values("year") >= sowing_month)
+                    )
+                )
+            ]
+
+            stats_forecast = create_stats_dataframe(
+                df=forecast_for_individual, ignore=[]
+            )
+
+            x_df = pd.DataFrame(
+                {
+                    "sowing_year": [sowing_year],
+                    "sowing_month": [sowing_month],
+                    "harvest_year": [harvest_year],
+                    "harvest_month": [harvest_month],
+                    "duration_months": calc_months_delta(
+                        start_year=sowing_year,
+                        start_month=sowing_month,
+                        end_year=harvest_year,
+                        end_month=harvest_month,
+                    ),
+                }
+            )
+            x_df = pd.concat([x_df, stats_forecast], axis=1)
+
+            pred = self.model.predict(
+                x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
+            )
+            return pred[0]
+
+    def __generate_individual(self) -> Individual:
+        return [randbool() for _ in range(self.chromosome_length)]
+
+    def __generate_population(
+        self,
+    ) -> Population:
+        return [self.__generate_individual() for _ in range(self.population_size)]
+
+    def process_chunk(self, position: int, chunk: Population):
+        return position, [self.fitness_func(individual) for individual in chunk]
+
+    def __calc_fitnesses_in_pool(self, population: Population) -> list[float]:
+        if self.parallel_workers == 1:
+            fitnesses = [self.fitness_func(individual) for individual in population]
+        else:
+            chunk_size = len(population) // self.parallel_workers
+            chunks: list[list[Individual]] = []
+            remainder = len(population) % self.parallel_workers
+            start = 0
+            end = 0
+            for i in range(self.parallel_workers):
+                end = start + chunk_size + (1 if i < remainder else 0)
+                chunks.append(population[start:end])
+                start = end
+
+            with ProcessPoolExecutor(max_workers=self.parallel_workers) as pool:
+                futures = [
+                    pool.submit(self.process_chunk, position=i, chunk=chunk)
+                    for i, chunk in enumerate(chunks)
+                ]
+                results = [future.result() for future in as_completed(futures)]
+
+            results = sorted(results, key=lambda result: result[0])
+            fitnesses = [
+                fitness
+                for position, chunk_fitnesses in results
+                for fitness in chunk_fitnesses
+            ]
+        return fitnesses
+
+    def __select(self, population: Population):
+        fitnesses: list[float] = self.__calc_fitnesses_in_pool(population)
+        total_fitness = sum(fitnesses)
+        if total_fitness == 0:
+            selection_probs = [1 / len(population) for i in range(len(population))]
+        else:
+            selection_probs = [fitness / total_fitness for fitness in fitnesses]
+        return population[
+            random.choices(range(len(population)), weights=selection_probs, k=1)[0]
+        ]
+
+    def __crossover(self, parent1: Individual, parent2: Individual):
+        if random.random() < self.crossover_rate:
+            point = random.randint(1, len(parent1) - 1)
+            return parent1[:point] + parent2[point:], parent2[:point] + parent1[point:]
+        return parent1, parent2
+
+    def __mutate(self, individual: Individual) -> Individual:
+        return [
+            bit if random.random() > self.mutation_rate else not bit
+            for bit in individual
+        ]
+
+    def run(
+        self,
+    ) -> tuple[list[Individual], list[float]]:
+        best_individuals: list[Individual] = []
+        best_fitnesses: list[float] = []
+        population: Population = self.__generate_population()
+        for i in range(self.generations - 1):
+            new_population: Population = []
+            for _ in range(len(population) // 2):
+                parent1 = self.__select(population)
+                parent2 = self.__select(population)
+                child1, child2 = self.__crossover(parent1, parent2)
+                new_population.append(self.__mutate(child1))
+                new_population.append(self.__mutate(child2))
+            population = new_population
+            if self.on_population_processed is not None:
+                self.on_population_processed(i + 1, population)
+        if self.on_population_processed is not None:
+            self.on_population_processed(self.generations, population)
+
+        fitnesses = self.__calc_fitnesses_in_pool(population)
+        best_fitness = max(fitnesses)
+        best_individual_index = fitnesses.index(best_fitness)
+        best_individual = population[best_individual_index]
+
+        best_fitnesses.append(best_fitness)
+        best_individuals.append(best_individual)
+        return best_individuals, best_fitnesses
+
+
+def randbool() -> bool:
+    return random.randint(0, 1) == 1
+
+
+def individual_to_str(individual: Individual) -> str:
+    result = ""
+    for bit in individual:
+        result += str(int(bit))
+    return result
+
+
+def individual_to_int(individual: Individual) -> int:
+    result = 0
+    for i in range(len(individual)):
+        result += int(individual[i]) * 2**i
+    return result
 
 
 @dataclass
@@ -103,86 +314,20 @@ class CropOptimizerService:
         forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
         forecast_df = forecast_df.drop(columns=["location_id"])
 
-        def fitness_func(individual: Individual) -> float:
-            if len(individual) != 10:
-                raise Exception(f"Bro individual must be of size 10...")
-            sowing = individual_to_int(individual[:5])
-            harvesting = individual_to_int(individual[5:])
-
-            if (sowing >= len(forecast_df)) | (harvesting >= len(forecast_df)):
-                return 0.0
-
-            sowing_year, sowing_month = forecast_df.index[sowing]
-            harvest_year, harvest_month = forecast_df.index[harvesting]
-
-            duration = calc_months_delta(
-                start_year=sowing_year,
-                start_month=sowing_month,
-                end_year=harvest_year,
-                end_month=harvest_month,
-            )
-
-            if duration <= 0:
-                return 0.0
-            if (duration < cast(int, cast(CropDTO, crop).min_farming_months)) | (
-                duration > cast(int, cast(CropDTO, crop).max_farming_months)
-            ):
-                return 0.0
-
-            forecast_for_individual = forecast_df[
-                (
-                    (forecast_df.index.get_level_values("year") < harvest_year)
-                    | (
-                        (forecast_df.index.get_level_values("year") == harvest_year)
-                        & (forecast_df.index.get_level_values("year") <= harvest_month)
-                    )
-                )
-                | (
-                    (forecast_df.index.get_level_values("year") > sowing_year)
-                    | (
-                        (forecast_df.index.get_level_values("year") == sowing_year)
-                        & (forecast_df.index.get_level_values("year") >= sowing_month)
-                    )
-                )
-            ]
-
-            stats_forecast = create_stats_dataframe(
-                df=forecast_for_individual, ignore=[]
-            )
-
-            x_df = pd.DataFrame(
-                {
-                    "sowing_year": [sowing_year],
-                    "sowing_month": [sowing_month],
-                    "harvest_year": [harvest_year],
-                    "harvest_month": [harvest_month],
-                    "duration_months": calc_months_delta(
-                        start_year=sowing_year,
-                        start_month=sowing_month,
-                        end_year=harvest_year,
-                        end_month=harvest_month,
-                    ),
-                }
-            )
-            x_df = pd.concat([x_df, stats_forecast], axis=1)
-
-            pred = cast(RandomForestRegressor, model).predict(
-                x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
-            )
-            return pred[0]
-
         def on_population_created(i: int, population: Population):
             print(f"\rPopulation {i}/20 processed", end="")
             if i == 20:
                 print()
 
-        ga = GeneticAlgorithm(
-            fitness=fitness_func,
+        ga = CropGeneticAlgorithm(
             chromosome_length=10,
             population_size=20,
             mutation_rate=0.01,
             crossover_rate=0.7,
             generations=20,
+            forecast_df=forecast_df,
+            crop=crop,
+            model=model,
             on_population_created=on_population_created,
             parallel_workers=1,
         )
