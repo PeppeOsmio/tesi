@@ -105,7 +105,7 @@ class CropYieldModelService:
                 location_id=row["location_id"]
             )
             if location is None:
-                raise LocationNotFoundError()
+                raise LocationNotFoundError(str(row["location_id"]))
             past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
                 await self.past_climate_data_repository.get_past_climate_data(
                     session=session,
