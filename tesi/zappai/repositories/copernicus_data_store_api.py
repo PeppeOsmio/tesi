@@ -267,9 +267,6 @@ class CopernicusDataStoreAPI:
             on_save_chunk(tmp_df)
             processed += len(years_to_fetch)
 
-        if os.path.exists(tmp_dir):
-            shutil.rmtree(tmp_dir)
-
     def get_past_climate_data(
         self,
         year_from: int | None,
