@@ -8,6 +8,7 @@ import cdsapi
 import zipfile
 import pandas as pd
 from tesi.zappai.utils.common import (
+    convert_grib_file_to_dataframe,
     convert_nc_file_to_dataframe,
     process_copernicus_climate_data,
 )
@@ -241,7 +242,7 @@ class CopernicusDataStoreAPI:
                     # "day": [str(day).zfill(2) for day in range(1, 32)],
                     # "time": [f"{hour:02d}:00" for hour in range(24)],
                     "time": ["00:00"],
-                    "format": "netcdf",
+                    "format": "grib",
                     "area": [
                         latitude + 0.01,
                         longitude - 0.01,
@@ -253,7 +254,7 @@ class CopernicusDataStoreAPI:
                 target=tmp_file_path,
             )
 
-            tmp_df = convert_nc_file_to_dataframe(
+            tmp_df = convert_grib_file_to_dataframe(
                 source_file_path=tmp_file_path, limit=None
             )
 

@@ -2,6 +2,9 @@ import asyncio
 import logging
 from typing import Any
 import pandas as pd
+import os
+
+os.environ.setdefault(key="HDF5_USE_FILE_LOCKING", value="FALSE") 
 import xarray
 from io import BytesIO
 import joblib
@@ -98,6 +101,21 @@ def get_previous_n_months(n: int, month: int, year: int) -> tuple[int, int]:
 def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
     return f"POINT({longitude} {latitude})"
 
+def convert_grib_file_to_dataframe(
+    source_file_path: str, limit: int | None
+) -> pd.DataFrame:
+    import cfgrib
+    logging.info(f"Trying to convert {source_file_path}")
+    ds = cfgrib.open(source_file_path)
+    for name, index in ds.indexes.items():
+        if isinstance(index, xarray.CFTimeIndex):
+            ds[name] = index.to_datetimeindex()
+    df = ds.to_dataframe()
+    ds = None
+    if limit is not None:
+        df = df[:limit]
+    df = df.reset_index()
+    return df
 
 def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None

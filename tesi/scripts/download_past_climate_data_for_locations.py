@@ -14,6 +14,8 @@ from tesi.zappai.di import (
 )
 from tesi.zappai.dtos import LocationClimateYearsDTO
 from tesi.database.di import get_session_maker
+import os
+
 
 import tracemalloc
 
@@ -22,6 +24,7 @@ tracemalloc.start()
 
 
 async def main():
+    
     session_maker = get_session_maker()
     location_repository = get_location_repository()
     cds_api = get_cds_api()

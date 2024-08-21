@@ -1,7 +1,8 @@
 import cdsapi
 import pandas as pd
 
-from tesi.zappai.utils.common import convert_nc_file_to_dataframe
+import cfgrib
+from tesi.zappai.utils.common import convert_grib_file_to_dataframe, convert_nc_file_to_dataframe
 
 if __name__ == "__main__":
     _ERA5_VARIABLES = {
@@ -38,7 +39,7 @@ if __name__ == "__main__":
             # "day": [str(day).zfill(2) for day in range(1, 32)],
             # "time": [f"{hour:02d}:00" for hour in range(24)],
             "time": ["00:00"],
-            "format": "netcdf",
+            "format": "grib",
             "download_format": "unarchived",
             "area": [
                 40 + 0.01,
@@ -47,9 +48,8 @@ if __name__ == "__main__":
                 -90.8 + 0.01,
             ],
         },
-        target="test.nc",
+        target="test.grib",
     )
 
-    df = convert_nc_file_to_dataframe("test.nc", limit=None)
-
+    df = convert_grib_file_to_dataframe("test.grib", limit=None)
     df.to_csv("test.csv")
