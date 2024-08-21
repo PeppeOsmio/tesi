@@ -239,7 +239,7 @@ class CopernicusDataStoreAPI:
                     "variable": list(_ERA5_VARIABLES),
                     "year": [str(year) for year in years_to_fetch],
                     "month": [str(month).zfill(2) for month in range(1, 13)],
-                    # "day": [str(day).zfill(2) for day in range(1, 32)],
+                    "day": [str(day).zfill(2) for day in range(1, 32)],
                     # "time": [f"{hour:02d}:00" for hour in range(24)],
                     "time": ["00:00"],
                     "format": "netcdf",
@@ -264,7 +264,10 @@ class CopernicusDataStoreAPI:
             )
 
             os.remove(tmp_file_path)
+
+            logging.info("Start outside on_save_chunk")
             on_save_chunk(tmp_df)
+            logging.info("End outside on_save_chunk")
             processed += len(years_to_fetch)
 
     def get_past_climate_data(

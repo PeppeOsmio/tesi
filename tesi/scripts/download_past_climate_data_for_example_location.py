@@ -52,8 +52,7 @@ async def main():
                 logging.error(traceback.format_exc())
                 logging.info("Failed to fetch past climate data, retrying...")
                 retries += 1
-        await session.commit()
-
+    
 
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())

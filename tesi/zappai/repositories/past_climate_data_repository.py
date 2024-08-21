@@ -42,7 +42,7 @@ class PastClimateDataRepository:
 
         def download_func():
             def on_save_chunk(chunk: pd.DataFrame):
-                return asyncio.run_coroutine_threadsafe(
+                asyncio.run_coroutine_threadsafe(
                     coro=self.__save_past_climate_data(
                         session=session,
                         location_id=location_id,
@@ -50,6 +50,7 @@ class PastClimateDataRepository:
                     ),
                     loop=loop,
                 ).result()
+                logging.info(f"Saved chunk")
 
             self.copernicus_data_store_api.get_past_climate_data_for_years(
                 longitude=location.longitude,
@@ -101,26 +102,28 @@ class PastClimateDataRepository:
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
 
-            def download_func():
-                def on_save_chunk(chunk: pd.DataFrame):
-                    asyncio.run_coroutine_threadsafe(
-                        coro=self.__save_past_climate_data(
-                            session=session,
-                            location_id=location_id,
-                            past_climate_data_df=chunk,
-                        ),
-                        loop=loop,
-                    ).result()
+            def on_save_chunk(chunk: pd.DataFrame):
+                logging.info(f"Start inside on_save_chunk")
+                asyncio.run_coroutine_threadsafe(
+                    coro=self.__save_past_climate_data(
+                        session=session,
+                        location_id=location_id,
+                        past_climate_data_df=chunk,
+                    ),
+                    loop=loop,
+                ).result()
+                logging.info(f"End inside on_save_chunk")
 
-                self.copernicus_data_store_api.get_past_climate_data(
+            await loop.run_in_executor(
+                executor=pool,
+                func=lambda: self.copernicus_data_store_api.get_past_climate_data(
                     year_from=year_from,
                     month_from=month_from,
                     longitude=location.longitude,
                     latitude=location.latitude,
                     on_save_chunk=on_save_chunk,
-                )
-
-            await loop.run_in_executor(executor=pool, func=download_func)
+                ),
+            )
 
     async def __save_past_climate_data(
         self,
@@ -135,7 +138,9 @@ class PastClimateDataRepository:
             location_id (UUID): _description_
             past_climate_data_df (pd.DataFrame): _description_
         """
+        print(past_climate_data_df)
         if len(past_climate_data_df) == 0:
+            logging.info(f"No past climate data, returning")
             return
         # delete the data of the same period as this dataframe
         years = cast(
