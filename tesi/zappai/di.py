@@ -33,7 +33,7 @@ def get_crop_repository() -> CropRepository:
 
 def get_cds_api() -> CopernicusDataStoreAPI:
     return CopernicusDataStoreAPI(
-        user_id=311032, api_token=UUID(hex="15a4dd58-d44c-4d52-afa3-db18f38e1d2c")
+        api_token=UUID(hex="01a739b2-eed9-4756-850a-564d0a2bb5f4"),
     )
 
 

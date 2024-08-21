@@ -19,6 +19,7 @@ from tesi.zappai.dtos import (
     ClimateGenerativeModelDTO,
     FutureClimateDataDTO,
     ClimateDataDTO,
+    PastClimateDataDTO,
 )
 from tesi.zappai.repositories.future_climate_data_repository import (
     FutureClimateDataRepository,
@@ -266,7 +267,7 @@ class ClimateGenerativeModelRepository:
         if location is None:
             raise LocationNotFoundError()
 
-        past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
+        past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
             await self.past_climate_data_repository.get_all_past_climate_data(
                 session=session, location_id=location.id
             )
@@ -407,7 +408,7 @@ class ClimateGenerativeModelRepository:
         if climate_generative_model is None:
             raise ClimateGenerativeModelNotFoundError()
 
-        last_n_months_seed_data = ClimateDataDTO.from_list_to_dataframe(
+        last_n_months_seed_data = PastClimateDataDTO.from_list_to_dataframe(
             await self.past_climate_data_repository.get_past_climate_data_of_previous_n_months(
                 session=session,
                 location_id=location_id,

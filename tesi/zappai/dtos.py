@@ -11,10 +11,12 @@ from typing import Any, cast
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 
+
 @dataclass
 class SoilTypeDTO:
     id: UUID
     name: str
+
 
 @dataclass
 class LocationClimateYearsDTO:
@@ -72,7 +74,7 @@ class LocationDTO:
             "longitude": self.longitude,
             "latitude": self.latitude,
             "created_at": self.created_at.isoformat(),
-            "soil_type_id": str(self.soil_type_id)
+            "soil_type_id": str(self.soil_type_id),
         }
 
 
@@ -153,10 +155,6 @@ class ClimateDataDTO:
     year: int
     month: int
 
-    # u_component_of_wind_10m: float
-    # v_component_of_wind_10m: float
-    # evaporation: float
-    # surface_pressure: floats
     temperature_2m: float
     total_precipitation: float
     surface_solar_radiation_downwards: float
@@ -164,7 +162,6 @@ class ClimateDataDTO:
 
     surface_net_solar_radiation: float
     surface_net_thermal_radiation: float
-    # snowfall: float
     total_cloud_cover: float
     dewpoint_temperature_2m: float
     soil_temperature_level_3: float
@@ -172,6 +169,42 @@ class ClimateDataDTO:
 
     @staticmethod
     def from_list_to_dataframe(lst: list[ClimateDataDTO]) -> pd.DataFrame:
+        df = pd.DataFrame([item.__dict__ for item in lst])
+        df = df.rename(
+            columns={
+                "temperature_2m": "2m_temperature",
+                "dewpoint_temperature_2m": "2m_dewpoint_temperature",
+            },
+        )
+        df = df.set_index(keys=["year", "month"], drop=True)
+        df = df.sort_index(ascending=[True, True])
+        return df
+
+    @staticmethod
+    def from_dataframe_to_list(df: pd.DataFrame) -> list[ClimateDataDTO]:
+        tmp_df = df.rename(
+            columns={
+                "2m_temperature": "temperature_2m",
+                "2m_dewpoint_temperature": "dewpoint_temperature_2m",
+            },
+        )
+        result: list[ClimateDataDTO] = []
+        for index, row in tmp_df.iterrows():
+            year, month = cast(pd.MultiIndex, index)
+            result.append(ClimateDataDTO(year=year, month=month, **row.to_dict()))
+        return result
+
+
+@dataclass
+class PastClimateDataDTO(ClimateDataDTO):
+    u_component_of_wind_10m: float
+    v_component_of_wind_10m: float
+    evaporation: float
+    surface_pressure: float
+    snowfall: float
+
+    @staticmethod
+    def from_list_to_dataframe(lst: list[PastClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([item.__dict__ for item in lst])
         df = df.rename(
             columns={
@@ -186,7 +219,7 @@ class ClimateDataDTO:
         return df
 
     @staticmethod
-    def from_dataframe_to_list(df: pd.DataFrame) -> list[ClimateDataDTO]:
+    def from_dataframe_to_list(df: pd.DataFrame) -> list[PastClimateDataDTO]:
         tmp_df = df.rename(
             columns={
                 "10m_u_component_of_wind": "u_component_of_wind_10m",
@@ -195,8 +228,25 @@ class ClimateDataDTO:
                 "2m_dewpoint_temperature": "dewpoint_temperature_2m",
             },
         )
-        result: list[ClimateDataDTO] = []
+        result: list[PastClimateDataDTO] = []
         for index, row in tmp_df.iterrows():
             year, month = cast(pd.MultiIndex, index)
-            result.append(ClimateDataDTO(year=year, month=month, **row.to_dict()))
+            result.append(PastClimateDataDTO(year=year, month=month, **row.to_dict()))
         return result
+
+    def to_climate_data_dto(self) -> ClimateDataDTO:
+        return ClimateDataDTO(
+            location_id=self.location_id,
+            year=self.year,
+            month=self.month,
+            temperature_2m=self.temperature_2m,
+            total_precipitation=self.total_precipitation,
+            surface_solar_radiation_downwards=self.surface_solar_radiation_downwards,
+            surface_thermal_radiation_downwards=self.surface_thermal_radiation_downwards,
+            surface_net_solar_radiation=self.surface_net_solar_radiation,
+            surface_net_thermal_radiation=self.surface_net_thermal_radiation,
+            total_cloud_cover=self.total_cloud_cover,
+            dewpoint_temperature_2m=self.dewpoint_temperature_2m,
+            soil_temperature_level_3=self.soil_temperature_level_3,
+            volumetric_soil_water_layer_3=self.volumetric_soil_water_layer_3,
+        )

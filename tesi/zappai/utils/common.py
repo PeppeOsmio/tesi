@@ -1,4 +1,5 @@
 import asyncio
+import logging
 from typing import Any
 import pandas as pd
 import xarray
@@ -101,7 +102,8 @@ def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
 def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None
 ) -> pd.DataFrame:
-    ds = xarray.open_dataset(source_file_path)
+    logging.info(f"Trying to convert {source_file_path}")
+    ds = xarray.open_dataset(source_file_path).load()
     for name, index in ds.indexes.items():
         if isinstance(index, xarray.CFTimeIndex):
             ds[name] = index.to_datetimeindex()

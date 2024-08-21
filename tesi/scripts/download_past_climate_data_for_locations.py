@@ -15,6 +15,11 @@ from tesi.zappai.di import (
 from tesi.zappai.dtos import LocationClimateYearsDTO
 from tesi.database.di import get_session_maker
 
+import tracemalloc
+
+# Start tracing memory allocations
+tracemalloc.start()
+
 
 async def main():
     session_maker = get_session_maker()
@@ -61,27 +66,30 @@ async def main():
         logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
 
         for location_climate_years in location_climate_years_to_fetch:
-            retries = 0
-            while True:
-                try:
-                    await past_climate_data_repository.download_past_climate_data_for_years(session=session,
-                        location_id=location_climate_years.location_id,
-                        years=list(location_climate_years.years),
-                    )
-                    await session.commit()
-                    processed += 1
-                    logging.info(
-                        f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
-                    )
-                    break
-                except Exception as e:
-                    logging.error(traceback.format_exc())
-                    logging.error("Failed to fetch past climate data, retrying...")
-                    retries += 1
-                    if retries >= 10:
-                        raise e
-
+            await past_climate_data_repository.download_past_climate_data_for_years(session=session,
+                location_id=location_climate_years.location_id,
+                years=list(location_climate_years.years),
+            )
+            await session.commit()
+            processed += 1
+            logging.info(
+                f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
+            )
+            break
 
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())
-    asyncio.run(main())
+    try:
+        asyncio.run(main())
+    except:
+        print(traceback.format_exc())
+
+    # Get the current and peak memory usage
+    current, peak = tracemalloc.get_traced_memory()
+
+    # Convert bytes to MB
+    print(f"Current memory usage: {current / 10**6} MB")
+    print(f"Peak memory usage: {peak / 10**6} MB")
+
+    # Stop tracing
+    tracemalloc.stop()

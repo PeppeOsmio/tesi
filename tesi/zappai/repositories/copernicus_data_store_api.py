@@ -2,13 +2,19 @@ from datetime import datetime, timezone
 import logging
 import os
 import random
-from typing import Any, Callable
+import time
+from typing import Callable
 import cdsapi
 import zipfile
 import pandas as pd
-from tesi.zappai.utils import common
+from tesi.zappai.utils.common import (
+    convert_nc_file_to_dataframe,
+    process_copernicus_climate_data,
+)
 from uuid import UUID
 import shutil
+
+import subprocess
 
 
 _ERA5_VARIABLES = {
@@ -106,11 +112,12 @@ ERA5_EXCLUSIVE_VARIABLES = list(set(ERA5_VARIABLES) - set(CMIP5_VARIABLES))
 
 
 class CopernicusDataStoreAPI:
-    def __init__(self, user_id: int, api_token: UUID) -> None:
+    def __init__(self, api_token: UUID) -> None:
         self.cds_client = cdsapi.Client(
-            url="https://cds.climate.copernicus.eu/api/v2",
-            key=f"{user_id}:{api_token}",
-            verify=1,
+            # url="https://cds.climate.copernicus.eu/api/v2",
+            url="https://cds-beta.climate.copernicus.eu/api",
+            key=str(api_token),
+            # verify=1,
         )
 
     def get_future_climate_data(self, on_save_chunk: Callable[[pd.DataFrame], None]):
@@ -157,7 +164,7 @@ class CopernicusDataStoreAPI:
                 if not extracted_file.endswith(".nc"):
                     continue
                 logging.info(f"Converting {extracted_file_path}")
-                df = common.convert_nc_file_to_dataframe(
+                df = convert_nc_file_to_dataframe(
                     source_file_path=extracted_file_path, limit=None
                 )
                 # take only the first segment of each measurement for each day and location
@@ -189,7 +196,7 @@ class CopernicusDataStoreAPI:
                         result_df.reset_index()
                         break
                 os.remove(extracted_file_path)
-            result_df = common.process_copernicus_climate_data(
+            result_df = process_copernicus_climate_data(
                 df=result_df, columns_mappings={}
             )
 
@@ -231,8 +238,9 @@ class CopernicusDataStoreAPI:
                     "variable": list(_ERA5_VARIABLES),
                     "year": [str(year) for year in years_to_fetch],
                     "month": [str(month).zfill(2) for month in range(1, 13)],
-                    "day": [str(day).zfill(2) for day in range(1, 32)],
-                    "time": [f"{hour:02d}:00" for hour in range(24)],
+                    # "day": [str(day).zfill(2) for day in range(1, 32)],
+                    # "time": [f"{hour:02d}:00" for hour in range(24)],
+                    "time": ["00:00"],
                     "format": "netcdf",
                     "area": [
                         latitude + 0.01,
@@ -240,18 +248,22 @@ class CopernicusDataStoreAPI:
                         latitude - 0.01,
                         longitude + 0.01,
                     ],
+                    "download_format": "unarchived",
                 },
                 target=tmp_file_path,
             )
 
-            tmp_df = common.convert_nc_file_to_dataframe(
+            tmp_df = convert_nc_file_to_dataframe(
                 source_file_path=tmp_file_path, limit=None
             )
 
-            tmp_df = common.process_copernicus_climate_data(
+            tmp_df = process_copernicus_climate_data(
                 df=tmp_df,
                 columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
+
+            tmp_df.to_csv("success.csv")
+
             os.remove(tmp_file_path)
             on_save_chunk(tmp_df)
             processed += len(years_to_fetch)

@@ -8,7 +8,7 @@ from tesi.zappai.repositories.climate_generative_model_repository import (
 )
 from tesi.zappai.repositories.crop_repository import CropRepository
 from tesi.zappai.repositories.crop_yield_data_repository import CropYieldDataRepository
-from tesi.zappai.dtos import ClimateDataDTO, CropYieldDataDTO
+from tesi.zappai.dtos import ClimateDataDTO, CropYieldDataDTO, PastClimateDataDTO
 from tesi.zappai.repositories.location_repository import LocationRepository
 from tesi.zappai.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
@@ -106,7 +106,7 @@ class CropYieldModelService:
             )
             if location is None:
                 raise LocationNotFoundError(str(row["location_id"]))
-            past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
+            past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
                 await self.past_climate_data_repository.get_past_climate_data(
                     session=session,
                     location_id=location.id,

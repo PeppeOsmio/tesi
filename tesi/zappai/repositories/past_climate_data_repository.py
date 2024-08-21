@@ -11,7 +11,7 @@ from sqlalchemy import asc, delete, desc, insert, select
 import sqlalchemy
 from sqlalchemy.exc import IntegrityError
 from tesi.zappai.exceptions import LocationNotFoundError, PastClimateDataNotFoundError
-from tesi.zappai.dtos import LocationClimateYearsDTO, ClimateDataDTO
+from tesi.zappai.dtos import LocationClimateYearsDTO, ClimateDataDTO, PastClimateDataDTO
 from tesi.zappai.models import PastClimateData
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from typing import Any, cast
@@ -188,7 +188,7 @@ class PastClimateDataRepository:
 
     async def get_all_past_climate_data(
         self, session: AsyncSession, location_id: UUID
-    ) -> list[ClimateDataDTO]:
+    ) -> list[PastClimateDataDTO]:
         stmt = (
             select(PastClimateData)
             .where(PastClimateData.location_id == location_id)
@@ -207,7 +207,7 @@ class PastClimateDataRepository:
         month_from: int,
         year_to: int,
         month_to: int,
-    ) -> list[ClimateDataDTO]:
+    ) -> list[PastClimateDataDTO]:
         stmt = (
             select(PastClimateData)
             .where(
@@ -240,7 +240,7 @@ class PastClimateDataRepository:
 
     async def get_past_climate_data_of_previous_n_months(
         self, session: AsyncSession, location_id: UUID, n: int | None = None
-    ) -> list[ClimateDataDTO]:
+    ) -> list[PastClimateDataDTO]:
         stmt = (
             select(
                 PastClimateData,
@@ -254,7 +254,7 @@ class PastClimateDataRepository:
         if n is not None:
             stmt = stmt.limit(n)
         results = list(await session.scalars(stmt))
-        if len(results) is None:
+        if len(results) == 0:
             raise PastClimateDataNotFoundError(
                 f"Can't find past climate data of previous 12 months for location"
             )
@@ -314,7 +314,7 @@ class PastClimateDataRepository:
                     harvest_year,
                     harvest_month,
                 ) in location_id_and_periods:
-                    past_climate_data_df = ClimateDataDTO.from_list_to_dataframe(
+                    past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
                         (
                             await self.get_past_climate_data(
                                 session=session,
@@ -401,8 +401,8 @@ class PastClimateDataRepository:
                 )
             )
             columns_mappings = {
-                "10m_u_component_of_wind": "u_component_of_wind_10m",
-                "10m_v_component_of_wind": "v_component_of_wind_10m",
+                # "10m_u_component_of_wind": "u_component_of_wind_10m",
+                # "10m_v_component_of_wind": "v_component_of_wind_10m",
                 "2m_temperature": "temperature_2m",
                 "2m_dewpoint_temperature": "dewpoint_temperature_2m",
             }
@@ -411,29 +411,29 @@ class PastClimateDataRepository:
                 dct.pop(key)
             dct["location_id"] = location.id
             dct.pop("location_country")
-            dct.pop("location_country")
+            dct.pop("location_name")
             dct.update({"id": uuid.uuid4()})
             stmt = insert(PastClimateData).values(**dct)
             await session.execute(stmt)
 
     def __past_climate_data_model_to_dto(
         self, past_climate_data: PastClimateData
-    ) -> ClimateDataDTO:
-        return ClimateDataDTO(
+    ) -> PastClimateDataDTO:
+        return PastClimateDataDTO(
             location_id=past_climate_data.location_id,
             year=past_climate_data.year,
             month=past_climate_data.month,
-            # u_component_of_wind_10m=past_climate_data.u_component_of_wind_10m,
-            # v_component_of_wind_10m=past_climate_data.v_component_of_wind_10m,
-            # evaporation=past_climate_data.evaporation,
-            # surface_pressure=past_climate_data.surface_pressure,
+            u_component_of_wind_10m=past_climate_data.u_component_of_wind_10m,
+            v_component_of_wind_10m=past_climate_data.v_component_of_wind_10m,
+            evaporation=past_climate_data.evaporation,
+            surface_pressure=past_climate_data.surface_pressure,
             temperature_2m=past_climate_data.temperature_2m,
             total_precipitation=past_climate_data.total_precipitation,
             surface_solar_radiation_downwards=past_climate_data.surface_solar_radiation_downwards,
             surface_thermal_radiation_downwards=past_climate_data.surface_thermal_radiation_downwards,
             surface_net_solar_radiation=past_climate_data.surface_net_solar_radiation,
             surface_net_thermal_radiation=past_climate_data.surface_net_thermal_radiation,
-            # snowfall=past_climate_data.snowfall,
+            snowfall=past_climate_data.snowfall,
             total_cloud_cover=past_climate_data.total_cloud_cover,
             dewpoint_temperature_2m=past_climate_data.dewpoint_temperature_2m,
             soil_temperature_level_3=past_climate_data.soil_temperature_level_3,
