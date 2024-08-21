@@ -104,7 +104,6 @@ def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
 def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None
 ) -> pd.DataFrame:
-    logging.info(f"Trying to convert {source_file_path}")
     with xarray.open_dataset(source_file_path) as ds:
         for name, index in ds.indexes.items():
             if isinstance(index, xarray.CFTimeIndex):

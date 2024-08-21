@@ -78,7 +78,6 @@ async def main():
             logging.info(
                 f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
             )
-            break
 
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())
