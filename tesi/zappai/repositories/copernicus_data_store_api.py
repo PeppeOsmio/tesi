@@ -8,7 +8,6 @@ import cdsapi
 import zipfile
 import pandas as pd
 from tesi.zappai.utils.common import (
-    convert_grib_file_to_dataframe,
     convert_nc_file_to_dataframe,
     process_copernicus_climate_data,
 )
@@ -226,6 +225,7 @@ class CopernicusDataStoreAPI:
         processed = 0
 
         while processed < len(_years):
+            print(f"PROCESSED: {processed}")
             years_to_fetch = _years[processed : processed + STEP]
 
             logging.info(
@@ -242,7 +242,7 @@ class CopernicusDataStoreAPI:
                     # "day": [str(day).zfill(2) for day in range(1, 32)],
                     # "time": [f"{hour:02d}:00" for hour in range(24)],
                     "time": ["00:00"],
-                    "format": "grib",
+                    "format": "netcdf",
                     "area": [
                         latitude + 0.01,
                         longitude - 0.01,
@@ -254,7 +254,7 @@ class CopernicusDataStoreAPI:
                 target=tmp_file_path,
             )
 
-            tmp_df = convert_grib_file_to_dataframe(
+            tmp_df = convert_nc_file_to_dataframe(
                 source_file_path=tmp_file_path, limit=None
             )
 
@@ -262,8 +262,6 @@ class CopernicusDataStoreAPI:
                 df=tmp_df,
                 columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
-
-            tmp_df.to_csv("success.csv")
 
             os.remove(tmp_file_path)
             on_save_chunk(tmp_df)

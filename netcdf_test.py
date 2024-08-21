@@ -1,10 +1,13 @@
+import asyncio
+from concurrent.futures import ThreadPoolExecutor
 import cdsapi
 import pandas as pd
+from tesi.database.di import get_session_maker
+import xarray
 
-import cfgrib
-from tesi.zappai.utils.common import convert_grib_file_to_dataframe, convert_nc_file_to_dataframe
+from tesi.zappai.utils.common import convert_nc_file_to_dataframe
 
-if __name__ == "__main__":
+async def main():
     _ERA5_VARIABLES = {
         "10m_u_component_of_wind",
         "10m_v_component_of_wind",
@@ -51,5 +54,17 @@ if __name__ == "__main__":
         target="test.grib",
     )
 
-    df = convert_grib_file_to_dataframe("test.grib", limit=None)
-    df.to_csv("test.csv")
+    session_maker = get_session_maker()
+
+    async with session_maker() as session:
+        def func():
+            df = convert_nc_file_to_dataframe("./tmp/global_climate_data/dioporco.nc", None)
+            df.to_csv("dioporco.csv")
+
+        loop = asyncio.get_running_loop()
+        
+        with ThreadPoolExecutor() as pool:
+            await loop.run_in_executor(executor=pool, func=func)
+
+if __name__ == "__main__":
+    asyncio.run(main())

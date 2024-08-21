@@ -596,27 +596,6 @@ files = [
 pycparser = "*"
 
 [[package]]
-name = "cfgrib"
-version = "0.9.14.0"
-description = "Python interface to map GRIB files to the NetCDF Common Data Model following the CF Convention using ecCodes."
-optional = false
-python-versions = ">=3.7"
-files = [
-    {file = "cfgrib-0.9.14.0-py3-none-any.whl", hash = "sha256:ce9fb8a667167fee38ae935f6b445e87f0e8915b9af76e3843c182d2979a756a"},
-    {file = "cfgrib-0.9.14.0.tar.gz", hash = "sha256:2b9a1e6bd47397e585f878ffd8aaac5969f6c9a448da767c700917b89c275bb2"},
-]
-
-[package.dependencies]
-attrs = ">=19.2"
-click = "*"
-eccodes = ">=0.9.8"
-numpy = "*"
-
-[package.extras]
-tests = ["dask[array]", "flake8", "pytest", "pytest-cov", "scipy", "xarray (>=0.15)"]
-xarray = ["xarray (>=0.15)"]
-
-[[package]]
 name = "cftime"
 version = "1.6.3"
 description = "Time-handling functionality from netcdf4-python"
@@ -1439,6 +1418,24 @@ files = [
     {file = "h11-0.14.0-py3-none-any.whl", hash = "sha256:e3fe4ac4b851c468cc8363d500db52c2ead036020723024a109d37346efaa761"},
     {file = "h11-0.14.0.tar.gz", hash = "sha256:8f19fbbe99e72420ff35c00b27a34cb9937e902a8b810e2c88300c6f0a3b699d"},
 ]
+
+[[package]]
+name = "h5netcdf"
+version = "1.3.0"
+description = "netCDF4 via h5py"
+optional = false
+python-versions = ">=3.9"
+files = [
+    {file = "h5netcdf-1.3.0-py3-none-any.whl", hash = "sha256:f2df69dcd3665dc9c4d43eb6529dedd113b2508090d12ac973573305a8406465"},
+    {file = "h5netcdf-1.3.0.tar.gz", hash = "sha256:a171c027daeb34b24c24a3b6304195b8eabbb6f10c748256ed3cfe19806383cf"},
+]
+
+[package.dependencies]
+h5py = "*"
+packaging = "*"
+
+[package.extras]
+test = ["netCDF4", "pytest"]
 
 [[package]]
 name = "h5py"
@@ -2673,48 +2670,6 @@ files = [
     {file = "nest_asyncio-1.6.0-py3-none-any.whl", hash = "sha256:87af6efd6b5e897c81050477ef65c62e2b2f35d51703cae01aff2905b1852e1c"},
     {file = "nest_asyncio-1.6.0.tar.gz", hash = "sha256:6f172d5449aca15afd6c646851f4e31e02c598d553a667e38cafa997cfec55fe"},
 ]
-
-[[package]]
-name = "netcdf4"
-version = "1.7.1.post2"
-description = "Provides an object-oriented python interface to the netCDF version 4 library"
-optional = false
-python-versions = ">=3.8"
-files = [
-    {file = "netCDF4-1.7.1.post2-cp310-cp310-macosx_12_0_x86_64.whl", hash = "sha256:a1006ae117a754e3cf41a9e704032bf3837cbf53a695cd71deaad3e02e93d570"},
-    {file = "netCDF4-1.7.1.post2-cp310-cp310-macosx_14_0_arm64.whl", hash = "sha256:7530d60cf6450d997ea0607f8b68b9b088f2382c42648cddf5e66e6f1280b692"},
-    {file = "netCDF4-1.7.1.post2-cp310-cp310-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:756a54cb212c9fc5d0ea74f7c661621821138ab8f63e818317330330cfd6165c"},
-    {file = "netCDF4-1.7.1.post2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:156428fc63e2280e8bcab7f49531cde19fbba192c2ffdfb352c6a3f5e813a80b"},
-    {file = "netCDF4-1.7.1.post2-cp310-cp310-win_amd64.whl", hash = "sha256:79d890ade8b8646bb2833c2b9565392cdf5e97e016cf0319693d13bd8c2dd511"},
-    {file = "netCDF4-1.7.1.post2-cp311-cp311-macosx_12_0_x86_64.whl", hash = "sha256:b2700bd0a188637b740aa6ad09dbf9d21337fb1e0336f9859c2c6e9525404cc0"},
-    {file = "netCDF4-1.7.1.post2-cp311-cp311-macosx_14_0_arm64.whl", hash = "sha256:914e210f76c4ce016aed32ba7dfad57e6316a38502bdcbd071fc74ee8fec73ec"},
-    {file = "netCDF4-1.7.1.post2-cp311-cp311-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:a98731d88889e41e9a92d67cad8ac9d9c4acba612a999db803bd082384462dea"},
-    {file = "netCDF4-1.7.1.post2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:6369ed38ffd094fce44e066d0823b6420205d5825a715fe048146052b299754c"},
-    {file = "netCDF4-1.7.1.post2-cp311-cp311-win_amd64.whl", hash = "sha256:9fe939ad543371b5ea46864ba6ac88532b2189ce139804b3187c241eb89a02a6"},
-    {file = "netCDF4-1.7.1.post2-cp312-cp312-macosx_12_0_x86_64.whl", hash = "sha256:658f38ceb74bb127e293a47fa36f949babba0c872cf3091e2fdafa73caacc7e4"},
-    {file = "netCDF4-1.7.1.post2-cp312-cp312-macosx_14_0_arm64.whl", hash = "sha256:5f396f150f97831229e47f449fe6acbca8ff9d08b2166560c46790aa6f11b56b"},
-    {file = "netCDF4-1.7.1.post2-cp312-cp312-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0d5216369a0a4a868dadb5c4137d854810a309b9f9ef1d16786269fbeb244101"},
-    {file = "netCDF4-1.7.1.post2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:12f8ab560320e879763b7837d6f8f5eb285195271f47fc5c18362e5b097ee67c"},
-    {file = "netCDF4-1.7.1.post2-cp312-cp312-win_amd64.whl", hash = "sha256:2cbca7dcd92075aebe7c242e16f51f20bc5073b6f0f1449394dadc3c17e44b29"},
-    {file = "netCDF4-1.7.1.post2-cp38-cp38-macosx_12_0_x86_64.whl", hash = "sha256:13dc0d3fa4d46e531f32fa0bb4068bdac35513114b9548ea49f92e85d9702afb"},
-    {file = "netCDF4-1.7.1.post2-cp38-cp38-macosx_14_0_arm64.whl", hash = "sha256:f040aecec09a44388e1469725d471e8f1d491d4b70b27c8b2d45fd47db4e8abc"},
-    {file = "netCDF4-1.7.1.post2-cp38-cp38-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:0691d20fcc2d41cd0a15ef335a4f038ccaf07c013c4c79ad3e39993cac3c9bbb"},
-    {file = "netCDF4-1.7.1.post2-cp38-cp38-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:aa22721d9860181c03506c6d718b3a9daf8d07dcb35a466b376760f8eddfffe5"},
-    {file = "netCDF4-1.7.1.post2-cp39-cp39-macosx_12_0_x86_64.whl", hash = "sha256:d92bd60dc2b4beba293d81912f3094b2854e9f492ce5e9b4a3ad4fbd725a29e8"},
-    {file = "netCDF4-1.7.1.post2-cp39-cp39-macosx_14_0_arm64.whl", hash = "sha256:d8c015cd8c8582b351d715aed4c17da2e68493edaa59e91f6cf12756479fbd53"},
-    {file = "netCDF4-1.7.1.post2-cp39-cp39-manylinux_2_17_aarch64.manylinux2014_aarch64.whl", hash = "sha256:6bc8ca705e39ac9f4d3950c908867d377f789e5bcc6f94e0a2bdadc4c4612f94"},
-    {file = "netCDF4-1.7.1.post2-cp39-cp39-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:98fef5b27a2325a50ec59793c96e5b1e9945061a390c1ea33d403ed91b7a2fb4"},
-    {file = "netCDF4-1.7.1.post2-cp39-cp39-win_amd64.whl", hash = "sha256:294b24234fb71ee30640a451ed1428da3569f23383d35f905558093795f3609a"},
-    {file = "netcdf4-1.7.1.post2.tar.gz", hash = "sha256:37d557e36654889d7020192bfb56f9d5f93894cb32997eb837ae586c538fd7b6"},
-]
-
-[package.dependencies]
-certifi = "*"
-cftime = "*"
-numpy = "*"
-
-[package.extras]
-tests = ["Cython", "packaging", "pytest"]
 
 [[package]]
 name = "notebook"
@@ -5192,4 +5147,4 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "231741e1a32059f426f5b446adc56677c70fa85318929e3255758d8c68f2e268"
+content-hash = "18ab8f04c254a4b24c16edef211731c5003084e8bd05798349bfbcd8e5e83965"

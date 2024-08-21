@@ -101,32 +101,15 @@ def get_previous_n_months(n: int, month: int, year: int) -> tuple[int, int]:
 def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
     return f"POINT({longitude} {latitude})"
 
-def convert_grib_file_to_dataframe(
-    source_file_path: str, limit: int | None
-) -> pd.DataFrame:
-    import cfgrib
-    logging.info(f"Trying to convert {source_file_path}")
-    ds = xarray.open_mfdataset(source_file_path, combine="by_coords")
-    for name, index in ds.indexes.items():
-        if isinstance(index, xarray.CFTimeIndex):
-            ds[name] = index.to_datetimeindex()
-    df = ds.to_dataframe()
-    ds = None
-    if limit is not None:
-        df = df[:limit]
-    df = df.reset_index()
-    return df
-
 def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None
 ) -> pd.DataFrame:
     logging.info(f"Trying to convert {source_file_path}")
-    ds = xarray.open_mfdataset(source_file_path).load()
-    for name, index in ds.indexes.items():
-        if isinstance(index, xarray.CFTimeIndex):
-            ds[name] = index.to_datetimeindex()
-    df = ds.to_dataframe()
-    ds = None
+    with xarray.open_dataset(source_file_path) as ds:
+        for name, index in ds.indexes.items():
+            if isinstance(index, xarray.CFTimeIndex):
+                ds[name] = index.to_datetimeindex()
+        df = ds.to_dataframe()
     if limit is not None:
         df = df[:limit]
     df = df.reset_index()
@@ -143,10 +126,10 @@ def process_copernicus_climate_data(
     df = df.rename(columns=columns_mappings)
 
     # Converting and extracting date parts
-    df["time"] = pd.to_datetime(df["time"])
-    df["year"] = df["time"].dt.year
-    df["month"] = df["time"].dt.month
-    df = df.drop(columns=["time"])
+    df["date"] = pd.to_datetime(df["date"], format="%Y%m%d")
+    df["year"] = df["date"].dt.year
+    df["month"] = df["date"].dt.month
+    df = df.drop(columns=["date"])
 
     # Resetting and setting index
     df = df.reset_index(drop=True)
