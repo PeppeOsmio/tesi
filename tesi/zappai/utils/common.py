@@ -106,7 +106,7 @@ def convert_grib_file_to_dataframe(
 ) -> pd.DataFrame:
     import cfgrib
     logging.info(f"Trying to convert {source_file_path}")
-    ds = cfgrib.open(source_file_path)
+    ds = xarray.open_mfdataset(source_file_path, combine="by_coords")
     for name, index in ds.indexes.items():
         if isinstance(index, xarray.CFTimeIndex):
             ds[name] = index.to_datetimeindex()
@@ -121,7 +121,7 @@ def convert_nc_file_to_dataframe(
     source_file_path: str, limit: int | None
 ) -> pd.DataFrame:
     logging.info(f"Trying to convert {source_file_path}")
-    ds = xarray.open_dataset(source_file_path).load()
+    ds = xarray.open_mfdataset(source_file_path).load()
     for name, index in ds.indexes.items():
         if isinstance(index, xarray.CFTimeIndex):
             ds[name] = index.to_datetimeindex()
