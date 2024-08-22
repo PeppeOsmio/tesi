@@ -1,6 +1,6 @@
 import asyncio
 import logging
-from typing import Any
+from typing import Any, Callable, TypeVar
 import pandas as pd
 import os
 
@@ -8,12 +8,30 @@ os.environ.setdefault(key="HDF5_USE_FILE_LOCKING", value="FALSE")
 import xarray
 from io import BytesIO
 import joblib
+import time
 
 # Policoro
 EXAMPLE_LOCATION_COUNTRY = "Italy"
 EXAMPLE_LOCATION_NAME = "Policoro"
 EXAMPLE_LONGITUDE = 16.678341
 EXAMPLE_LATITUDE = 40.212971
+
+T = TypeVar("T")
+
+def retry_on_error(max_retries: int, wait_time: float):
+    def decorator(func: Callable[..., T]) -> Callable[..., T]:
+        def wrapper(*args, **kwargs) -> T:
+            retries = 0
+            while True:
+                try:
+                    return func(*args, **kwargs)
+                except Exception as e:
+                    retries += 1
+                    if retries > max_retries:
+                        raise e
+                    time.sleep(wait_time)
+        return wrapper
+    return decorator
 
 def create_stats_dataframe(df: pd.DataFrame, ignore: list[str]) -> pd.DataFrame:
     stats = ["mean", "std", "min", "max"]
@@ -136,13 +154,11 @@ def process_copernicus_climate_data(
 
     # Sorting index
     df = df.sort_index(ascending=[True, True])
-    df.to_csv("tmp/with_expver.csv")
     if "expver" in df.columns:
 
-        df_expver1 = df[df["expver"] == 1].drop(columns=["expver"])
-        df_expver5 = df[df["expver"] == 5].drop(columns=["expver"])
-
+        df_expver1 = df[df["expver"] == "0001"].drop(columns=["expver"])
+        df_expver5 = df[df["expver"] == "0005"].drop(columns=["expver"])
+    
         df = df_expver1.combine_first(df_expver5)
-        df.to_csv("tmp/without_expver.csv")
 
     return df

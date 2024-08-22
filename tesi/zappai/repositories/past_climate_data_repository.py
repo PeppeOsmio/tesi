@@ -103,7 +103,6 @@ class PastClimateDataRepository:
         with ThreadPoolExecutor() as pool:
 
             def on_save_chunk(chunk: pd.DataFrame):
-                logging.info(f"Start inside on_save_chunk")
                 asyncio.run_coroutine_threadsafe(
                     coro=self.__save_past_climate_data(
                         session=session,
@@ -112,7 +111,6 @@ class PastClimateDataRepository:
                     ),
                     loop=loop,
                 ).result()
-                logging.info(f"End inside on_save_chunk")
 
             await loop.run_in_executor(
                 executor=pool,
@@ -138,7 +136,6 @@ class PastClimateDataRepository:
             location_id (UUID): _description_
             past_climate_data_df (pd.DataFrame): _description_
         """
-        print(past_climate_data_df)
         if len(past_climate_data_df) == 0:
             logging.info(f"No past climate data, returning")
             return

@@ -10,6 +10,7 @@ import pandas as pd
 from tesi.zappai.utils.common import (
     convert_nc_file_to_dataframe,
     process_copernicus_climate_data,
+    retry_on_error,
 )
 from uuid import UUID
 import shutil
@@ -207,6 +208,7 @@ class CopernicusDataStoreAPI:
             result_df = result_df.drop(columns=["mean_precipitation_flux"])
             on_save_chunk(result_df)
 
+    @retry_on_error(max_retries=10, wait_time=10)
     def get_past_climate_data_for_years(
         self,
         longitude: float,
@@ -265,9 +267,7 @@ class CopernicusDataStoreAPI:
 
             os.remove(tmp_file_path)
 
-            logging.info("Start outside on_save_chunk")
             on_save_chunk(tmp_df)
-            logging.info("End outside on_save_chunk")
             processed += len(years_to_fetch)
 
     def get_past_climate_data(
