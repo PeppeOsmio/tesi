@@ -104,7 +104,7 @@ columns_to_include: dict[str, str] = {
     "Harvest year": "harvest_year",
     "Harvesting month": "harvest_month",
     "Yield of CT": "yield_per_hectar",
-    "ST": "soil_type",
+    # "ST": "soil_type",
     # "Yield of NT": "yield",
     # "P": "P",
     # "E": "E",
@@ -172,16 +172,12 @@ class CropYieldDataRepository:
 
         df_no_outliers = pd.DataFrame(columns=df.columns)
 
-        soil_types = cast(list[str], list(df["soil_type"].unique()))
-
         for crop in df["crop"].unique():
-            sub_df = df[df["crop"] == crop]
-            for soil_type in soil_types:
-                tmp_df = remove_outliers(
-                    df=sub_df[sub_df["soil_type"] == soil_type],
-                    columns=["duration_months", "yield_per_hectar"],
-                )
-                df_no_outliers = pd.concat([df_no_outliers, tmp_df], axis=0)
+            tmp_df = remove_outliers(
+                df=df[df["crop"] == crop],
+                columns=["duration_months", "yield_per_hectar"],
+            )
+            df_no_outliers = pd.concat([df_no_outliers, tmp_df], axis=0)
 
         df = df.sort_values(
             by=["crop", "country", "location"], ascending=[True, True, True]
@@ -284,22 +280,6 @@ class CropYieldDataRepository:
             )
             crop_names_to_ids.update({crop_name: crop.id})
 
-        soil_type_names_to_ids: dict[str, uuid.UUID] = {}
-
-        soil_types = cast(list[str], list(crop_yield_data_df["soil_type"].unique()))
-        for soil_type_name in soil_types:
-            soil_type = await self.location_repository.get_soil_type_by_name(
-                session=session, name=soil_type_name
-            )
-            if soil_type is not None:
-                await self.location_repository.delete_soil_type(
-                    session=session, soil_type_id=soil_type.id
-                )
-            soil_type = await self.location_repository.create_soil_type(
-                session=session, name=soil_type_name
-            )
-            soil_type_names_to_ids.update({soil_type.name: soil_type.id})
-
         logging.info("Checking locations to create")
         location_coordinates_to_ids: dict[str, uuid.UUID] = {}
 
@@ -311,15 +291,6 @@ class CropYieldDataRepository:
             list(locations_df.itertuples(index=False, name=None)),
         )
         for country, location_name, latitude, longitude in locations_tuples:
-            soil_type = cast(
-                str,
-                crop_yield_data_df[
-                    (crop_yield_data_df["country"] == country)
-                    & (crop_yield_data_df["location"] == location_name)
-                    & (crop_yield_data_df["latitude"] == latitude)
-                    & (crop_yield_data_df["longitude"] == longitude)
-                ].iloc[0]["soil_type"],
-            )
             location = await self.location_repository.get_location_by_coordinates(
                 session=session, longitude=longitude, latitude=latitude
             )
@@ -335,7 +306,6 @@ class CropYieldDataRepository:
                 name=location_name,
                 longitude=longitude,
                 latitude=latitude,
-                soil_type_id=soil_type_names_to_ids[soil_type],
             )
             location_coordinates_to_ids.update(
                 {str((longitude, latitude)): location.id}
@@ -429,7 +399,7 @@ class CropYieldDataRepository:
             id=crop_yield_data.id,
             location_id=crop_yield_data.location_id,
             crop_id=crop_yield_data.crop_id,
-            sowing_year=crop_yield_data.sowing_year,
+            sowing_year=crop_yield_data.sowing_year, 
             sowing_month=crop_yield_data.sowing_month,
             harvest_year=crop_yield_data.harvest_year,
             harvest_month=crop_yield_data.harvest_month,

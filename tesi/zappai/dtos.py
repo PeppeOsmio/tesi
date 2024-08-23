@@ -64,7 +64,6 @@ class LocationDTO:
     longitude: float
     latitude: float
     created_at: datetime
-    soil_type_id: UUID
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -74,7 +73,6 @@ class LocationDTO:
             "longitude": self.longitude,
             "latitude": self.latitude,
             "created_at": self.created_at.isoformat(),
-            "soil_type_id": str(self.soil_type_id),
         }
 
 

@@ -27,7 +27,7 @@ async def get_past_climate_data_of_location(
     ],
 ):
     async with session_maker() as session:
-        data = await past_climate_data_repository.get_past_climate_data(session=session, location_id=location_id)
+        data = await past_climate_data_repository.get_past_climate_data(session=session, location_id=location_id, year_from=year_from, year_to=year_to)
         result = [
             GetPastClimateDataOfLocationResponse(
                 year=item.year,

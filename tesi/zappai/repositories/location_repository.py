@@ -7,7 +7,7 @@ from sqlalchemy import delete, insert, select
 from sqlalchemy.exc import IntegrityError
 from tesi.zappai.exceptions import LocationNotFoundError, SoilTypeNotFoundError
 from tesi.zappai.dtos import LocationDTO, SoilTypeDTO
-from tesi.zappai.models import Location, SoilType
+from tesi.zappai.models import Location
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 import pandas as pd
 import asyncio
@@ -24,32 +24,6 @@ class LocationRepository:
         stmt = delete(Location).where(Location.id == location_id)
         await session.execute(stmt)
 
-    async def create_soil_type(self, session: AsyncSession, name: str) -> SoilTypeDTO:
-        soil_type_id = uuid.uuid4()
-        await session.execute(insert(SoilType).values(id=soil_type_id, name=name))
-        return SoilTypeDTO(id=soil_type_id, name=name)
-
-    async def get_soil_type_by_id(
-        self, session: AsyncSession, soil_type_id: UUID
-    ) -> SoilTypeDTO | None:
-        soil_type = await session.scalar(
-            select(SoilType).where(SoilType.id == soil_type_id)
-        )
-        if soil_type is None:
-            return None
-        return SoilTypeDTO(id=soil_type.id, name=soil_type.name)
-
-    async def get_soil_type_by_name(
-        self, session: AsyncSession, name: str
-    ) -> SoilTypeDTO | None:
-        soil_type = await session.scalar(select(SoilType).where(SoilType.name == name))
-        if soil_type is None:
-            return None
-        return SoilTypeDTO(id=soil_type.id, name=soil_type.name)
-
-    async def delete_soil_type(self, session: AsyncSession, soil_type_id: UUID):
-        await session.execute(delete(SoilType).where(SoilType.id == soil_type_id))
-
     async def create_location(
         self,
         session: AsyncSession,
@@ -57,7 +31,6 @@ class LocationRepository:
         name: str,
         longitude: float,
         latitude: float,
-        soil_type_id: UUID,
     ) -> LocationDTO:
         location_id = uuid.uuid4()
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
@@ -68,7 +41,6 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
-            soil_type_id=soil_type_id,
         )
         await session.execute(stmt)
         return LocationDTO(
@@ -78,8 +50,12 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
-            soil_type_id=soil_type_id,
         )
+
+    async def get_locations(self, session: AsyncSession) -> list[LocationDTO]:
+        stmt = select(Location).order_by(Location.created_at)
+        locations = await session.scalars(stmt)
+        return [self.__location_model_to_dto(location) for location in locations]
 
     async def get_location_by_country_and_name(
         self, session: AsyncSession, country: str, name: str
@@ -131,24 +107,10 @@ class LocationRepository:
                 if len(results) == 0:
                     raise LocationNotFoundError(f"No locations found")
                 locations = [self.__location_model_to_dto(model) for model in results]
-                soil_type_id_to_name: dict[UUID, str] = {}
                 dicts: list[dict[str, Any]] = []
                 for location in locations:
                     dct = location.to_dict()
                     dct.pop("id")
-                    soil_type_name = soil_type_id_to_name.get(dct["soil_type_id"])
-                    if soil_type_name is None:
-                        soil_type = await self.get_soil_type_by_id(
-                            session=session, soil_type_id=dct["soil_type_id"]
-                        )
-                        if soil_type is None:
-                            raise SoilTypeNotFoundError(str(dct["soil_type_id"]))
-                        soil_type_name = soil_type.name
-                        soil_type_id_to_name.update(
-                            {dct["soil_type_id"]: soil_type_name}
-                        )
-                    dct.pop("soil_type_id")
-                    dct.update({"soil_type_name": soil_type_name})
                     dicts.append(dct)
 
                 def write_to_csv():
@@ -167,7 +129,6 @@ class LocationRepository:
             data = await loop.run_in_executor(executor=pool, func=read_csv)
 
         dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
-        soil_type_names_to_ids: dict[str, UUID] = {}
         for dct in dicts:
             await session.execute(
                 delete(Location).where(
@@ -175,17 +136,6 @@ class LocationRepository:
                     & (Location.country == dct["country"])
                 )
             )
-            soil_type_id = soil_type_names_to_ids.get(dct["soil_type_name"])
-            if soil_type_id is None:
-                soil_type = await self.get_soil_type_by_name(
-                    session=session, name=dct["soil_type_name"]
-                )
-                if soil_type is None:
-                    raise SoilTypeNotFoundError(str(dct["soil_type_name"]))
-                soil_type_id = soil_type.id
-                soil_type_names_to_ids.update({dct["soil_type_name"]: soil_type.id})
-            dct.pop("soil_type_name")
-            dct.update({"soil_type_id": soil_type_id})
             stmt = insert(Location).values(id=uuid.uuid4(), **dct)
             await session.execute(stmt)
 
@@ -197,5 +147,4 @@ class LocationRepository:
             longitude=location.longitude,
             latitude=location.latitude,
             created_at=location.created_at,
-            soil_type_id=location.soil_type_id,
         )

@@ -1,3 +1,5 @@
+from datetime import datetime
+from uuid import UUID
 from tesi.schemas import CustomBaseModel
 
 
@@ -16,3 +18,16 @@ class GetPastClimateDataOfLocationResponse(CustomBaseModel):
     dewpoint_temperature_2m: float
     soil_temperature_level_1: float
     volumetric_soil_water_layer_1: float
+
+class CreateLocationBody(CustomBaseModel):
+    country: str
+    name: str
+    longitude: float
+    latitude: float
+
+class LocationDetailsResponse(CustomBaseModel):
+    id: UUID
+    country: str
+    name: str
+    longitude: float
+    latitude: float
