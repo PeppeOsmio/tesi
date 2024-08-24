@@ -1,8 +1,8 @@
 from datetime import datetime
 from uuid import UUID
 from tesi.schemas import CustomBaseModel
-from tesi.zappai.dtos import CropDTO
-from tesi.zappai.services.crop_optimizer_service import CropOptimizerResultDTO
+from tesi.zappai.dtos import ClimateDataDTO, CropDTO
+from tesi.zappai.services.crop_optimizer_service import CropOptimizerResultDTO, SowingAndHarvestingDTO
 
 
 class GetPastClimateDataOfLocationResponse(CustomBaseModel):
@@ -38,8 +38,15 @@ class LocationDetailsResponse(CustomBaseModel):
     last_past_climate_data_year: int | None
     last_past_climate_data_month: int | None
 
-class PredictionsResponse(CustomBaseModel, CropOptimizerResultDTO):
+class ClimateDataSchema(CustomBaseModel, ClimateDataDTO):
     pass
+
+class SowingAndHarvestingSchema(CustomBaseModel, SowingAndHarvestingDTO):
+    pass
+
+class PredictionsResponse(CustomBaseModel, CropOptimizerResultDTO):
+    best_combinations: list[SowingAndHarvestingDTO]
+    forecast: list[ClimateDataDTO]
 
 class CropDetailsResponse(CustomBaseModel):
     id: UUID

@@ -1,14 +1,11 @@
 from __future__ import annotations
-from dataclasses import dataclass
 from datetime import datetime, timezone
-import logging
-from typing import Literal
 from uuid import UUID
 import uuid
 
 import bcrypt
-from sqlalchemy import select, update
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from sqlalchemy import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import count
 from tesi.users.repositories.dtos import UserDTO
 from tesi.users.models import User
@@ -17,7 +14,6 @@ from tesi.users.repositories.exceptions import (
     UserNotFoundError,
     UsernameExistsError,
 )
-from tesi.users.schemas import UserCreateBody
 
 
 class UserRepository:
@@ -164,48 +160,48 @@ class UserRepository:
     def __hash_password(self, password: str) -> str:
         return bcrypt.hashpw(password=password.encode(), salt=bcrypt.gensalt()).decode()
 
-    async def check_is_admin(
-        self, session: AsyncSession, executor_id: UUID
-    ) -> bool | None:
-        """Check if a user is an admin.
+    # async def check_is_admin(
+    #     self, session: AsyncSession, executor_id: UUID
+    # ) -> bool | None:
+    #     """Check if a user is an admin.
+# 
+    #     Args:
+    #         executor_id (UUID):
+# 
+    #     Returns:
+    #         bool | None: whether the user is an admin or None if the user does not exist.
+    #     """
+    #     stmt = select(User.is_admin).where(User.id == executor_id)
+    #     is_admin = await session.scalar(stmt)
+    #     return is_admin
 
-        Args:
-            executor_id (UUID):
-
-        Returns:
-            bool | None: whether the user is an admin or None if the user does not exist.
-        """
-        stmt = select(User.is_admin).where(User.id == executor_id)
-        is_admin = await session.scalar(stmt)
-        return is_admin
-
-    async def deactivate_user(
-        self, session: AsyncSession, user_id: UUID, executor_id: UUID
-    ) -> Literal[True] | None:
-        """Deactivate a user.
-
-        Args:
-            user_id (UUID): the user to deactivate
-            executor_id (UUID): the user executing this function
-
-        Raises:
-            PermissionError:
-
-        Returns:
-            Literal[True] | None: True if the user was found and deactivated, otherwise None
-        """
-        is_admin = await self.check_is_admin(session=session, executor_id=executor_id)
-        if is_admin is None:
-            raise PermissionError()
-        if not is_admin:
-            raise PermissionError()
-        stmt = (
-            update(User)
-            .where(User.id == user_id)
-            .values(is_active=False)
-            .returning(User.id)
-        )
-        result = (await session.execute(stmt)).first()
-        if result is None:
-            return None
-        return None
+    # async def deactivate_user(
+    #     self, session: AsyncSession, user_id: UUID, executor_id: UUID
+    # ) -> Literal[True] | None:
+    #     """Deactivate a user.
+# 
+    #     Args:
+    #         user_id (UUID): the user to deactivate
+    #         executor_id (UUID): the user executing this function
+# 
+    #     Raises:
+    #         PermissionError:
+# 
+    #     Returns:
+    #         Literal[True] | None: True if the user was found and deactivated, otherwise None
+    #     """
+    #     is_admin = await self.check_is_admin(session=session, executor_id=executor_id)
+    #     if is_admin is None:
+    #         raise PermissionError()
+    #     if not is_admin:
+    #         raise PermissionError()
+    #     stmt = (
+    #         update(User)
+    #         .where(User.id == user_id)
+    #         .values(is_active=False)
+    #         .returning(User.id)
+    #     )
+    #     result = (await session.execute(stmt)).first()
+    #     if result is None:
+    #         return None
+    #     return None

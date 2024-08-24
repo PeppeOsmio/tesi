@@ -139,14 +139,14 @@ class AuthTokenRepository:
         Returns:
             AuthToken:
         """
-        is_admin = self.user_repository.check_is_admin(
-            session=session, executor_id=executor_id
-        )
+        # is_admin = self.user_repository.check_is_admin(
+        #     session=session, executor_id=executor_id
+        # )
         exists_stmt = select(AuthToken.user_id).where(AuthToken.token == token.encode())
         user_id = (await session.execute(exists_stmt)).scalar()
         if user_id is None:
             raise AuthTokenNotFoundError()
-        if user_id != executor_id and not is_admin:
+        if user_id != executor_id: # and not is_admin:
             raise PermissionError()
         stmt = (
             update(AuthToken)
