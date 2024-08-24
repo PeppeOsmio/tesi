@@ -16,7 +16,6 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth", auto_error=False)
 
 
 def get_auth_token_repository(
-    db_session: Annotated[async_sessionmaker, Depends(get_session_maker)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
 ) -> AuthTokenRepository:
     return AuthTokenRepository(user_repository=user_repository)

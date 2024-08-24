@@ -6,7 +6,5 @@ from tesi.database.di import get_session_maker
 from tesi.users.repositories import UserRepository
 
 
-def get_user_repository(
-    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)]
-) -> UserRepository:
+def get_user_repository() -> UserRepository:
     return UserRepository()

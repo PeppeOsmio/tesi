@@ -17,4 +17,3 @@ class User(Base):
     modified_at: Mapped[datetime]
     email: Mapped[str | None] = mapped_column(String(length=255), unique=True)
     is_active: Mapped[bool]
-    is_admin: Mapped[bool]
