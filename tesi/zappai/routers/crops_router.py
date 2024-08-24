@@ -12,7 +12,7 @@ from tesi.zappai.schemas import CropDetailsResponse
 crops_router = APIRouter(prefix="/crops")
 
 
-@crops_router.get(path="/")
+@crops_router.get(path="")
 async def get_crops(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],

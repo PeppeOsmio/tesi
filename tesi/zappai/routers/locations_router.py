@@ -18,7 +18,7 @@ from tesi.zappai.schemas import CreateLocationBody, LocationDetailsResponse
 locations_router = APIRouter(prefix="/locations")
 
 
-@locations_router.post(path="/", response_model=LocationDetailsResponse)
+@locations_router.post(path="", response_model=LocationDetailsResponse)
 async def create_location(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],

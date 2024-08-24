@@ -12,7 +12,7 @@ from tesi.zappai.services.crop_optimizer_service import CropOptimizerService
 
 predictions_router = APIRouter(prefix="/predictions")
 
-@predictions_router.get(path="/")
+@predictions_router.get(path="")
 async def get_best_crop_sowing_and_harvesting_prediction(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
