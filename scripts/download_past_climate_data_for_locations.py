@@ -65,8 +65,8 @@ async def main():
             if len(item.years) > 0
         ]
 
-        processed = 0
-        logging.info(f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}")
+        processed = len(location_climate_years_from_crop_yield_data) - len(location_climate_years_to_fetch)
+        logging.info(f"COMPLETED: {processed}/{len(location_climate_years_from_crop_yield_data)}")
 
         for location_climate_years in location_climate_years_to_fetch:
             await past_climate_data_repository.download_past_climate_data_for_years(session=session,
@@ -76,7 +76,7 @@ async def main():
             await session.commit()
             processed += 1
             logging.info(
-                f"COMPLETED: {processed}/{len(location_climate_years_to_fetch)}"
+                f"COMPLETED: {processed}/{len(location_climate_years_from_crop_yield_data)}"
             )
 
 if __name__ == "__main__":
