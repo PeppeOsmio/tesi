@@ -1,6 +1,8 @@
 from datetime import datetime
 from uuid import UUID
 from tesi.schemas import CustomBaseModel
+from tesi.zappai.dtos import CropDTO
+from tesi.zappai.services.crop_optimizer_service import CropOptimizerResultDTO
 
 
 class GetPastClimateDataOfLocationResponse(CustomBaseModel):
@@ -19,11 +21,13 @@ class GetPastClimateDataOfLocationResponse(CustomBaseModel):
     soil_temperature_level_1: float
     volumetric_soil_water_layer_1: float
 
+
 class CreateLocationBody(CustomBaseModel):
     country: str
     name: str
     longitude: float
     latitude: float
+
 
 class LocationDetailsResponse(CustomBaseModel):
     id: UUID
@@ -31,3 +35,12 @@ class LocationDetailsResponse(CustomBaseModel):
     name: str
     longitude: float
     latitude: float
+    last_past_climate_data_year: int | None
+    last_past_climate_data_month: int | None
+
+class PredictionsResponse(CustomBaseModel, CropOptimizerResultDTO):
+    pass
+
+class CropDetailsResponse(CustomBaseModel):
+    id: UUID
+    name: str
