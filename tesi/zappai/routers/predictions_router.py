@@ -1,6 +1,7 @@
 from typing import Annotated
 from uuid import UUID
 from fastapi import APIRouter, Depends, Response
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from tesi.auth_tokens.di import get_current_user
@@ -13,14 +14,13 @@ from tesi.zappai.services.crop_optimizer_service import CropOptimizerService
 
 predictions_router = APIRouter(prefix="/predictions")
 
-@predictions_router.get(path="")
+@predictions_router.get(path="", response_model=PredictionsResponse)
 async def get_best_crop_sowing_and_harvesting_prediction(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     crop_optimizer_service: Annotated[CropOptimizerService, Depends(get_crop_optimizer_service)],
     crop_id: UUID,
-    location_id: UUID,
-    response: Response
+    location_id: UUID
 ):
     try:
         async with session_maker() as session:
@@ -30,11 +30,16 @@ async def get_best_crop_sowing_and_harvesting_prediction(
             forecast=result.forecast
         )
     except CropYieldModelNotFoundError:
-        response.status_code = 404
-        return {
-            "error": "crop_yield_model_not_found"
-        }
+        return JSONResponse(
+            status_code=404,
+            content= {
+                "error": "Crop yield model not found"
+            }
+        )
     except ClimateGenerativeModelNotFoundError:
-        return {
-            "error": "climate_generative_model_not_found"
-        }
+        return JSONResponse(
+            status_code=404,
+            content= {
+                "error": "Climate generative model not found"
+            }
+        )

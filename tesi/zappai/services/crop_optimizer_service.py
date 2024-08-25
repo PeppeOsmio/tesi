@@ -7,6 +7,7 @@ from uuid import UUID
 
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
+from tesi.schemas import CustomBaseModel
 from tesi.zappai.exceptions import ClimateGenerativeModelNotFoundError, CropNotFoundError, CropYieldModelNotFoundError, LocationNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
@@ -246,8 +247,7 @@ def individual_to_int(individual: Individual) -> int:
     return result
 
 
-@dataclass
-class SowingAndHarvestingDTO:
+class SowingAndHarvestingDTO(CustomBaseModel):
     sowing_year: int
     sowing_month: int
     harvest_year: int
@@ -256,8 +256,7 @@ class SowingAndHarvestingDTO:
     duration: int
 
 
-@dataclass
-class CropOptimizerResultDTO:
+class CropOptimizerResultDTO(CustomBaseModel):
     best_combinations: list[SowingAndHarvestingDTO]
     forecast: list[ClimateDataDTO]
 

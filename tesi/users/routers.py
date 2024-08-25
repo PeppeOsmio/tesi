@@ -94,12 +94,10 @@ async def get_users(
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     _: Annotated[UserDTO | None, Depends(get_current_user)],
     user_repository: Annotated[UserRepository, Depends(get_user_repository)],
-    page_number: int = Query(default=1, ge=1),
-    page_size: int = Query(default=1, ge=1),
 ):
     async with session_maker() as session:
         users = await user_repository.get_users(
-            session=session, page_number=page_number, page_size=page_size
+            session=session
         )
     return [
         UserDetailsResponse.model_construct(

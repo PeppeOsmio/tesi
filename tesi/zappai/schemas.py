@@ -38,13 +38,8 @@ class LocationDetailsResponse(CustomBaseModel):
     last_past_climate_data_year: int | None
     last_past_climate_data_month: int | None
 
-class ClimateDataSchema(CustomBaseModel, ClimateDataDTO):
-    pass
 
-class SowingAndHarvestingSchema(CustomBaseModel, SowingAndHarvestingDTO):
-    pass
-
-class PredictionsResponse(CustomBaseModel, CropOptimizerResultDTO):
+class PredictionsResponse(CustomBaseModel):
     best_combinations: list[SowingAndHarvestingDTO]
     forecast: list[ClimateDataDTO]
 

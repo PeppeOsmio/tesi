@@ -46,9 +46,7 @@ class UserRepository:
             is_active=user.is_active,
         )
 
-    async def get_users(
-        self, session: AsyncSession, page_number: int, page_size: int
-    ) -> list[UserDTO]:
+    async def get_users(self, session: AsyncSession) -> list[UserDTO]:
         """Get users with pagination and page size.
 
         Args:
@@ -58,12 +56,7 @@ class UserRepository:
         Returns:
             list[User]:
         """
-        stmt = (
-            select(User)
-            .order_by(User.created_at, User.id)
-            .offset((page_number - 1) * page_size)
-            .limit(page_size)
-        )
+        stmt = select(User).order_by(User.created_at, User.id)
         results = await session.scalars(stmt)
         return [
             UserDTO(
@@ -164,44 +157,46 @@ class UserRepository:
     #     self, session: AsyncSession, executor_id: UUID
     # ) -> bool | None:
     #     """Check if a user is an admin.
-# 
-    #     Args:
-    #         executor_id (UUID):
-# 
-    #     Returns:
-    #         bool | None: whether the user is an admin or None if the user does not exist.
-    #     """
-    #     stmt = select(User.is_admin).where(User.id == executor_id)
-    #     is_admin = await session.scalar(stmt)
-    #     return is_admin
 
-    # async def deactivate_user(
-    #     self, session: AsyncSession, user_id: UUID, executor_id: UUID
-    # ) -> Literal[True] | None:
-    #     """Deactivate a user.
-# 
-    #     Args:
-    #         user_id (UUID): the user to deactivate
-    #         executor_id (UUID): the user executing this function
-# 
-    #     Raises:
-    #         PermissionError:
-# 
-    #     Returns:
-    #         Literal[True] | None: True if the user was found and deactivated, otherwise None
-    #     """
-    #     is_admin = await self.check_is_admin(session=session, executor_id=executor_id)
-    #     if is_admin is None:
-    #         raise PermissionError()
-    #     if not is_admin:
-    #         raise PermissionError()
-    #     stmt = (
-    #         update(User)
-    #         .where(User.id == user_id)
-    #         .values(is_active=False)
-    #         .returning(User.id)
-    #     )
-    #     result = (await session.execute(stmt)).first()
-    #     if result is None:
-    #         return None
-    #     return None
+
+#
+#     Args:
+#         executor_id (UUID):
+#
+#     Returns:
+#         bool | None: whether the user is an admin or None if the user does not exist.
+#     """
+#     stmt = select(User.is_admin).where(User.id == executor_id)
+#     is_admin = await session.scalar(stmt)
+#     return is_admin
+
+# async def deactivate_user(
+#     self, session: AsyncSession, user_id: UUID, executor_id: UUID
+# ) -> Literal[True] | None:
+#     """Deactivate a user.
+#
+#     Args:
+#         user_id (UUID): the user to deactivate
+#         executor_id (UUID): the user executing this function
+#
+#     Raises:
+#         PermissionError:
+#
+#     Returns:
+#         Literal[True] | None: True if the user was found and deactivated, otherwise None
+#     """
+#     is_admin = await self.check_is_admin(session=session, executor_id=executor_id)
+#     if is_admin is None:
+#         raise PermissionError()
+#     if not is_admin:
+#         raise PermissionError()
+#     stmt = (
+#         update(User)
+#         .where(User.id == user_id)
+#         .values(is_active=False)
+#         .returning(User.id)
+#     )
+#     result = (await session.execute(stmt)).first()
+#     if result is None:
+#         return None
+#     return None

@@ -11,6 +11,8 @@ from typing import Any, cast
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
 
+from tesi.schemas import CustomBaseModel
+
 
 @dataclass
 class SoilTypeDTO:
@@ -147,8 +149,7 @@ class FutureClimateDataDTO:
         return result
 
 
-@dataclass
-class ClimateDataDTO:
+class ClimateDataDTO(CustomBaseModel):
     location_id: UUID
     year: int
     month: int
@@ -193,7 +194,6 @@ class ClimateDataDTO:
         return result
 
 
-@dataclass
 class PastClimateDataDTO(ClimateDataDTO):
     u_component_of_wind_10m: float
     v_component_of_wind_10m: float
