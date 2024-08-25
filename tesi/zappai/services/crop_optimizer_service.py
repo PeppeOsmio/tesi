@@ -7,7 +7,7 @@ from uuid import UUID
 
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
-from tesi.zappai.exceptions import LocationNotFoundError
+from tesi.zappai.exceptions import ClimateGenerativeModelNotFoundError, CropNotFoundError, CropYieldModelNotFoundError, LocationNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
 )
@@ -296,17 +296,17 @@ class CropOptimizerService:
         )
 
         if location is None:
-            raise Exception()
+            raise LocationNotFoundError(str(location_id))
 
         crop = await self.crop_repository.get_crop_by_id(
             session=session, crop_id=crop_id
         )
         if crop is None:
-            raise Exception()
+            raise CropNotFoundError(str(crop_id))
 
         model = crop.crop_yield_model
         if model is None:
-            raise Exception()
+            raise CropYieldModelNotFoundError(str(crop_id))
 
         forecast = await self.climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
             session=session, location_id=location.id, months=24

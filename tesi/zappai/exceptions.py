@@ -5,6 +5,9 @@ class LocationNotFoundError(Exception):
 class CropNotFoundError(Exception):
     pass
 
+class CropYieldModelNotFoundError(Exception):
+    pass
+
 
 class ClimateGenerativeModelNotFoundError(Exception):
     pass

@@ -1,4 +1,7 @@
-import tesi.logging_conf
+from tesi import logging_conf
+
+logging_conf.create_logger(config=logging_conf.get_default_conf())
+
 import logging
 import traceback
 from fastapi import FastAPI, Request
@@ -11,7 +14,7 @@ from tesi.zappai.routers import zappai_router
 app = FastAPI()
 
 app.include_router(user_router, prefix="/api", tags=["User"])
-app.include_router(auth_token_router, prefix="/api", tags=["Auth"])
+app.include_router(auth_token_router, prefix="", tags=["Auth"])
 app.include_router(zappai_router, prefix="/api", tags=["Zappai"])
 
 

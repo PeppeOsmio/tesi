@@ -17,7 +17,7 @@ async def main():
 
     future_climate_data_repository = get_future_climate_data_repository(cds_api=cds_api)
 
-    with session_maker() as session:
+    async with session_maker() as session:
         await future_climate_data_repository.download_future_climate_data(
             session=session
         )

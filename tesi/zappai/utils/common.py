@@ -143,10 +143,18 @@ def process_copernicus_climate_data(
     df = df.rename(columns=columns_mappings)
 
     # Converting and extracting date parts
-    df["date"] = pd.to_datetime(df["date"], format="%Y%m%d")
-    df["year"] = df["date"].dt.year
-    df["month"] = df["date"].dt.month
-    df = df.drop(columns=["date"])
+    if "date" in df.columns:
+        df["date"] = pd.to_datetime(df["date"], format="%Y%m%d")
+        df["year"] = df["date"].dt.year
+        df["month"] = df["date"].dt.month
+        df = df.drop(columns=["date"])
+    elif "time" in df.columns:
+        df["time"] = pd.to_datetime(df["time"], format="%Y%m%d")
+        df["year"] = df["time"].dt.year
+        df["month"] = df["time"].dt.month
+        df = df.drop(columns=["time"])
+    else:
+        raise KeyError("No time column found")
 
     # Resetting and setting index
     df = df.reset_index(drop=True)
