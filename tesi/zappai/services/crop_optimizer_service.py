@@ -8,7 +8,12 @@ from uuid import UUID
 import pandas as pd
 from sqlalchemy.ext.asyncio import AsyncSession
 from tesi.schemas import CustomBaseModel
-from tesi.zappai.exceptions import ClimateGenerativeModelNotFoundError, CropNotFoundError, CropYieldModelNotFoundError, LocationNotFoundError
+from tesi.zappai.exceptions import (
+    ClimateGenerativeModelNotFoundError,
+    CropNotFoundError,
+    CropYieldModelNotFoundError,
+    LocationNotFoundError,
+)
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
 )
@@ -46,12 +51,11 @@ class CropGeneticAlgorithm:
         mutation_rate: float,
         crossover_rate: float,
         generations: int,
-        forecast_df: pd.DataFrame, 
-        crop: CropDTO, 
+        forecast_df: pd.DataFrame,
+        crop: CropDTO,
         model: RandomForestRegressor,
         on_population_created: Callable[[int, Population], None] | None = None,
         parallel_workers: int | None = None,
-        
     ) -> None:
         self.chromosome_length = chromosome_length
         self.population_size = population_size
@@ -69,72 +73,68 @@ class CropGeneticAlgorithm:
         )
 
     def fitness_func(self, individual: Individual) -> float:
-            if len(individual) != 10:
-                raise Exception(f"Bro individual must be of size 10...")
-            sowing = individual_to_int(individual[:5])
-            harvesting = individual_to_int(individual[5:])
+        if len(individual) != 10:
+            raise Exception(f"Bro individual must be of size 10...")
+        sowing = individual_to_int(individual[:5])
+        harvesting = individual_to_int(individual[5:])
 
-            if (sowing >= len(self.forecast_df)) | (harvesting >= len(self.forecast_df)):
-                return 0.0
+        if (sowing >= len(self.forecast_df)) | (harvesting >= len(self.forecast_df)):
+            return 0.0
 
-            sowing_year, sowing_month = self.forecast_df.index[sowing]
-            harvest_year, harvest_month = self.forecast_df.index[harvesting]
+        sowing_year, sowing_month = self.forecast_df.index[sowing]
+        harvest_year, harvest_month = self.forecast_df.index[harvesting]
 
-            duration = calc_months_delta(
-                start_year=sowing_year,
-                start_month=sowing_month,
-                end_year=harvest_year,
-                end_month=harvest_month,
-            )
+        duration = calc_months_delta(
+            start_year=sowing_year,
+            start_month=sowing_month,
+            end_year=harvest_year,
+            end_month=harvest_month,
+        )
 
-            if duration <= 0:
-                return 0.0
-            if (duration < cast(int, self.crop.min_farming_months)) | (
-                duration > cast(int, self.crop.max_farming_months)
-            ):
-                return 0.0
+        if duration <= 0:
+            return 0.0
+        if (duration < cast(int, self.crop.min_farming_months)) | (
+            duration > cast(int, self.crop.max_farming_months)
+        ):
+            return 0.0
 
-            forecast_for_individual = self.forecast_df[
-                (
-                    (self.forecast_df.index.get_level_values("year") < harvest_year)
-                    | (
-                        (self.forecast_df.index.get_level_values("year") == harvest_year)
-                        & (self.forecast_df.index.get_level_values("year") <= harvest_month)
-                    )
-                )
+        forecast_for_individual = self.forecast_df[
+            (
+                (self.forecast_df.index.get_level_values("year") < harvest_year)
                 | (
-                    (self.forecast_df.index.get_level_values("year") > sowing_year)
-                    | (
-                        (self.forecast_df.index.get_level_values("year") == sowing_year)
-                        & (self.forecast_df.index.get_level_values("year") >= sowing_month)
-                    )
+                    (self.forecast_df.index.get_level_values("year") == harvest_year)
+                    & (self.forecast_df.index.get_level_values("year") <= harvest_month)
                 )
-            ]
-
-            stats_forecast = create_stats_dataframe(
-                df=forecast_for_individual, ignore=[]
             )
-
-            x_df = pd.DataFrame(
-                {
-                    "sowing_year": [sowing_year],
-                    "sowing_month": [sowing_month],
-                    "harvest_year": [harvest_year],
-                    "harvest_month": [harvest_month],
-                    "duration_months": calc_months_delta(
-                        start_year=sowing_year,
-                        start_month=sowing_month,
-                        end_year=harvest_year,
-                        end_month=harvest_month,
-                    ),
-                }
+            | (
+                (self.forecast_df.index.get_level_values("year") > sowing_year)
+                | (
+                    (self.forecast_df.index.get_level_values("year") == sowing_year)
+                    & (self.forecast_df.index.get_level_values("year") >= sowing_month)
+                )
             )
-            x_df = pd.concat([x_df, stats_forecast], axis=1)
+        ]
 
-            pred = self.model.predict(
-                x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
-            )
-            return pred[0]
+        stats_forecast = create_stats_dataframe(df=forecast_for_individual, ignore=[])
+
+        x_df = pd.DataFrame(
+            {
+                "sowing_year": [sowing_year],
+                "sowing_month": [sowing_month],
+                "harvest_year": [harvest_year],
+                "harvest_month": [harvest_month],
+                "duration_months": calc_months_delta(
+                    start_year=sowing_year,
+                    start_month=sowing_month,
+                    end_year=harvest_year,
+                    end_month=harvest_month,
+                ),
+            }
+        )
+        x_df = pd.concat([x_df, stats_forecast], axis=1)
+
+        pred = self.model.predict(x_df[CROP_YIELD_MODEL_FEATURES].to_numpy())
+        return pred[0]
 
     def __generate_individual(self) -> Individual:
         return [randbool() for _ in range(self.chromosome_length)]
@@ -247,7 +247,8 @@ def individual_to_int(individual: Individual) -> int:
     return result
 
 
-class SowingAndHarvestingDTO(CustomBaseModel):
+@dataclass
+class SowingAndHarvestingDTO:
     sowing_year: int
     sowing_month: int
     harvest_year: int
@@ -256,7 +257,8 @@ class SowingAndHarvestingDTO(CustomBaseModel):
     duration: int
 
 
-class CropOptimizerResultDTO(CustomBaseModel):
+@dataclass
+class CropOptimizerResultDTO:
     best_combinations: list[SowingAndHarvestingDTO]
     forecast: list[ClimateDataDTO]
 

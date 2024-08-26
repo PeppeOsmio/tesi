@@ -12,6 +12,7 @@ from tesi.zappai.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
+from tesi.zappai.exceptions import PastClimateDataNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
 )
@@ -69,11 +70,14 @@ async def get_locations(
         result = await location_repository.get_locations(session=session)
         response: list[LocationDetailsResponse] = []
         for location in result:
-            data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
-                session=session, location_id=location.id, n=1
-            )
-            year = None if len(data) == 0 else data[0].year
-            month = None if len(data) == 0 else data[0].month
+            try:
+                data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
+                    session=session, location_id=location.id, n=1
+                )
+            except PastClimateDataNotFoundError:
+                data = None
+            year = None if data is None else data[0].year
+            month = None if data is None else data[0].month
             response.append(
                 LocationDetailsResponse(
                     id=location.id,

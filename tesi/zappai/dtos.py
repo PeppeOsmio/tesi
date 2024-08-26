@@ -149,7 +149,8 @@ class FutureClimateDataDTO:
         return result
 
 
-class ClimateDataDTO(CustomBaseModel):
+@dataclass
+class ClimateDataDTO:
     location_id: UUID
     year: int
     month: int
@@ -193,7 +194,7 @@ class ClimateDataDTO(CustomBaseModel):
             result.append(ClimateDataDTO(year=year, month=month, **row.to_dict()))
         return result
 
-
+@dataclass
 class PastClimateDataDTO(ClimateDataDTO):
     u_component_of_wind_10m: float
     v_component_of_wind_10m: float
