@@ -1,6 +1,6 @@
 import logging
 from typing import Annotated
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request, Response
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 
@@ -27,12 +27,14 @@ async def get_current_user(
         AuthTokenRepository, Depends(get_auth_token_repository)
     ],
     token: Annotated[str | None, Depends(oauth2_scheme)],
+    request: Request
 ) -> UserDTO | None:
-    if token is None:
+    _token = token if token is not None else request.cookies.get("access_token")
+    if _token is None:
         return None
     async with session_maker() as session:
         user = await auth_token_repository.get_user_from_auth_token(
-            session=session, token=token
+            session=session, token=_token
         )
     return user
 

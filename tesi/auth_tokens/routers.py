@@ -1,6 +1,6 @@
 import logging
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Header
+from fastapi import APIRouter, Depends, HTTPException, Header, Response
 from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.ext.asyncio import async_sessionmaker
 from tesi.auth_tokens.di import get_auth_token_repository, get_current_user
@@ -24,6 +24,7 @@ async def create_auth_token(
         AuthTokenRepository, Depends(get_auth_token_repository)
     ],
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
+    response: Response,
     user_agent: Annotated[str | None, Header()] = None,
 ):
     try:
@@ -34,6 +35,7 @@ async def create_auth_token(
                 password=form_data.password,
                 user_agent=user_agent,
             )
+        response.set_cookie(key="access_token", value=auth_token.token)
         return AuthTokenDetailsResponse(
             access_token=auth_token.token, token_type="bearer"
         )

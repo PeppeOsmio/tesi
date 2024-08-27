@@ -1,3 +1,4 @@
+from starlette.middleware.cors import CORSMiddleware
 from tesi import logging_conf
 
 logging_conf.create_logger(config=logging_conf.get_default_conf())
@@ -12,6 +13,16 @@ from tesi.auth_tokens.routers import auth_token_router
 from tesi.zappai.routers import zappai_router
 
 app = FastAPI()
+
+# Configure CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 app.include_router(user_router, prefix="/api", tags=["User"])
 app.include_router(auth_token_router, prefix="", tags=["Auth"])
