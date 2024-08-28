@@ -27,14 +27,12 @@ async def get_current_user(
         AuthTokenRepository, Depends(get_auth_token_repository)
     ],
     token: Annotated[str | None, Depends(oauth2_scheme)],
-    request: Request
 ) -> UserDTO | None:
-    _token = token if token is not None else request.cookies.get("access_token")
-    if _token is None:
+    if token is None:
         return None
     async with session_maker() as session:
         user = await auth_token_repository.get_user_from_auth_token(
-            session=session, token=_token
+            session=session, token=token
         )
     return user
 

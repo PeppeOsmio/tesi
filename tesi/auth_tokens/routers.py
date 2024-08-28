@@ -2,8 +2,8 @@ import logging
 from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, Header, Response
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.ext.asyncio import async_sessionmaker
-from tesi.auth_tokens.di import get_auth_token_repository, get_current_user
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from tesi.auth_tokens.di import get_auth_token_repository, get_current_user, oauth2_scheme
 from tesi.auth_tokens.repositories import AuthTokenRepository
 from tesi.auth_tokens.repositories.exceptions import WrongCredentialsError
 from tesi.auth_tokens.schemas import (
@@ -19,23 +19,26 @@ auth_token_router = APIRouter(prefix="/auth")
 
 @auth_token_router.post("/", response_model=AuthTokenDetailsResponse)
 async def create_auth_token(
-    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
+    session_maker: Annotated[async_sessionmaker[AsyncSession], Depends(get_session_maker)],
     auth_token_repository: Annotated[
         AuthTokenRepository, Depends(get_auth_token_repository)
     ],
     form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
-    response: Response,
+    token: Annotated[str | None, Depends(oauth2_scheme)],
+    user: Annotated[User | None, Depends(get_current_user)],
     user_agent: Annotated[str | None, Header()] = None,
 ):
     try:
         async with session_maker() as session:
+            if token is not None and user is not None:
+                await auth_token_repository.revoke_token(session=session, token=token, executor_id=user.id)
             auth_token = await auth_token_repository.create_auth_token(
                 session=session,
                 username=form_data.username,
                 password=form_data.password,
                 user_agent=user_agent,
             )
-        response.set_cookie(key="access_token", value=auth_token.token)
+            await session.commit()
         return AuthTokenDetailsResponse(
             access_token=auth_token.token, token_type="bearer"
         )
