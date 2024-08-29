@@ -3,12 +3,7 @@ from typing import Literal
 from uuid import UUID
 
 from pydantic import Field
-from tesi.schemas import CustomBaseModel
-
-
-class CreateAuthTokenBody(CustomBaseModel):
-    username: str = Field(max_length=255)
-    password: str = Field(max_length=255)
+from tesi.schemas import CamelCaseBaseModel, CustomBaseModel
 
 
 class AuthTokenDetailsResponse(CustomBaseModel):
@@ -16,7 +11,7 @@ class AuthTokenDetailsResponse(CustomBaseModel):
     token_type: Literal["bearer"]
 
 
-class GetOwnInfoResponse(CustomBaseModel):
+class GetOwnInfoResponse(CamelCaseBaseModel):
     id: UUID
     username: str
     name: str

@@ -1,12 +1,10 @@
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "./AuthProvider";
 import { getUserInfo } from "../utils/utils";
-import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Splash from "./Splash";
 import Login from "./Login";
-import Locations from "./Locations";
-import ProtectedRoute from "./ProtectedRoute";
-import NavBar from "./NavBar";
+import { MainPage } from "./MainPage";
 
 export default function App() {
 
@@ -24,33 +22,11 @@ export default function App() {
     return (
         isLoading
             ? <Splash />
-            : <div style={{ width: "100vw", height: "100vh" }}>
-                <BrowserRouter>
-                    {
-                        window.location.pathname === "/login" || window.location.pathname === "/"
-                            ? <></>
-                            : <NavBar />
-                    }
-                    <Routes>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/locations" element={
-                            <ProtectedRoute>
-                                <Locations />
-                            </ProtectedRoute>
-                        } />
-                        <Route path="/predictions" element={
-                            <ProtectedRoute>
-                                <Locations />
-                            </ProtectedRoute>
-                        } />
-                        <Route path="/users" element={
-                            <ProtectedRoute>
-                                <Locations />
-                            </ProtectedRoute>
-                        } />
-                        <Route path="/" element={<Navigate to="/locations" />} />
-                    </Routes>
-                </BrowserRouter>
-            </div>
+            : <BrowserRouter>
+                <Routes>
+                    <Route path="/*" element={<MainPage />} />
+                    <Route path="/login" element={<Login />} />
+                </Routes>
+            </BrowserRouter>
     );
 }

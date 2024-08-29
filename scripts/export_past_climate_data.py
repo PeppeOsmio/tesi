@@ -43,7 +43,6 @@ async def main():
             location_id_and_periods=location_ids_and_periods,
         )
 
-
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())
     asyncio.run(main())

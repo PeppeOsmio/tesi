@@ -24,7 +24,7 @@ async def main():
         await past_climate_data_repository.import_from_csv(
             session=session, csv_path="training_data/past_climate_data.csv"
         )
-        session.commit()
+        await session.commit()
 
 
 if __name__ == "__main__":

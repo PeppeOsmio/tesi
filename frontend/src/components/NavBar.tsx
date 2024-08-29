@@ -28,16 +28,13 @@ const Navbar: React.FC = () => {
 
         <Box sx={{ display: 'flex', gap: 2, flexGrow: 1, justifyContent: 'center' }}>
           <Button color="inherit" component={Link} to="/locations">
-            Home
+            Locations
           </Button>
           <Button color="inherit" component={Link} to="/predictions">
-            About
+            Predictions
           </Button>
           <Button color="inherit" component={Link} to="/users">
-            Services
-          </Button>
-          <Button color="inherit" component={Link} to="/contact">
-            Contact
+            Users
           </Button>
         </Box>
 

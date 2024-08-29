@@ -1,10 +1,10 @@
 from datetime import datetime
 from uuid import UUID
 from pydantic import EmailStr, Field
-from tesi.schemas import CustomBaseModel
+from tesi.schemas import CamelCaseBaseModel, CustomBaseModel
 
 
-class UserDetailsResponse(CustomBaseModel):
+class UserDetailsResponse(CamelCaseBaseModel):
     id: UUID
     username: str
     name: str
@@ -14,12 +14,12 @@ class UserDetailsResponse(CustomBaseModel):
     is_active: bool
 
 
-class UserCreateBody(CustomBaseModel):
+class UserCreateBody(CamelCaseBaseModel):
     username: str = Field(max_length=255)
     name: str = Field(max_length=255)
     password: str = Field(max_length=255)
     email: EmailStr | None = Field(max_length=255)
 
 
-class UsersCountResponse(CustomBaseModel):
+class UsersCountResponse(CamelCaseBaseModel):
     count: int

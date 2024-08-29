@@ -11,7 +11,6 @@ from tesi.auth_tokens.repositories.exceptions import (
     AuthTokenNotFoundError,
     WrongCredentialsError,
 )
-from tesi.auth_tokens.schemas import CreateAuthTokenBody
 from tesi.users.repositories.dtos import UserDTO
 from tesi.users.models import User
 from tesi.users.repositories.exceptions import UserNotFoundError

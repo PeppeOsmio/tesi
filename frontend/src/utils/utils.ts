@@ -17,7 +17,7 @@ export async function getUserInfo(): Promise<User | null> {
                 Authorization: `Bearer ${token}`
             }
         });
-        return new User(result.data.id, result.data.username);
+        return { id: result.data.id, username: result.data.username };
     } catch (error) {
         if (axios.isAxiosError(error)) {
             const axiosError = error as AxiosError;

@@ -3,7 +3,7 @@ from datetime import datetime, timezone
 from typing import Any, cast
 from uuid import UUID
 import uuid
-from sqlalchemy import delete, insert, select
+from sqlalchemy import delete, insert, select, update
 from sqlalchemy.exc import IntegrityError
 from tesi.zappai.exceptions import LocationNotFoundError, SoilTypeNotFoundError
 from tesi.zappai.dtos import LocationDTO, SoilTypeDTO
@@ -41,6 +41,7 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
+            is_downloading_past_climate_data=False
         )
         await session.execute(stmt)
         return LocationDTO(
@@ -50,7 +51,12 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
+            is_downloading_past_climate_data=False
         )
+    
+    async def set_locations_to_not_downloading(self, session: AsyncSession):
+        stmt = update(Location).values(is_past_climate_data_downloading=True)
+        await session.execute(stmt)
 
     async def get_locations(self, session: AsyncSession) -> list[LocationDTO]:
         stmt = select(Location).order_by(Location.created_at)
@@ -147,4 +153,5 @@ class LocationRepository:
             longitude=location.longitude,
             latitude=location.latitude,
             created_at=location.created_at,
+            is_downloading_past_climate_data=location.is_downloading_past_climate_data
         )

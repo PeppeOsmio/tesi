@@ -403,8 +403,8 @@ class PastClimateDataRepository:
                 )
             )
             columns_mappings = {
-                # "10m_u_component_of_wind": "u_component_of_wind_10m",
-                # "10m_v_component_of_wind": "v_component_of_wind_10m",
+                "10m_u_component_of_wind": "u_component_of_wind_10m",
+                "10m_v_component_of_wind": "v_component_of_wind_10m",
                 "2m_temperature": "temperature_2m",
                 "2m_dewpoint_temperature": "dewpoint_temperature_2m",
             }

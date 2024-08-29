@@ -1,11 +1,18 @@
-export class User {
+export interface User {
     id: string;
     username: string;
-    constructor(id: string, username: string) {
-        this.id = id;
-        this.username = username;
-    }
 }
+
+export interface ZappaiLocation {
+    country: string;
+    name: string;
+    coordinates: string;
+    isModelReady: boolean;
+    isDownloadingPastClimateData: boolean;
+    lastPastClimateDataYear: number | null;
+    lastPastClimateDataMonth: number | null;
+  }
+  
 
 // Define a type for the context
 export interface AuthContextType {

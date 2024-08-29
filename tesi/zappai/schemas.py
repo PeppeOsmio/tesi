@@ -1,6 +1,6 @@
 from datetime import datetime
 from uuid import UUID
-from tesi.schemas import CustomBaseModel
+from tesi.schemas import CamelCaseBaseModel, CustomBaseModel
 from tesi.zappai.dtos import ClimateDataDTO, CropDTO
 from tesi.zappai.services.crop_optimizer_service import (
     CropOptimizerResultDTO,
@@ -8,7 +8,7 @@ from tesi.zappai.services.crop_optimizer_service import (
 )
 
 
-class GetPastClimateDataOfLocationResponse(CustomBaseModel):
+class GetPastClimateDataOfLocationResponse(CamelCaseBaseModel):
     year: int
     month: int
 
@@ -25,24 +25,26 @@ class GetPastClimateDataOfLocationResponse(CustomBaseModel):
     volumetric_soil_water_layer_1: float
 
 
-class CreateLocationBody(CustomBaseModel):
+class CreateLocationBody(CamelCaseBaseModel):
     country: str
     name: str
     longitude: float
     latitude: float
 
 
-class LocationDetailsResponse(CustomBaseModel):
+class LocationDetailsResponse(CamelCaseBaseModel):
     id: UUID
     country: str
     name: str
     longitude: float
     latitude: float
+    is_model_ready: bool
+    is_downloading_past_climate_data: bool
     last_past_climate_data_year: int | None
     last_past_climate_data_month: int | None
 
 
-class ClimateDataDetails(CustomBaseModel):
+class ClimateDataDetails(CamelCaseBaseModel):
     location_id: UUID
     year: int
     month: int
@@ -60,7 +62,7 @@ class ClimateDataDetails(CustomBaseModel):
     volumetric_soil_water_layer_3: float
 
 
-class SowingAndHarvestingDetails(CustomBaseModel):
+class SowingAndHarvestingDetails(CamelCaseBaseModel):
     sowing_year: int
     sowing_month: int
     harvest_year: int
@@ -69,11 +71,11 @@ class SowingAndHarvestingDetails(CustomBaseModel):
     duration: int
 
 
-class PredictionsResponse(CustomBaseModel):
+class PredictionsResponse(CamelCaseBaseModel):
     best_combinations: list[SowingAndHarvestingDetails]
     forecast: list[ClimateDataDetails]
 
 
-class CropDetailsResponse(CustomBaseModel):
+class CropDetailsResponse(CamelCaseBaseModel):
     id: UUID
     name: str

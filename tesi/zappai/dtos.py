@@ -66,6 +66,7 @@ class LocationDTO:
     longitude: float
     latitude: float
     created_at: datetime
+    is_downloading_past_climate_data: bool
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -75,6 +76,7 @@ class LocationDTO:
             "longitude": self.longitude,
             "latitude": self.latitude,
             "created_at": self.created_at.isoformat(),
+            "is_downloading_past_climate_data": self.is_downloading_past_climate_data
         }
 
 

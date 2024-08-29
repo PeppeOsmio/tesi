@@ -50,6 +50,8 @@ async def create_location(
         name=location.name,
         latitude=location.latitude,
         longitude=location.longitude,
+        is_model_ready=False,
+        is_downloading_past_climate_data=location.is_downloading_past_climate_data,
         last_past_climate_data_year=None,
         last_past_climate_data_month=None,
     )
@@ -65,6 +67,10 @@ async def get_locations(
     past_climate_data_repository: Annotated[
         PastClimateDataRepository, Depends(get_past_climate_data_repository)
     ],
+    climate_generative_model_repository: Annotated[
+        ClimateGenerativeModelRepository,
+        Depends(get_climate_generative_model_repository),
+    ],
 ) -> list[LocationDetailsResponse]:
     async with session_maker() as session:
         result = await location_repository.get_locations(session=session)
@@ -73,6 +79,9 @@ async def get_locations(
             try:
                 data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
                     session=session, location_id=location.id, n=1
+                )
+                model = await climate_generative_model_repository.get_climate_generative_model_by_location_id(
+                    session=session, location_id=location.id
                 )
             except PastClimateDataNotFoundError:
                 data = None
@@ -85,6 +94,8 @@ async def get_locations(
                     name=location.name,
                     longitude=location.longitude,
                     latitude=location.latitude,
+                    is_model_ready=model is not None,
+                    is_downloading_past_climate_data=location.is_downloading_past_climate_data,
                     last_past_climate_data_year=year,
                     last_past_climate_data_month=month,
                 )

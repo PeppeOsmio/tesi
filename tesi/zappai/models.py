@@ -24,6 +24,7 @@ class Location(Base):
     longitude: Mapped[float]
     latitude: Mapped[float]
     created_at: Mapped[datetime] = mapped_column(index=True)
+    is_downloading_past_climate_data: Mapped[bool] = mapped_column(default=False)
 
     __table_args__ = (
         UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
