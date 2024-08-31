@@ -67,6 +67,7 @@ class LocationDTO:
     latitude: float
     created_at: datetime
     is_downloading_past_climate_data: bool
+    is_visible: bool
 
     def to_dict(self) -> dict[str, Any]:
         return {

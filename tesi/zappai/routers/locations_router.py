@@ -1,5 +1,6 @@
 from typing import Annotated
 from fastapi import APIRouter, BackgroundTasks, Depends, Response, status
+from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
 from tesi.auth_tokens.di import get_current_user
@@ -51,13 +52,14 @@ async def create_location(
         latitude=location.latitude,
         longitude=location.longitude,
         is_model_ready=False,
+        created_at=location.created_at,
         is_downloading_past_climate_data=location.is_downloading_past_climate_data,
         last_past_climate_data_year=None,
         last_past_climate_data_month=None,
     )
 
 
-@locations_router.get(path="/", response_model=list[LocationDetailsResponse])
+@locations_router.get(path="", response_model=list[LocationDetailsResponse])
 async def get_locations(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
@@ -85,6 +87,7 @@ async def get_locations(
                 )
             except PastClimateDataNotFoundError:
                 data = None
+                model = None
             year = None if data is None else data[0].year
             month = None if data is None else data[0].month
             response.append(
@@ -94,6 +97,7 @@ async def get_locations(
                     name=location.name,
                     longitude=location.longitude,
                     latitude=location.latitude,
+                    created_at=location.created_at,
                     is_model_ready=model is not None,
                     is_downloading_past_climate_data=location.is_downloading_past_climate_data,
                     last_past_climate_data_year=year,
@@ -135,12 +139,11 @@ async def get_is_climate_generative_model_ready(
             session=session, location_id=location_id
         )
     if model is None:
-        response.status_code = 404
-        return {"message": "Not found"}
+        return JSONResponse({"message": "Not found"}, status_code=404)
     return {"message": "Found"}
 
 
-@locations_router.post(path="/past_climate_data/{location_id}")
+@locations_router.get(path="/past_climate_data/{location_id}")
 async def download_past_climate_data_for_location(
     user: Annotated[User, Depends(get_current_user)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
@@ -151,18 +154,29 @@ async def download_past_climate_data_for_location(
         ClimateGenerativeModelRepository,
         Depends(get_climate_generative_model_repository),
     ],
+    location_repository: Annotated[LocationRepository, Depends(get_location_repository)],
     location_id: UUID,
     background_tasks: BackgroundTasks,
 ):
     async def func():
+        error: Exception | None = None
         async with session_maker() as session:
-            await past_climate_data_repository.download_new_past_climate_data(
-                session=session, location_id=location_id
-            )
-            await climate_generative_model_repository.create_model_for_location(
-                session=session, location_id=location_id
-            )
+            await location_repository.set_location_to_downloading(session=session, location_id=location_id)
             await session.commit()
+            try:
+                await past_climate_data_repository.download_new_past_climate_data(
+                    session=session, location_id=location_id
+                )
+                await climate_generative_model_repository.create_model_for_location(
+                    session=session, location_id=location_id
+                )
+            except Exception as e:
+                error = e
+        async with session_maker() as session:
+            await location_repository.set_location_to_not_downloading(session=session, location_id=location_id)
+            await session.commit()
+        if error is not None:
+            raise error
 
     background_tasks.add_task(func=func)
     return {"message": "Download started"}

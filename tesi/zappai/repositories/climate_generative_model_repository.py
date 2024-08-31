@@ -497,6 +497,12 @@ class ClimateGenerativeModelRepository:
         self, session: AsyncSession, climate_generative_model: ClimateGenerativeModelDTO
     ) -> UUID:
         model_id = uuid.uuid4()
+        await session.execute(
+            delete(ClimateGenerativeModel).where(
+                ClimateGenerativeModel.location_id
+                == climate_generative_model.location_id
+            )
+        )
         stmt = insert(ClimateGenerativeModel).values(
             id=climate_generative_model.id,
             location_id=climate_generative_model.location_id,

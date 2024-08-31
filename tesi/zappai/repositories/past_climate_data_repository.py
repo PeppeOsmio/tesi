@@ -65,7 +65,6 @@ class PastClimateDataRepository:
     async def download_new_past_climate_data(
         self, session: AsyncSession, location_id: UUID
     ):
-
         year_from = 1940
         month_from = 1
 

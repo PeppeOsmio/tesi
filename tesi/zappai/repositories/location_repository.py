@@ -31,6 +31,7 @@ class LocationRepository:
         name: str,
         longitude: float,
         latitude: float,
+        is_visible: bool = True,
     ) -> LocationDTO:
         location_id = uuid.uuid4()
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
@@ -41,7 +42,8 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
-            is_downloading_past_climate_data=False
+            is_downloading_past_climate_data=False,
+            is_visible=is_visible,
         )
         await session.execute(stmt)
         return LocationDTO(
@@ -51,15 +53,28 @@ class LocationRepository:
             longitude=longitude,
             latitude=latitude,
             created_at=now,
-            is_downloading_past_climate_data=False
+            is_downloading_past_climate_data=False,
+            is_visible=is_visible
         )
-    
+
     async def set_locations_to_not_downloading(self, session: AsyncSession):
-        stmt = update(Location).values(is_past_climate_data_downloading=True)
+        stmt = update(Location).values(is_downloading_past_climate_data=False)
         await session.execute(stmt)
 
-    async def get_locations(self, session: AsyncSession) -> list[LocationDTO]:
+    async def set_location_to_downloading(self, session: AsyncSession, location_id: UUID):
+        stmt = update(Location).where(Location.id == location_id).values(is_downloading_past_climate_data=True)
+        await session.execute(stmt)
+
+    async def set_location_to_not_downloading(self, session: AsyncSession, location_id: UUID):
+        stmt = update(Location).where(Location.id == location_id).values(is_downloading_past_climate_data=False)
+        await session.execute(stmt)
+
+    async def get_locations(
+        self, session: AsyncSession, all: bool = False
+    ) -> list[LocationDTO]:
         stmt = select(Location).order_by(Location.created_at)
+        if not all:
+            stmt = stmt.where(Location.is_visible == True)
         locations = await session.scalars(stmt)
         return [self.__location_model_to_dto(location) for location in locations]
 
@@ -153,5 +168,6 @@ class LocationRepository:
             longitude=location.longitude,
             latitude=location.latitude,
             created_at=location.created_at,
-            is_downloading_past_climate_data=location.is_downloading_past_climate_data
+            is_downloading_past_climate_data=location.is_downloading_past_climate_data,
+            is_visible=location.is_visible
         )

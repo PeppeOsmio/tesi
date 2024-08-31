@@ -1,16 +1,21 @@
 import React from 'react';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import { Card, CardContent, Typography, Button, Box, CircularProgress, IconButton } from '@mui/material';
+import { Delete } from '@mui/icons-material';
 import { ZappaiLocation } from '../utils/classes';
 
 interface LocationCardProps {
     location: ZappaiLocation;
+    onDelete: (location: ZappaiLocation) => void;
+    onDownloadData: (location: ZappaiLocation) => void;
+    onMakePrediction: (location: ZappaiLocation) => void;  // Added this prop
 }
 
-const LocationCard: React.FC<LocationCardProps> = ({ location }) => {
+const LocationCard: React.FC<LocationCardProps> = ({ location, onDelete, onDownloadData, onMakePrediction }) => {
     const {
         country,
         name,
-        coordinates,
+        longitude,
+        latitude,
         isModelReady,
         isDownloadingPastClimateData,
         lastPastClimateDataYear,
@@ -23,33 +28,53 @@ const LocationCard: React.FC<LocationCardProps> = ({ location }) => {
         : "never";
 
     return (
-        <Card>
+        <Card sx={{ position: 'relative' }}>
+            {/* Delete Icon at the top right */}
+            <IconButton
+                aria-label="delete"
+                onClick={() => onDelete(location)}
+                sx={{ position: 'absolute', top: 8, right: 8 }}
+            >
+                <Delete />
+            </IconButton>
             <CardContent>
                 <Typography variant="h6">{name}</Typography>
                 <Typography variant="subtitle1">{country}</Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Coordinates: {coordinates}
+                    Coordinates: {`${latitude}, ${longitude}`}
                 </Typography>
                 <Typography variant="body2" color={isModelReady ? 'green' : 'red'}>
                     Weather AI model {isModelReady ? 'ready' : 'not ready'}
                 </Typography>
                 <Typography variant="body2" color="text.secondary">
-                    Last past climate data : {lastUpdated}
+                    Last past climate data: {lastUpdated}
                 </Typography>
-                {isDownloadingPastClimateData
-                    ? <Button
+                <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", alignItems: "center", mt: 2 }}>
+                    {isDownloadingPastClimateData
+                        ? <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center" }}>
+                            <CircularProgress sx={{ padding: 1, height: "16px" }} />
+                            <Typography variant="body2" color="text.secondary">
+                                Downloading data for AI model...
+                            </Typography>
+                        </Box>
+                        : <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={() => onDownloadData(location)}
+                        >
+                            Download data and create AI model
+                        </Button>}
+                    
+                    {/* "Make Predictions" button at the bottom right */}
+                    <Button
                         variant="contained"
-                        color="primary"
-                        sx={{ mt: 2 }}
-                        disabled>
-                        Downloading data for AI model...
+                        color="secondary"
+                        onClick={() => onMakePrediction(location)}
+                        sx={{ ml: 2 }}  // Adds some space between the buttons
+                    >
+                        Make Prediction
                     </Button>
-                    : <Button
-                        variant="contained"
-                        color="primary"
-                        sx={{ mt: 2 }}>
-                        Download data and create AI model
-                    </Button>}
+                </Box>
             </CardContent>
         </Card>
     );

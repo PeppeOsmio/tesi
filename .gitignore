@@ -11,3 +11,4 @@ data/future_climate/precipitations.csv
 data/future_climate/temperature_at_surface.csv
 *.nc
 tmp*
+db.tar.gz

@@ -1,25 +1,39 @@
+from contextlib import asynccontextmanager
+from typing import Annotated
+from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from starlette.middleware.cors import CORSMiddleware
 from tesi import logging_conf
 from tesi.database.di import get_session_maker
 from tesi.zappai.di import get_location_repository
+from tesi.zappai.repositories.location_repository import LocationRepository
 
 logging_conf.create_logger(config=logging_conf.get_default_conf())
 
 import logging
 import traceback
-from fastapi import FastAPI, Request
+from fastapi import Depends, FastAPI, Request
 from starlette.responses import JSONResponse
 
 from tesi.users.routers import user_router
 from tesi.auth_tokens.routers import auth_token_router
 from tesi.zappai.routers import zappai_router
 
-session_maker = get_session_maker()
-location_repository = get_location_repository()
+
+@asynccontextmanager
+async def lifespan(
+    app: FastAPI
+):
+    session_maker = get_session_maker()
+    location_repository = get_location_repository()
+    async with session_maker() as session:
+        await location_repository.set_locations_to_not_downloading(session=session)
+        await session.commit()
+    logging.info("Done")
+    yield
 
 
+app = FastAPI(lifespan=lifespan)
 
-app = FastAPI()
 
 # Configure CORS middleware
 app.add_middleware(

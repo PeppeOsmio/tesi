@@ -38,6 +38,7 @@ class LocationDetailsResponse(CamelCaseBaseModel):
     name: str
     longitude: float
     latitude: float
+    created_at: datetime
     is_model_ready: bool
     is_downloading_past_climate_data: bool
     last_past_climate_data_year: int | None

@@ -30,9 +30,6 @@ const Navbar: React.FC = () => {
           <Button color="inherit" component={Link} to="/locations">
             Locations
           </Button>
-          <Button color="inherit" component={Link} to="/predictions">
-            Predictions
-          </Button>
           <Button color="inherit" component={Link} to="/users">
             Users
           </Button>

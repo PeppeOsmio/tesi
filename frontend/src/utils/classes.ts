@@ -4,14 +4,16 @@ export interface User {
 }
 
 export interface ZappaiLocation {
+    id: string;
     country: string;
     name: string;
-    coordinates: string;
+    longitude: number;
+    latitude: number;
     isModelReady: boolean;
     isDownloadingPastClimateData: boolean;
     lastPastClimateDataYear: number | null;
     lastPastClimateDataMonth: number | null;
-  }
+}
   
 
 // Define a type for the context
