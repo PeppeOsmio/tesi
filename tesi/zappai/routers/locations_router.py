@@ -107,6 +107,54 @@ async def get_locations(
     return response
 
 
+@locations_router.get(path="/{location_id}", response_model=LocationDetailsResponse)
+async def get_location(
+    user: Annotated[User, Depends(get_current_user)],
+    session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
+    location_repository: Annotated[
+        LocationRepository, Depends(get_location_repository)
+    ],
+    past_climate_data_repository: Annotated[
+        PastClimateDataRepository, Depends(get_past_climate_data_repository)
+    ],
+    climate_generative_model_repository: Annotated[
+        ClimateGenerativeModelRepository,
+        Depends(get_climate_generative_model_repository),
+    ],
+    location_id: UUID,
+):
+    async with session_maker() as session:
+        location = await location_repository.get_location_by_id(
+            session=session, location_id=location_id
+        )
+    if location is None:
+        return JSONResponse(status_code=404, content={"error": "Location not found"})
+    try:
+        data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
+            session=session, location_id=location.id, n=1
+        )
+        model = await climate_generative_model_repository.get_climate_generative_model_by_location_id(
+            session=session, location_id=location.id
+        )
+    except PastClimateDataNotFoundError:
+        data = None
+        model = None
+    year = None if data is None else data[0].year
+    month = None if data is None else data[0].month
+    return LocationDetailsResponse(
+        id=location.id,
+        country=location.country,
+        name=location.name,
+        longitude=location.longitude,
+        latitude=location.latitude,
+        created_at=location.created_at,
+        is_model_ready=model is not None,
+        is_downloading_past_climate_data=location.is_downloading_past_climate_data,
+        last_past_climate_data_year=year,
+        last_past_climate_data_month=month,
+    )
+
+
 @locations_router.delete(path="/{location_id}")
 async def delete_location(
     user: Annotated[User, Depends(get_current_user)],
@@ -154,14 +202,18 @@ async def download_past_climate_data_for_location(
         ClimateGenerativeModelRepository,
         Depends(get_climate_generative_model_repository),
     ],
-    location_repository: Annotated[LocationRepository, Depends(get_location_repository)],
+    location_repository: Annotated[
+        LocationRepository, Depends(get_location_repository)
+    ],
     location_id: UUID,
     background_tasks: BackgroundTasks,
 ):
     async def func():
         error: Exception | None = None
         async with session_maker() as session:
-            await location_repository.set_location_to_downloading(session=session, location_id=location_id)
+            await location_repository.set_location_to_downloading(
+                session=session, location_id=location_id
+            )
             await session.commit()
             try:
                 await past_climate_data_repository.download_new_past_climate_data(
@@ -173,7 +225,9 @@ async def download_past_climate_data_for_location(
             except Exception as e:
                 error = e
         async with session_maker() as session:
-            await location_repository.set_location_to_not_downloading(session=session, location_id=location_id)
+            await location_repository.set_location_to_not_downloading(
+                session=session, location_id=location_id
+            )
             await session.commit()
         if error is not None:
             raise error

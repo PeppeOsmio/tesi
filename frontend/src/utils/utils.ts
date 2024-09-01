@@ -1,5 +1,5 @@
 import axios, { AxiosError } from "axios";
-import { User } from "./classes";
+import { User } from "./types";
 
 interface GetUserInfoResponse {
     id: string;

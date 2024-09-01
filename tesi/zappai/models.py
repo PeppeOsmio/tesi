@@ -69,7 +69,6 @@ class ClimateGenerativeModel(Base):
 class Crop(Base):
     __tablename__ = "crop"
 
-    id: Mapped[UUID] = mapped_column(primary_key=True)
     name: Mapped[str] = mapped_column(primary_key=True)
     created_at: Mapped[datetime] = mapped_column(index=True)
     min_farming_months: Mapped[int]
@@ -84,7 +83,7 @@ class CropYieldData(Base):
 
     id: Mapped[UUID] = mapped_column(primary_key=True)
     location_id: Mapped[UUID] = mapped_column(ForeignKey(column="location.id"))
-    crop_id: Mapped[UUID] = mapped_column(ForeignKey(column="crop.id"))
+    crop_name: Mapped[str] = mapped_column(ForeignKey(column="crop.name"))
     sowing_year: Mapped[int]
     sowing_month: Mapped[int]
     harvest_year: Mapped[int]

@@ -1,7 +1,7 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
 import { TextField, Button, Grid, Container, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
-import { ZappaiLocation } from '../utils/classes';
+import { ZappaiLocation } from '../utils/types';
 import { useNavigate } from 'react-router-dom';
 
 const LocationForm: React.FC = () => {

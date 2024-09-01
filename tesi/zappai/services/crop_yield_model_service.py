@@ -82,7 +82,7 @@ class CropYieldModelService:
         self.crop_repository = crop_repository
 
     async def train_crop_yield_model(
-        self, session: AsyncSession, crop_id: UUID
+        self, session: AsyncSession, crop_name: str
     ) -> tuple[
         RandomForestRegressor,
         float,
@@ -93,7 +93,7 @@ class CropYieldModelService:
         pd.DataFrame,
     ]:
         crop_yield_data = await self.crop_yield_data_repository.get_crop_yield_data(
-            session=session, crop_id=crop_id
+            session=session, crop_name=crop_name
         )
         crop_yield_data_df = CropYieldDataDTO.from_list_to_dataframe(crop_yield_data)
 
@@ -172,10 +172,10 @@ class CropYieldModelService:
         print_processed()
         for crop in crops:
             model, mse, r2, _, _, _, _ = await self.train_crop_yield_model(
-                crop_id=crop.id, session=session
+                crop_name=crop.name, session=session
             )
             await self.crop_repository.save_crop_yield_model(
-                session=session, crop_id=crop.id, crop_yield_model=model, mse=mse, r2=r2
+                session=session, crop_name=crop.name, crop_yield_model=model, mse=mse, r2=r2
             )
             processed += 1
             print_processed()

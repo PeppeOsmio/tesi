@@ -260,7 +260,6 @@ class CropYieldDataRepository:
         await session.execute(delete(CropYieldData))
 
         logging.info("Checking crops to create")
-        crop_names_to_ids: dict[str, uuid.UUID] = {}
 
         crop_names = set(cast(list[str], list(crop_yield_data_df["crop"])))
         for crop_name in crop_names:
@@ -278,7 +277,6 @@ class CropYieldDataRepository:
                 min_farming_months=min_farming_months,
                 max_farming_months=max_farming_months,
             )
-            crop_names_to_ids.update({crop_name: crop.id})
 
         logging.info("Checking locations to create")
         location_coordinates_to_ids: dict[str, uuid.UUID] = {}
@@ -320,7 +318,7 @@ class CropYieldDataRepository:
                     "location_id": location_coordinates_to_ids[
                         str((row["longitude"], row["latitude"]))
                     ],
-                    "crop_id": crop_names_to_ids[row["crop"]],
+                    "crop_name": row["crop"],
                     "sowing_year": row["sowing_year"],
                     "sowing_month": row["sowing_month"],
                     "harvest_year": row["harvest_year"],
@@ -363,14 +361,14 @@ class CropYieldDataRepository:
         ]
 
     async def get_crop_yield_data(
-        self, session: AsyncSession, crop_id: uuid.UUID
+        self, session: AsyncSession, crop_name: str
     ) -> list[CropYieldDataDTO]:
         crop = await self.crop_repository.get_crop_by_id(
-            session=session, crop_id=crop_id
+            session=session, crop_name=crop_name
         )
         if crop is None:
             raise CropNotFoundError()
-        stmt = select(CropYieldData).where(CropYieldData.crop_id == crop_id)
+        stmt = select(CropYieldData).where(CropYieldData.crop_name == crop_name)
         results = list(await session.scalars(stmt))
         return [
             self.__crop_yield_data_model_to_dto(crop_yield_data)
@@ -398,8 +396,8 @@ class CropYieldDataRepository:
         return CropYieldDataDTO(
             id=crop_yield_data.id,
             location_id=crop_yield_data.location_id,
-            crop_id=crop_yield_data.crop_id,
-            sowing_year=crop_yield_data.sowing_year, 
+            crop_name=crop_yield_data.crop_name,
+            sowing_year=crop_yield_data.sowing_year,
             sowing_month=crop_yield_data.sowing_month,
             harvest_year=crop_yield_data.harvest_year,
             harvest_month=crop_yield_data.harvest_month,

@@ -1,6 +1,6 @@
 // authContext.js
 import React, { createContext, useState } from 'react';
-import { User } from '../utils/classes';
+import { User } from '../utils/types';
 
 
 

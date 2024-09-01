@@ -36,7 +36,6 @@ class CropRepository:
         await session.execute(stmt)
         await session.commit()
         return CropDTO(
-            id=crop_id,
             name=name,
             created_at=now,
             min_farming_months=min_farming_months,
@@ -53,8 +52,8 @@ class CropRepository:
             return None
         return self.__crop_model_to_dto(crop)
 
-    async def get_crop_by_id(self, session: AsyncSession, crop_id: uuid.UUID) -> CropDTO | None:
-        stmt = select(Crop).where(Crop.id == crop_id)
+    async def get_crop_by_id(self, session: AsyncSession, crop_name: str) -> CropDTO | None:
+        stmt = select(Crop).where(Crop.name == crop_name)
         crop = await session.scalar(stmt)
         if crop is None:
             return None
@@ -63,14 +62,14 @@ class CropRepository:
     async def save_crop_yield_model(
         self,
         session: AsyncSession,
-        crop_id: uuid.UUID,
+        crop_name: str,
         crop_yield_model: RandomForestRegressor,
         mse: float,
         r2: float,
     ):
         stmt = (
             update(Crop)
-            .where(Crop.id == crop_id)
+            .where(Crop.name == crop_name)
             .values(
                 crop_yield_model=object_to_bytes(crop_yield_model), mse=mse, r2=r2
             )
@@ -84,7 +83,6 @@ class CropRepository:
 
     def __crop_model_to_dto(self, crop: Crop) -> CropDTO:
         return CropDTO(
-            id=crop.id,
             name=crop.name,
             created_at=crop.created_at,
             min_farming_months=crop.min_farming_months,

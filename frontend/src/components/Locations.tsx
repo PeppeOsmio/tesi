@@ -2,7 +2,7 @@ import { Alert, Button, CircularProgress } from "@mui/material";
 import React, { useEffect, useState } from "react";
 
 import { Box, Grid } from '@mui/material';
-import { ZappaiLocation } from "../utils/classes";
+import { ZappaiLocation } from "../utils/types";
 import LocationCard from "./LocationCard";
 import axios from "axios";
 import { Add } from "@mui/icons-material";
@@ -19,9 +19,9 @@ const Locations: React.FC<LocationsProps> = () => {
 
     const navigate = useNavigate();
 
-    const updateLocations = async () => {
+    const updateLocations = async (isActive: () => boolean) => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
-        while (true) {
+        while (isActive()) {
             axios.get<ZappaiLocation[]>(`${import.meta.env.VITE_API_URL!}/api/locations`, {
                 headers: {
                     "Authorization": `Bearer ${zappai_access_token}`
@@ -37,14 +37,22 @@ const Locations: React.FC<LocationsProps> = () => {
     }
 
     useEffect(() => {
-        updateLocations();
+        let isMounted = true;
+
+        const isActive = () => isMounted;
+
+        updateLocations(isActive);
+
+        return () => {
+            isMounted = false; // Cleanup function to stop the loop
+        };
     }, []);
 
     const onDeleteLocation = (location: ZappaiLocation) => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
         axios.delete(`${import.meta.env.VITE_API_URL!}/api/locations/${location.id}`, { headers: { Authorization: `Bearer ${zappai_access_token}` } })
             .then(
-                (response) => {
+                () => {
                     setLocations(old => old?.filter(loc => loc.id !== location.id) ?? null);
                     setErrorMessage(null);
                 }
@@ -56,7 +64,7 @@ const Locations: React.FC<LocationsProps> = () => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
         axios.get(`${import.meta.env.VITE_API_URL!}/api/locations/past_climate_data/${location.id}`, { headers: { Authorization: `Bearer ${zappai_access_token}` } })
             .then(
-                (response) => {
+                () => {
                     setLocations(old => old?.map((loc) => {
                         if (loc.id !== location.id) {
                             return loc;
@@ -70,12 +78,12 @@ const Locations: React.FC<LocationsProps> = () => {
             .catch((error) => setErrorMessage(error.toString()));
     }
 
-    const onMakePrediction = () => {
-        navigate("/locat")
+    const onMakePrediction = (location: ZappaiLocation) => {
+        navigate(`/predictions/create/${location.id}`);
     }
 
 
-    return <Box sx={{ paddingTop: 2, paddingRight: 16, paddingLeft: 16, flexGrow: 1, width: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+    return <Box sx={{ paddingTop: 2, paddingRight: 16, paddingLeft: 16, flexGrow: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
         {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
         {
             locations === null
@@ -89,6 +97,7 @@ const Locations: React.FC<LocationsProps> = () => {
                                 location={location}
                                 onDelete={onDeleteLocation}
                                 onDownloadData={onDownloadData}
+                                onMakePrediction={onMakePrediction}
                             />
                         </Grid>
                     ))}

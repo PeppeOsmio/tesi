@@ -29,13 +29,13 @@ async def get_best_crop_sowing_and_harvesting_prediction(
     crop_optimizer_service: Annotated[
         CropOptimizerService, Depends(get_crop_optimizer_service)
     ],
-    crop_id: UUID,
+    crop_name: str,
     location_id: UUID,
 ):
     try:
         async with session_maker() as session:
             result = await crop_optimizer_service.get_best_crop_sowing_and_harvesting(
-                session=session, crop_id=crop_id, location_id=location_id
+                session=session, crop_name=crop_name, location_id=location_id
             )
         return PredictionsResponse(
             best_combinations=[

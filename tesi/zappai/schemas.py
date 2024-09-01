@@ -78,5 +78,4 @@ class PredictionsResponse(CamelCaseBaseModel):
 
 
 class CropDetailsResponse(CamelCaseBaseModel):
-    id: UUID
     name: str

@@ -1,7 +1,7 @@
 import React from 'react';
 import { Card, CardContent, Typography, Button, Box, CircularProgress, IconButton } from '@mui/material';
 import { Delete } from '@mui/icons-material';
-import { ZappaiLocation } from '../utils/classes';
+import { ZappaiLocation } from '../utils/types';
 
 interface LocationCardProps {
     location: ZappaiLocation;

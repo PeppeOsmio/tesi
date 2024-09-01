@@ -28,7 +28,6 @@ class LocationClimateYearsDTO:
 
 @dataclass
 class CropDTO:
-    id: UUID
     name: str
     created_at: datetime
     min_farming_months: int
@@ -42,7 +41,7 @@ class CropDTO:
 class CropYieldDataDTO:
     id: UUID
     location_id: UUID
-    crop_id: UUID
+    crop_name: str
     sowing_year: int
     sowing_month: int
     harvest_year: int

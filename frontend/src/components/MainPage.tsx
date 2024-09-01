@@ -5,6 +5,7 @@ import ProtectedRoute from './ProtectedRoute';
 import Locations from './Locations';
 import { Box } from '@mui/material';
 import CreateLocation from './CreateLocation';
+import CreatePrediction from './CreatePrediction';
 
 export const MainPage: React.FC = () => {
     return (
@@ -17,9 +18,9 @@ export const MainPage: React.FC = () => {
                     </ProtectedRoute>
                 } />
                 <Route path="/locations/create" element={<CreateLocation/>}/>
-                <Route path="/predictions" element={
+                <Route path="/predictions/create/:locationId" element={
                     <ProtectedRoute>
-                        <Locations />
+                        <CreatePrediction />
                     </ProtectedRoute>
                 } />
                 <Route path="/users" element={

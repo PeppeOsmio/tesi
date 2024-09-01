@@ -21,3 +21,7 @@ export interface AuthContextType {
     currentUser: User | null;
     setCurrentUser: React.Dispatch<React.SetStateAction<User | null>>;
 }
+
+export interface Crop {
+    name: string;
+}

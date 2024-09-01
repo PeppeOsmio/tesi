@@ -20,4 +20,4 @@ async def get_crops(
 ) -> list[CropDetailsResponse]:
     async with session_maker() as session:
         crops = await crop_repository.get_all_crops(session=session)
-    return [CropDetailsResponse(id=crop.id, name=crop.name) for crop in crops]
+    return [CropDetailsResponse(name=crop.name) for crop in crops]

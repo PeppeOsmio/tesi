@@ -279,7 +279,7 @@ class CropOptimizerService:
         self.climate_generative_model_repository = climate_generative_model_repository
 
     async def get_best_crop_sowing_and_harvesting(
-        self, session: AsyncSession, crop_id: UUID, location_id: UUID
+        self, session: AsyncSession, crop_name: str, location_id: UUID
     ) -> CropOptimizerResultDTO:
         """_summary_
 
@@ -300,14 +300,14 @@ class CropOptimizerService:
             raise LocationNotFoundError(str(location_id))
 
         crop = await self.crop_repository.get_crop_by_id(
-            session=session, crop_id=crop_id
+            session=session, crop_name=crop_name
         )
         if crop is None:
-            raise CropNotFoundError(str(crop_id))
+            raise CropNotFoundError(str(crop_name))
 
         model = crop.crop_yield_model
         if model is None:
-            raise CropYieldModelNotFoundError(str(crop_id))
+            raise CropYieldModelNotFoundError(str(crop_name))
 
         forecast = await self.climate_generative_model_repository.generate_climate_data_from_last_past_climate_data(
             session=session, location_id=location.id, months=24
@@ -368,7 +368,7 @@ class CropOptimizerService:
         )
 
     async def optimize_regular(
-        self, session: AsyncSession, crop_id: UUID, location_id: UUID
+        self, session: AsyncSession, crop_name: str, location_id: UUID
     ) -> CropOptimizerResultDTO:
         location = await self.location_repository.get_location_by_id(
             session=session, location_id=location_id
@@ -378,7 +378,7 @@ class CropOptimizerService:
             raise Exception()
 
         crop = await self.crop_repository.get_crop_by_id(
-            session=session, crop_id=crop_id
+            session=session, crop_name=crop_name
         )
         if crop is None:
             raise Exception()
