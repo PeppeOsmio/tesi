@@ -5,7 +5,8 @@ import ProtectedRoute from './ProtectedRoute';
 import Locations from './Locations';
 import { Box } from '@mui/material';
 import CreateLocation from './CreateLocation';
-import CreatePrediction from './CreatePrediction';
+import ChooseCrop from './ChooseCrop';
+import PredictionPage from './PredictionPage';
 
 export const MainPage: React.FC = () => {
     return (
@@ -20,9 +21,10 @@ export const MainPage: React.FC = () => {
                 <Route path="/locations/create" element={<CreateLocation/>}/>
                 <Route path="/predictions/create/:locationId" element={
                     <ProtectedRoute>
-                        <CreatePrediction />
+                        <ChooseCrop />
                     </ProtectedRoute>
                 } />
+                <Route path="/predictions" element={<PredictionPage/>}/>
                 <Route path="/users" element={
                     <ProtectedRoute>
                         <Locations />

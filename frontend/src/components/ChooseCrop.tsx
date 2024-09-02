@@ -22,19 +22,21 @@ const cropPhotoMap = new Map<string, string>([
     ['cotton', '/images/crops/cotton.png'],
 ]);
 
-const CreatePrediction: React.FC = () => {
+const ChooseCrop: React.FC = () => {
     const { locationId } = useParams<{ locationId: string }>();
 
     const [location, setLocation] = useState<ZappaiLocation | null>(null);
     const [crops, setCrops] = useState<Crop[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(false);
 
     // State to keep track of the selected crop
     const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
 
-    useEffect(() => {
+    const loadData = async () => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
-        axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
+
+        Promise.all([axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
             headers: {
                 Authorization: `Bearer ${zappai_access_token}`
             }
@@ -53,7 +55,8 @@ const CreatePrediction: React.FC = () => {
             setErrorMessage(null);
         }).catch((error) => {
             setErrorMessage(error.toString());
-        });
+        }), ])
+        ;
 
         axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
             headers: {
@@ -75,6 +78,10 @@ const CreatePrediction: React.FC = () => {
         }).catch((error) => {
             setErrorMessage(error.toString());
         });
+    }
+
+    useEffect(() => {
+
     }, [])
 
     const handleCardClick = (cropName: string) => {
@@ -96,8 +103,8 @@ const CreatePrediction: React.FC = () => {
                         <CircularProgress sx={{}}></CircularProgress>
                     </Box>
                     : <>
-                        <Typography variant="h4" sx={{marginBottom: 4}}>
-                            Choose a crop to predict for location "{location.name}, {location.country}"
+                        <Typography variant="h4" sx={{ marginBottom: 4 }}>
+                            Choose a crop to make predictions for location "{location.name}, {location.country}"
                         </Typography>
                         <Grid container spacing={2}>
                             {crops.map((crop) => (
@@ -142,4 +149,4 @@ const CreatePrediction: React.FC = () => {
     );
 };
 
-export default CreatePrediction;
+export default ChooseCrop;

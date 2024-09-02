@@ -13,6 +13,7 @@ from tesi.zappai.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
+from tesi.zappai.dtos import LocationDTO
 from tesi.zappai.exceptions import PastClimateDataNotFoundError
 from tesi.zappai.repositories.climate_generative_model_repository import (
     ClimateGenerativeModelRepository,
@@ -123,22 +124,24 @@ async def get_location(
     ],
     location_id: UUID,
 ):
+    location: LocationDTO | None = None
     async with session_maker() as session:
         location = await location_repository.get_location_by_id(
             session=session, location_id=location_id
         )
+        if location is not None:
+            try:
+                data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
+                    session=session, location_id=location.id, n=1
+                )
+                model = await climate_generative_model_repository.get_climate_generative_model_by_location_id(
+                    session=session, location_id=location.id
+                )
+            except PastClimateDataNotFoundError:
+                data = None
+                model = None
     if location is None:
         return JSONResponse(status_code=404, content={"error": "Location not found"})
-    try:
-        data = await past_climate_data_repository.get_past_climate_data_of_previous_n_months(
-            session=session, location_id=location.id, n=1
-        )
-        model = await climate_generative_model_repository.get_climate_generative_model_by_location_id(
-            session=session, location_id=location.id
-        )
-    except PastClimateDataNotFoundError:
-        data = None
-        model = None
     year = None if data is None else data[0].year
     month = None if data is None else data[0].month
     return LocationDetailsResponse(

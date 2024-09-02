@@ -16,6 +16,7 @@ const Locations: React.FC<LocationsProps> = () => {
 
     const [locations, setLocations] = useState<ZappaiLocation[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     const navigate = useNavigate();
 
@@ -86,12 +87,12 @@ const Locations: React.FC<LocationsProps> = () => {
     return <Box sx={{ paddingTop: 2, paddingRight: 16, paddingLeft: 16, flexGrow: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
         {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
         {
-            locations === null
+            isLoading
                 ? <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
                     <CircularProgress sx={{}}></CircularProgress>
                 </Box>
                 : <Grid container spacing={2}>
-                    {locations.map((location, index) => (
+                    {locations!.map((location, index) => (
                         <Grid item xs={12} sm={6} key={index}>
                             <LocationCard
                                 location={location}
