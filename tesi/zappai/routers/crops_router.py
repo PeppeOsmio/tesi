@@ -2,7 +2,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from tesi.auth_tokens.di import get_current_user
+from tesi.auth_tokens.di import get_current_user, get_current_user_with_error
 from tesi.database.di import get_session_maker
 from tesi.users.models import User
 from tesi.zappai.di import get_crop_repository
@@ -14,7 +14,7 @@ crops_router = APIRouter(prefix="/crops")
 
 @crops_router.get(path="")
 async def get_crops(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     crop_repository: Annotated[CropRepository, Depends(get_crop_repository)],
 ) -> list[CropDetailsResponse]:

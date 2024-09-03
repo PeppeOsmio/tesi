@@ -27,7 +27,6 @@ export interface Crop {
 }
 
 export interface ClimateDataDetails {
-    locationId: string;
     year: number;
     month: number;
     temperature2m: number;

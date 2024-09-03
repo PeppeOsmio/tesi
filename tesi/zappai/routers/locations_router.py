@@ -3,7 +3,7 @@ from fastapi import APIRouter, BackgroundTasks, Depends, Response, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.ext.asyncio import async_sessionmaker
 
-from tesi.auth_tokens.di import get_current_user
+from tesi.auth_tokens.di import get_current_user, get_current_user_with_error
 from tesi.database.di import get_session_maker
 from uuid import UUID
 
@@ -30,7 +30,7 @@ locations_router = APIRouter(prefix="/locations")
 
 @locations_router.post(path="", response_model=LocationDetailsResponse)
 async def create_location(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
@@ -62,7 +62,7 @@ async def create_location(
 
 @locations_router.get(path="", response_model=list[LocationDetailsResponse])
 async def get_locations(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
@@ -110,7 +110,7 @@ async def get_locations(
 
 @locations_router.get(path="/{location_id}", response_model=LocationDetailsResponse)
 async def get_location(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
@@ -160,7 +160,7 @@ async def get_location(
 
 @locations_router.delete(path="/{location_id}")
 async def delete_location(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     location_repository: Annotated[
         LocationRepository, Depends(get_location_repository)
@@ -176,7 +176,7 @@ async def delete_location(
 
 @locations_router.get(path="/{location_id}/is_climate_generative_model_ready")
 async def get_is_climate_generative_model_ready(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     climate_generative_model_repository: Annotated[
         ClimateGenerativeModelRepository,
@@ -196,7 +196,7 @@ async def get_is_climate_generative_model_ready(
 
 @locations_router.get(path="/past_climate_data/{location_id}")
 async def download_past_climate_data_for_location(
-    user: Annotated[User, Depends(get_current_user)],
+    user: Annotated[User, Depends(get_current_user_with_error)],
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     past_climate_data_repository: Annotated[
         PastClimateDataRepository, Depends(get_past_climate_data_repository)

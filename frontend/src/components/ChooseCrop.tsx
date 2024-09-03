@@ -96,7 +96,7 @@ const ChooseCrop: React.FC = () => {
     };
 
     return (
-        <Box sx={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", paddingLeft: 16, paddingRight: 16, paddingTop: 2 }}>
+        <Box sx={{ width: "100%", height: "100%", display: "flex", overflow: "scroll", flexDirection: "column", justifyContent: "start", alignItems: "center", paddingLeft: 16, paddingRight: 16, paddingTop: 2 }}>
             {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
             {
                 isLoading

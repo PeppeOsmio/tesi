@@ -239,16 +239,17 @@ class CropGeneticAlgorithm:
             population = new_population
             if self.on_population_processed is not None:
                 self.on_population_processed(i + 1, population)
-        if self.on_population_processed is not None:
-            self.on_population_processed(self.generations, population)
+                fitnesses = self.__calc_fitnesses_in_pool(population)
+            best_fitness = max(fitnesses)
+            best_individual_index = fitnesses.index(best_fitness)
+            best_individual = population[best_individual_index]
 
-        fitnesses = self.__calc_fitnesses_in_pool(population)
-        best_fitness = max(fitnesses)
-        best_individual_index = fitnesses.index(best_fitness)
-        best_individual = population[best_individual_index]
+            best_fitnesses.append(best_fitness)
+            best_individuals.append(best_individual)
+            if self.on_population_processed is not None:
+                self.on_population_processed(self.generations, population)
 
-        best_fitnesses.append(best_fitness)
-        best_individuals.append(best_individual)
+        
         return best_individuals, best_fitnesses
 
 
@@ -338,7 +339,7 @@ class CropOptimizerService:
         forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
         forecast_df = forecast_df.drop(columns=["location_id"])
 
-        combinations: list[SowingAndHarvestingDTO] = []
+        best_combinations: list[SowingAndHarvestingDTO] = []
 
         loop = asyncio.get_running_loop()
 
@@ -346,6 +347,8 @@ class CropOptimizerService:
             results, fitnesses = await loop.run_in_executor(
                 pool, run_genetic_algorithm, forecast_df, crop, model
             )
+
+        print(results)
 
         for i in range(len(results)):
             result = results[i]
@@ -362,7 +365,7 @@ class CropOptimizerService:
                 end_year=harvest_year,
                 end_month=harvest_month,
             )
-            combinations.append(
+            best_combinations.append(
                 SowingAndHarvestingDTO(
                     sowing_year=sowing_year,
                     sowing_month=sowing_month,
@@ -372,8 +375,11 @@ class CropOptimizerService:
                     duration=duration,
                 )
             )
+        best_combinations = sorted(
+            best_combinations, key=lambda comb: comb.estimated_yield_per_hectar, reverse=True
+        )
         return CropOptimizerResultDTO(
-            best_combinations=combinations,
+            best_combinations=best_combinations[:3],
             forecast=forecast,
         )
 
@@ -461,9 +467,9 @@ class CropOptimizerService:
                 )
 
         best_combinations = sorted(
-            best_combinations, key=lambda comb: comb.estimated_yield_per_hectar
+            best_combinations, key=lambda comb: comb.estimated_yield_per_hectar, reverse=True
         )
 
         return CropOptimizerResultDTO(
-            best_combinations=best_combinations, forecast=forecast
+            best_combinations=best_combinations[:3], forecast=forecast
         )

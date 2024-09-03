@@ -85,7 +85,7 @@ const Locations: React.FC<LocationsProps> = () => {
     }
 
 
-    return <Box sx={{ paddingTop: 2, paddingRight: 16, paddingLeft: 16, flexGrow: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
+    return <Box sx={{ paddingTop: 2, paddingRight: 16, paddingLeft: 16, overflow: "scroll", flexGrow: 1, width: "100%", height: "100%", display: "flex", flexDirection: "column", gap: 2 }}>
         {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
         {
             isLoading
