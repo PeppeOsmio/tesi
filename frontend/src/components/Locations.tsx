@@ -23,7 +23,7 @@ const Locations: React.FC<LocationsProps> = () => {
     const updateLocations = async (isActive: () => boolean) => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
         while (isActive()) {
-            axios.get<ZappaiLocation[]>(`${import.meta.env.VITE_API_URL!}/api/locations`, {
+            await axios.get<ZappaiLocation[]>(`${import.meta.env.VITE_API_URL!}/api/locations`, {
                 headers: {
                     "Authorization": `Bearer ${zappai_access_token}`
                 }
@@ -33,6 +33,7 @@ const Locations: React.FC<LocationsProps> = () => {
                 console.log(error);
                 setErrorMessage(error.toString());
             });
+            setIsLoading(false);
             await new Promise((resolve) => setTimeout(resolve, 30000));
         }
     }

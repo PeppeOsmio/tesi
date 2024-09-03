@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { Typography, Grid, Card, CardContent, CardMedia, Button, Box, CardActionArea, Alert, CircularProgress } from '@mui/material';
 import { Crop, ZappaiLocation } from '../utils/types';
 import axios from 'axios';
@@ -25,10 +25,12 @@ const cropPhotoMap = new Map<string, string>([
 const ChooseCrop: React.FC = () => {
     const { locationId } = useParams<{ locationId: string }>();
 
+    const navigate = useNavigate();
+
     const [location, setLocation] = useState<ZappaiLocation | null>(null);
     const [crops, setCrops] = useState<Crop[] | null>(null);
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
-    const [isLoading, setIsLoading] = useState(false);
+    const [isLoading, setIsLoading] = useState(true);
 
     // State to keep track of the selected crop
     const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
@@ -36,7 +38,7 @@ const ChooseCrop: React.FC = () => {
     const loadData = async () => {
         const zappai_access_token = localStorage.getItem("zappai_access_token");
 
-        Promise.all([axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
+        await axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
             headers: {
                 Authorization: `Bearer ${zappai_access_token}`
             }
@@ -55,10 +57,9 @@ const ChooseCrop: React.FC = () => {
             setErrorMessage(null);
         }).catch((error) => {
             setErrorMessage(error.toString());
-        }), ])
-        ;
+        })
 
-        axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
+        await axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
             headers: {
                 Authorization: `Bearer ${zappai_access_token}`
             }
@@ -78,10 +79,12 @@ const ChooseCrop: React.FC = () => {
         }).catch((error) => {
             setErrorMessage(error.toString());
         });
+
+        setIsLoading(false);
     }
 
     useEffect(() => {
-
+        loadData();
     }, [])
 
     const handleCardClick = (cropName: string) => {
@@ -89,25 +92,23 @@ const ChooseCrop: React.FC = () => {
     };
 
     const handleMakePrediction = () => {
-        console.log('Making prediction for:', locationId);
-        console.log('Selected crop:', selectedCrop);
-        // Handle prediction logic here
+        navigate(`/predictions?locationId=${locationId}&cropName=${selectedCrop}`);
     };
 
     return (
         <Box sx={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", paddingLeft: 16, paddingRight: 16, paddingTop: 2 }}>
             {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
             {
-                crops === null || location === null
-                    ? <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
+                isLoading
+                    ? <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
                         <CircularProgress sx={{}}></CircularProgress>
                     </Box>
                     : <>
                         <Typography variant="h4" sx={{ marginBottom: 4 }}>
-                            Choose a crop to make predictions for location "{location.name}, {location.country}"
+                            Choose a crop to make predictions for location "{location!.name}, {location!.country}"
                         </Typography>
                         <Grid container spacing={2}>
-                            {crops.map((crop) => (
+                            {crops!.map((crop) => (
                                 <Grid item key={crop.name}>
                                     <Card
                                         sx={{

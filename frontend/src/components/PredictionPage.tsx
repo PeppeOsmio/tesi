@@ -11,15 +11,16 @@ const PredictionPage: React.FC = () => {
     const [searchParams] = useSearchParams();
     const cropName = searchParams.get('cropName');
     const locationId = searchParams.get('locationId');
-    
+
     const [predictions, setPredictions] = useState<PredictionsResponse | null>(null);
     const [selectedForecast, setSelectedForecast] = useState<string>('temperature2m');
     const [errorMessage, setErrorMessage] = useState<string | null>(null);
+    const [isLoading, setIsLoading] = useState(true);
 
     useEffect(() => {
         if (!cropName || !locationId) {
-            setError('Missing cropName or locationId parameter');
-            setLoading(false);
+            setErrorMessage('Missing cropName or locationId parameter');
+            setIsLoading(false);
             return;
         }
         // Fetch predictions data from the backend
@@ -30,8 +31,11 @@ const PredictionPage: React.FC = () => {
             }
         })
             .then((response) => {
+                console.log(response);
+
                 setPredictions(response.data);
                 setErrorMessage(null);
+                setIsLoading(false);
             })
             .catch((error) => {
                 console.error('Error fetching predictions:', error);
@@ -59,8 +63,11 @@ const PredictionPage: React.FC = () => {
     return (
         <Box sx={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", justifyContent: "start", alignItems: "center", paddingLeft: 16, paddingRight: 16, paddingTop: 2 }}>
             {errorMessage !== null ? <Alert severity="error" style={{}}>{errorMessage}</Alert> : <></>}
-            {predictions === null
-                ? <CircularProgress></CircularProgress>
+            {isLoading
+                ? <Box sx={{ display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "center", flexGrow: 1 }}>
+                    Evaluating prediction...
+                    <CircularProgress sx={{}}></CircularProgress>
+                </Box>
                 : <Box sx={{ padding: 2 }}>
                     <Typography variant="h4" gutterBottom>
                         Prediction Results
@@ -80,7 +87,7 @@ const PredictionPage: React.FC = () => {
                                 </TableRow>
                             </TableHead>
                             <TableBody>
-                                {predictions.bestCombinations.map((combination, index) => (
+                                {predictions!.bestCombinations.map((combination, index) => (
                                     <TableRow key={index}>
                                         <TableCell>{`${combination.sowingMonth}/${combination.sowingYear}`}</TableCell>
                                         <TableCell>{`${combination.harvestMonth}/${combination.harvestYear}`}</TableCell>

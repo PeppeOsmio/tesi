@@ -1,7 +1,9 @@
 from __future__ import annotations
-from concurrent.futures import ProcessPoolExecutor, as_completed
+import asyncio
+from concurrent.futures import ProcessPoolExecutor, ThreadPoolExecutor, as_completed
 from dataclasses import dataclass
 import multiprocessing
+from threading import Thread
 from typing import Callable, cast
 from uuid import UUID
 
@@ -41,6 +43,27 @@ import random
 Individual = list[bool]
 Population = list[Individual]
 FitnessCallback = Callable[[Individual], float]
+
+
+def run_genetic_algorithm(forecast_df: pd.DataFrame, crop: CropDTO, model: RandomForestRegressor):
+    def on_population_created(i: int, population: Population):
+        print(f"\rPopulation {i}/20 processed", end="")
+        if i == 20:
+            print()
+
+    ga = CropGeneticAlgorithm(
+        chromosome_length=10,
+        population_size=20,
+        mutation_rate=0.01,
+        crossover_rate=0.7,
+        generations=20,
+        forecast_df=forecast_df,
+        crop=crop,
+        model=model,
+        on_population_created=on_population_created,
+        parallel_workers=1,
+    )
+    return ga.run()
 
 
 class CropGeneticAlgorithm:
@@ -315,27 +338,14 @@ class CropOptimizerService:
         forecast_df = ClimateDataDTO.from_list_to_dataframe(forecast)
         forecast_df = forecast_df.drop(columns=["location_id"])
 
-        def on_population_created(i: int, population: Population):
-            print(f"\rPopulation {i}/20 processed", end="")
-            if i == 20:
-                print()
-
-        ga = CropGeneticAlgorithm(
-            chromosome_length=10,
-            population_size=20,
-            mutation_rate=0.01,
-            crossover_rate=0.7,
-            generations=20,
-            forecast_df=forecast_df,
-            crop=crop,
-            model=model,
-            on_population_created=on_population_created,
-            parallel_workers=1,
-        )
-
         combinations: list[SowingAndHarvestingDTO] = []
 
-        results, fitnesses = ga.run()
+        loop = asyncio.get_running_loop()
+
+        with ProcessPoolExecutor() as pool:
+            results, fitnesses = await loop.run_in_executor(
+                pool, run_genetic_algorithm, forecast_df, crop, model
+            )
 
         for i in range(len(results)):
             result = results[i]
@@ -407,15 +417,9 @@ class CropOptimizerService:
                     end_month=harvest_month,
                 )
 
-                print(
-                    f"Trying {sowing_year}/{sowing_month} - {harvest_year}/{harvest_month}, duration={duration}"
-                )
-
                 if duration < crop.min_farming_months:
-                    print(f"Too short")
                     continue
                 if duration > crop.max_farming_months:
-                    print(f"Too long")
                     continue
 
                 forecast_for_combination = forecast_df.iloc[i:j]
@@ -445,7 +449,6 @@ class CropOptimizerService:
                 estimated_yield_per_hectar = cast(RandomForestRegressor, model).predict(
                     x_df[CROP_YIELD_MODEL_FEATURES].to_numpy()
                 )[0]
-                print(f"Est. yield: {estimated_yield_per_hectar}")
                 best_combinations.append(
                     SowingAndHarvestingDTO(
                         sowing_year=sowing_year,
