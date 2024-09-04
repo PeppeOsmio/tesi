@@ -21,11 +21,11 @@ const Locations: React.FC<LocationsProps> = () => {
     const navigate = useNavigate();
 
     const updateLocations = async (isActive: () => boolean) => {
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
         while (isActive()) {
             await axios.get<ZappaiLocation[]>(`${import.meta.env.VITE_API_URL!}/api/locations`, {
                 headers: {
-                    "Authorization": `Bearer ${zappai_access_token}`
+                    "Authorization": `Bearer ${zappaiAccessToken}`
                 }
             }).then((response) => {
                 setLocations(response.data);
@@ -51,8 +51,8 @@ const Locations: React.FC<LocationsProps> = () => {
     }, []);
 
     const onDeleteLocation = (location: ZappaiLocation) => {
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
-        axios.delete(`${import.meta.env.VITE_API_URL!}/api/locations/${location.id}`, { headers: { Authorization: `Bearer ${zappai_access_token}` } })
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
+        axios.delete(`${import.meta.env.VITE_API_URL!}/api/locations/${location.id}`, { headers: { Authorization: `Bearer ${zappaiAccessToken}` } })
             .then(
                 () => {
                     setLocations(old => old?.filter(loc => loc.id !== location.id) ?? null);
@@ -63,8 +63,8 @@ const Locations: React.FC<LocationsProps> = () => {
     }
 
     const onDownloadData = (location: ZappaiLocation) => {
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
-        axios.get(`${import.meta.env.VITE_API_URL!}/api/locations/past_climate_data/${location.id}`, { headers: { Authorization: `Bearer ${zappai_access_token}` } })
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
+        axios.get(`${import.meta.env.VITE_API_URL!}/api/locations/past_climate_data/${location.id}`, { headers: { Authorization: `Bearer ${zappaiAccessToken}` } })
             .then(
                 () => {
                     setLocations(old => old?.map((loc) => {

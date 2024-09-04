@@ -148,9 +148,8 @@ class AuthTokenRepository:
         if user_id != executor_id: # and not is_admin:
             raise PermissionError()
         stmt = (
-            update(AuthToken)
+            delete(AuthToken)
             .where(AuthToken.token == token.encode())
-            .values((AuthToken.is_valid, False))
         )
         await session.execute(stmt)
 
@@ -168,9 +167,8 @@ class AuthTokenRepository:
         ):
             raise UserNotFoundError()
         stmt = (
-            update(AuthToken)
+            delete(AuthToken)
             .where(AuthToken.user_id == user_id)
-            .values((AuthToken.is_valid, False))
         )
         await session.execute(stmt)
 

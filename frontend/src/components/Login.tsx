@@ -39,7 +39,7 @@ const Login: React.FC = () => {
                 }
                 try {
                     const response = await axios.post<LoginResponse>(`${import.meta.env.VITE_API_URL}/auth/`, new URLSearchParams({ username: username, password: password }), { withCredentials: true });
-                    localStorage.setItem('zappai_access_token', response.data.access_token);
+                    localStorage.setItem('zappaiAccessToken', response.data.access_token);
                     const user = await getUserInfo();
                     authContext!.setCurrentUser(user);
                     // set user to inform main component to display nav bar

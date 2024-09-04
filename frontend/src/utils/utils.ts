@@ -8,7 +8,7 @@ interface GetUserInfoResponse {
 
 export async function getUserInfo(): Promise<User | null> {
     try {
-        const token = localStorage.getItem('zappai_access_token');
+        const token = localStorage.getItem('zappaiAccessToken');
         if (token === null) {
             return null;
         }

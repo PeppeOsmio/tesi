@@ -16,7 +16,7 @@ from tesi.users.repositories import UserRepository
 from tesi.users.di import get_user_repository
 from tesi.users.schemas import UsersCountResponse
 
-user_router = APIRouter(prefix="/user")
+user_router = APIRouter(prefix="/users")
 
 
 @user_router.post(
@@ -89,7 +89,7 @@ async def get_user_details(
     )
 
 
-@user_router.get("/", response_model=list[UserDetailsResponse])
+@user_router.get("", response_model=list[UserDetailsResponse])
 async def get_users(
     session_maker: Annotated[async_sessionmaker, Depends(get_session_maker)],
     _: Annotated[UserDTO | None, Depends(get_current_user)],

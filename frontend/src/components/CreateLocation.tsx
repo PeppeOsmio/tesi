@@ -44,12 +44,12 @@ const LocationForm: React.FC = () => {
 
     const handleSubmit = (e: FormEvent) => {
         e.preventDefault();
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
         axios.post<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations`,
             { country: country, name: name, longitude: longitude, latitude: latitude },
             {
                 headers: {
-                    Authorization: `Bearer ${zappai_access_token}`
+                    Authorization: `Bearer ${zappaiAccessToken}`
                 }
             }).then((response) => {
                 navigate("/locations");

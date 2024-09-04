@@ -7,6 +7,7 @@ import { Box } from '@mui/material';
 import CreateLocation from './CreateLocation';
 import ChooseCrop from './ChooseCrop';
 import PredictionPage from './PredictionPage';
+import UsersList from './UsersList';
 
 export const MainPage: React.FC = () => {
     return (
@@ -27,7 +28,7 @@ export const MainPage: React.FC = () => {
                 <Route path="/predictions" element={<PredictionPage/>}/>
                 <Route path="/users" element={
                     <ProtectedRoute>
-                        <Locations />
+                        <UsersList />
                     </ProtectedRoute>
                 } />
                 <Route path="/" element={<Navigate to="/locations" />} />

@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { ClimateDataDetails, PredictionsResponse, ZappaiLocation } from '../utils/types';
 import { Alert, Box, CircularProgress, MenuItem, Paper, Select, SelectChangeEvent, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography, Grid } from '@mui/material';
@@ -23,10 +23,10 @@ const PredictionPage: React.FC = () => {
             return;
         }
 
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
         await axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             }
         }).then((response) => {
             setLocation(response.data);
@@ -37,7 +37,7 @@ const PredictionPage: React.FC = () => {
 
         await axios.get<PredictionsResponse>(`${import.meta.env.VITE_API_URL!}/api/predictions`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             },
             params: {
                 crop_name: cropName,
@@ -61,6 +61,34 @@ const PredictionPage: React.FC = () => {
 
     const handleForecastChange = (event: SelectChangeEvent<{ value: unknown }>) => {
         setSelectedForecast(event.target.value as string);
+    };
+
+    // Mapping of climate variable keys to display names
+    const displayNames: { [key: string]: string } = {
+        temperature2M: 'Temperature (2m) [K]',
+        totalPrecipitation: 'Total Precipitation [m]',
+        surfaceSolarRadiationDownwards: 'Surface Solar Radiation Downwards [W/m²]',
+        surfaceThermalRadiationDownwards: 'Surface Thermal Radiation Downwards [W/m²]',
+        surfaceNetSolarRadiation: 'Surface Net Solar Radiation [W/m²]',
+        surfaceNetThermalRadiation: 'Surface Net Thermal Radiation [W/m²]',
+        totalCloudCover: 'Total Cloud Cover [%]',
+        dewpointTemperature2M: 'Dewpoint Temperature (2m) [K]',
+        soilTemperatureLevel3: 'Soil Temperature (Level 3) [K]',
+        volumetricSoilWaterLayer3: 'Volumetric Soil Water (Layer 3) [m³/m³]',
+    };
+
+    // Descriptions for each climate variable
+    const descriptions: { [key: string]: string } = {
+        temperature2M: 'The temperature of the air at 2 meters above the surface of the Earth, measured in Kelvin (K).',
+        totalPrecipitation: 'The total amount of precipitation (rain, snow, etc.) accumulated over time, measured in meters (m).',
+        surfaceSolarRadiationDownwards: 'The total amount of solar radiation that reaches the surface of the Earth, measured in watts per square meter (W/m²).',
+        surfaceThermalRadiationDownwards: 'The total thermal radiation emitted by the atmosphere towards the surface, measured in watts per square meter (W/m²).',
+        surfaceNetSolarRadiation: 'The net balance of solar radiation at the surface, which is the incoming solar radiation minus the reflected portion, measured in watts per square meter (W/m²).',
+        surfaceNetThermalRadiation: 'The net balance of thermal radiation at the surface, measured in watts per square meter (W/m²).',
+        totalCloudCover: 'The fraction of the sky covered by clouds, measured as a percentage (%).',
+        dewpointTemperature2M: 'The temperature at which air becomes saturated with moisture and dew begins to form, measured at 2 meters above the surface in Kelvin (K).',
+        soilTemperatureLevel3: 'The temperature of the soil at level 3, which corresponds to a specific depth, measured in Kelvin (K).',
+        volumetricSoilWaterLayer3: 'The amount of water in the soil at level 3, measured as the volume of water per volume of soil (m³/m³).',
     };
 
     return (
@@ -103,7 +131,8 @@ const PredictionPage: React.FC = () => {
                                     <TableRow key={index}>
                                         <TableCell>{`${combination.sowingMonth}/${combination.sowingYear}`}</TableCell>
                                         <TableCell>{`${combination.harvestMonth}/${combination.harvestYear}`}</TableCell>
-                                        <TableCell>{combination.estimatedYieldPerHectar}</TableCell>
+                                        {/* Round the estimated yield to the nearest integer */}
+                                        <TableCell>{Math.round(combination.estimatedYieldPerHectar)}</TableCell>
                                         <TableCell>{combination.duration}</TableCell>
                                     </TableRow>
                                 ))}
@@ -118,17 +147,18 @@ const PredictionPage: React.FC = () => {
                     <Grid container spacing={2} alignItems="center" sx={{ marginBottom: 4 }}>
                         <Grid item xs={12} md={3}>
                             <Select title={selectedForecast} fullWidth value={selectedForecast as any} onChange={handleForecastChange}>
-                                <MenuItem value="temperature2M">Temperature (2m)</MenuItem>
-                                <MenuItem value="totalPrecipitation">Total Precipitation</MenuItem>
-                                <MenuItem value="surfaceSolarRadiationDownwards">Surface Solar Radiation Downwards</MenuItem>
-                                <MenuItem value="surfaceThermalRadiationDownwards">Surface Thermal Radiation Downwards</MenuItem>
-                                <MenuItem value="surfaceNetSolarRadiation">Surface Net Solar Radiation</MenuItem>
-                                <MenuItem value="surfaceNetThermalRadiation">Surface Net Thermal Radiation</MenuItem>
-                                <MenuItem value="totalCloudCover">Total Cloud Cover</MenuItem>
-                                <MenuItem value="dewpointTemperature2M">Dewpoint Temperature (2m)</MenuItem>
-                                <MenuItem value="soilTemperatureLevel3">Soil Temperature (Level 3)</MenuItem>
-                                <MenuItem value="volumetricSoilWaterLayer3">Volumetric Soil Water (Layer 3)</MenuItem>
+                                {/* Dynamically map display names for the forecast options */}
+                                {Object.keys(displayNames).map((key) => (
+                                    <MenuItem key={key} value={key}>
+                                        {displayNames[key]}
+                                    </MenuItem>
+                                ))}
                             </Select>
+
+                            {/* Display description of the selected forecast */}
+                            <Typography variant="body1" sx={{ marginTop: 2 }}>
+                                {descriptions[selectedForecast]}
+                            </Typography>
                         </Grid>
                         <Grid item xs={12} md={9}>
                             <LineChart

@@ -36,11 +36,11 @@ const ChooseCrop: React.FC = () => {
     const [selectedCrop, setSelectedCrop] = useState<string | null>(null);
 
     const loadData = async () => {
-        const zappai_access_token = localStorage.getItem("zappai_access_token");
+        const zappaiAccessToken = localStorage.getItem("zappaiAccessToken");
 
         await axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             }
         }).then((response) => {
             setCrops(response.data);
@@ -50,7 +50,7 @@ const ChooseCrop: React.FC = () => {
         });
         axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             }
         }).then((response) => {
             setCrops(response.data);
@@ -61,7 +61,7 @@ const ChooseCrop: React.FC = () => {
 
         await axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             }
         }).then((response) => {
             setLocation(response.data);
@@ -71,7 +71,7 @@ const ChooseCrop: React.FC = () => {
         });
         axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
             headers: {
-                Authorization: `Bearer ${zappai_access_token}`
+                Authorization: `Bearer ${zappaiAccessToken}`
             }
         }).then((response) => {
             setCrops(response.data);

@@ -246,13 +246,15 @@ class CropGeneticAlgorithm:
 
             best_fitnesses.append(best_fitness)
             best_individuals.append(best_individual)
-            if self.on_population_processed is not None:
-                self.on_population_processed(self.generations, population)
+        
+        if self.on_population_processed is not None:
+        
+            self.on_population_processed(self.generations, population)
 
         
         return best_individuals, best_fitnesses
 
-
+ 
 def randbool() -> bool:
     return random.randint(0, 1) == 1
 
@@ -347,8 +349,6 @@ class CropOptimizerService:
             results, fitnesses = await loop.run_in_executor(
                 pool, run_genetic_algorithm, forecast_df, crop, model
             )
-
-        print(results)
 
         for i in range(len(results)):
             result = results[i]
