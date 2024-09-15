@@ -1,354 +1,354 @@
-country,name,longitude,latitude,created_at,soil_type_name
-Algeria,Setif,5.33,36.13,2024-07-20T10:12:29.646422,Loam
-Argentina,"Buenos Aires province, Balcarce",-58.3,-37.75,2024-07-20T10:12:29.649036,Clay loam
-Argentina,"Buenos Aires province, Drabble",-62.0,-35.0,2024-07-20T10:12:29.652373,Sandy clay loam
-Argentina,"Buenos Aires province, Partido de Esteban Echeverría",-58.47,-34.84,2024-07-20T10:12:29.655075,Clay loam
-Argentina,"La Plata, Estacion Experimental J. Hirschhorn",-57.95,-34.92,2024-07-20T10:12:29.658020,Clay loam
-Argentina,Pampas,-60.35,-35.37,2024-07-20T10:12:29.660555,Sandy clay loam
-Argentina,"Semiarid Pampean Region, Anguil Experimental Station ",-63.82,-36.5,2024-07-20T10:12:29.663487,Loam
-Australia,Biloela,150.87,-24.62,2024-07-20T10:12:29.665581,Loam
-Australia,Munglinup (south coast western australia),120.8,-33.58,2024-07-20T10:12:29.667810,Sandy loam
-Australia,"Queensland, Gindie",148.15,-23.48,2024-07-20T10:12:29.670120,Clay loam
-Australia,"Victoria, Boxwood",145.75,-36.3,2024-07-20T10:12:29.672011,Loam
-Australia,"Victoria, Rutherglen",146.42,-36.1,2024-07-20T10:12:29.674164,Sandy clay loam
-Australia,"Victoria, Walpeup (Mallee Research Station)",141.98,-35.12,2024-07-20T10:12:29.676513,Sandy loam
-Australia,"Western Australia, Merredin",118.37,-30.5,2024-07-20T10:12:29.678662,Sandy loam
-Bangladesh,Dhaka city,90.13,24.38,2024-07-20T10:12:29.681322,Loam
-Bangladesh,Rajshahi,88.0,25.0,2024-07-20T10:12:29.683528,Loam
-Belgium,Bottelare,3.75,50.96,2024-07-20T10:12:29.685507,Loam
-Belgium,Maulde,3.57,50.62,2024-07-20T10:12:29.688249,Loam
-Bolivia,Santa Cruz,-63.0,-17.85,2024-07-20T10:12:29.690334,Clay loam
-Brazil,Lages,-50.3,-27.78,2024-07-20T10:12:29.692439,Clay
-Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-51.18,-23.18,2024-07-20T10:12:29.694788,Clay
-Brazil,Planaltina,-47.7,-15.59,2024-07-20T10:12:29.696868,Sandy clay
-Brazil,"Rio Grande do Sul state, Rio Grande do Sul (Federal University)",-51.65,-30.08,2024-07-20T10:12:29.699135,Sandy clay loam
-Brazil,"Santa Catarina, Lages",-50.32,-27.8,2024-07-20T10:12:29.701499,Clay
-Burkina Faso,Gampela,-1.35,12.42,2024-07-20T10:12:29.704746,Sandy loam
-Cameroon,Mfou,11.8,3.95,2024-07-20T10:12:29.707417,Sandy clay loam
-Canada,"Alberta, Alliance",-111.78,52.44,2024-07-20T10:12:29.709471,Loam
-Canada,"Alberta, Beaverlodge",-119.53,55.18,2024-07-20T10:12:29.712039,Clay loam
-Canada,"Alberta, Beaverlodge",-119.38,55.2,2024-07-20T10:12:29.714104,Clay loam
-Canada,"Alberta, Breton",-114.47,53.12,2024-07-20T10:12:29.719300,Loam
-Canada,"Alberta, Elk Point",-110.9,53.9,2024-07-20T10:12:29.721402,Loam
-Canada,"Alberta, Ellerslie",-113.55,53.42,2024-07-20T10:12:29.723847,Loam
-Canada,"Alberta, Hairy Hill",-111.98,53.76,2024-07-20T10:12:29.725948,Loam
-Canada,"Alberta, Lethbridge",-112.8,49.7,2024-07-20T10:12:29.728068,Silt loam
-Canada,"Alberta, Plamondon",-112.34,54.85,2024-07-20T10:12:29.730621,Clay loam
-Canada,"Alberta, Rycroft",-118.68,55.72,2024-07-20T10:12:29.732577,Clay loam
-Canada,"Alberta, Three Hills",-113.22,51.7,2024-07-20T10:12:29.734798,Loam
-Canada,"Alberta, Vauxhall",-112.11,50.07,2024-07-20T10:12:29.737374,Silt loam
-Canada,"Alberta, Vegreville (Agriculture Canada, Soils and Crops Substation, east-central Alberta)",-112.1,53.5,2024-07-20T10:12:29.739531,Loam
-Canada,"Alberta, Wainwright",-110.86,52.83,2024-07-20T10:12:29.742117,Loam
-Canada,"British Columbia, Dawson Creek",-120.35,55.7,2024-07-20T10:12:29.744237,Loam
-Canada,"Manitoba, Brandon Research and Development Center?",-99.96,49.86,2024-07-20T10:12:29.750556,Loam
-Canada,"Ontario, Acton",-80.03,43.63,2024-07-20T10:12:29.753104,Loam
-Canada,"Ontario, Centralia",-81.47,43.28,2024-07-20T10:12:29.758348,Clay loam
-Canada,"Ontario, Delhi",-80.52,42.87,2024-07-20T10:12:29.763699,Sandy loam
-Canada,"Ontario, Fingal",-85.33,51.33,2024-07-20T10:12:29.769232,Clay
-Canada,"Ontario, Kirkton",-81.5,43.32,2024-07-20T10:12:29.772798,Clay loam
-Canada,"Ontario, Milton",-79.94,43.52,2024-07-20T10:12:29.775866,Loam
-Canada,"Ontario, Paris",-80.08,43.0,2024-07-20T10:12:29.778984,Sandy loam
-Canada,"Ontario, Woodslee",-82.73,42.22,2024-07-20T10:12:29.782447,Clay loam
-Canada,Ottwa,-75.72,45.37,2024-07-20T10:12:29.788996,Clay loam
-Canada,"Quebec, L'Acadie Experimental farm",-73.35,45.3,2024-07-20T10:12:29.791992,Loam
-Canada,"Quebec, Ormstown",-73.83,45.12,2024-07-20T10:12:29.796418,Sandy loam
-Canada,"Quebec, Quebec City",-71.38,47.38,2024-07-20T10:12:29.798755,Sandy loam
-Canada,"Quebec, Rosalie",-72.9,45.63,2024-07-20T10:12:29.802910,Loam
-Canada,"Quebec, Ste. Anne de Bellevue",-73.58,45.5,2024-07-20T10:12:29.806603,Loam
-Canada,"Quebec, Ste. Anne de Bellevue",-73.93,45.42,2024-07-20T10:12:29.809318,Loam
-Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",-73.75,45.47,2024-07-20T10:12:29.811531,Loam
-Canada,"Saskatchewan, Cantuar",-108.0,50.38,2024-07-20T10:12:29.813615,Loam
-Canada,"Saskatchewan, Melfort",-104.6,52.85,2024-07-20T10:12:29.817876,Clay loam
-Canada,"Saskatchewan, Star City",-104.33,52.87,2024-07-20T10:12:29.823844,Clay loam
-Canada,"Saskatchewan, Star City",-104.85,53.35,2024-07-20T10:12:29.827459,Loam
-Canada,"Saskatchewan, Stewart Valley",-107.81,50.6,2024-07-20T10:12:29.829740,Loam
-Canada,"Saskatchewan, Swift Current",-106.4,53.02,2024-07-20T10:12:29.834254,Silt loam
-Canada,"Saskatchewan, Swift Current (clay site, 50 km north of Swift Current)",-107.79,50.29,2024-07-20T10:12:29.837755,Loam
-Canada,"Saskatchewan, Tisdale",-106.5,50.78,2024-07-20T10:12:29.841379,Loam
-Canada,"Woodslee, Ontario",-87.75,42.21,2024-07-20T10:12:29.843665,Loam
-China,Chongming Island,121.56,31.68,2024-07-20T10:12:29.845944,Loam
-China,"Dongping, Shandong Province",116.36,35.89,2024-07-20T10:12:29.847935,Loam
-China,Gansu,102.94,37.34,2024-07-20T10:12:29.852542,Loam
-China,"Gansu, Dingxi Experiment Station",136.93,35.15,2024-07-20T10:12:29.854553,Clay loam
-China,"Gansu, Dingxi Experiment Station",104.73,35.47,2024-07-20T10:12:29.856637,Loam
-China,"Gansu, Gansu Agricultural University",103.08,37.5,2024-07-20T10:12:29.860016,Loam
-China,"Gansu, Zhangye",100.75,39.55,2024-07-20T10:12:29.862132,Loam
-China,Henan Province,113.9,35.3,2024-07-20T10:12:29.864367,Loam
-China,Henan Province,114.4,35.0,2024-07-20T10:12:29.866404,Loam
-China,"Henan Province, Henan University",112.98,33.58,2024-07-20T10:12:29.868552,Clay loam
-China,"Henan Province, Luoyang, Songzhuang village",113.0,34.5,2024-07-20T10:12:29.874260,Loam
-China,"Henan province, Yuzhou",113.25,34.27,2024-07-20T10:12:29.877288,Sandy loam
-China,"Heyang, Shaanxi",110.1,35.33,2024-07-20T10:12:29.879795,Loam
-China,"Hubei province, Xiaonan County, Xushan Village",113.93,30.98,2024-07-20T10:12:29.884053,Loam
-China,"Hunan Province, Changsha",113.07,28.18,2024-07-20T10:12:29.889852,Clay loam
-China,"Jiangsu Province, Changshu agro-ecological experiment station",120.68,31.53,2024-07-20T10:12:29.891934,Loam
-China,"Jiangxi province, Yujiang county",116.92,28.25,2024-07-20T10:12:29.894279,Clay loam
-China,"Jianyang, Sichuan",104.6,30.4,2024-07-20T10:12:29.896250,Loam
-China,Lanzhou,107.85,35.65,2024-07-20T10:12:29.898325,Loam
-China,"Ningxiang, hunan",112.6,28.6,2024-07-20T10:12:29.900437,Clay loam
-China,Shaanxi,106.07,35.32,2024-07-20T10:12:29.903623,Loam
-China,Shandong,117.98,36.97,2024-07-20T10:12:29.905890,Loam
-China,Shanxi,111.28,35.33,2024-07-20T10:12:29.910040,Loam
-China,Shanxi Province,110.13,35.55,2024-07-20T10:12:29.912311,Loam
-China,"Shanxi Province, Linfen, Chenghuang",112.07,37.53,2024-07-20T10:12:29.914330,Loam
-China,"Shanxi Province, Shouyang",112.5,37.5,2024-07-20T10:12:29.916542,Loam
-China,"Shanxi Province, Tunliu",113.0,36.0,2024-07-20T10:12:29.918663,Loam
-China,Shouyang,113.17,37.9,2024-07-20T10:12:29.920628,Loam
-China,"Tai'an, Shandong Province",117.15,36.15,2024-07-20T10:12:29.924004,Loam
-China,"Wuxue City, Hubei Province",115.55,29.85,2024-07-20T10:12:29.926496,Clay loam
-China,"Xifeng, Qingyang City",107.87,35.67,2024-07-20T10:12:29.928846,Loam
-Croatia,Central Pannonian agricultural subregion,17.86,45.61,2024-07-20T10:12:29.931049,Loam
-Croatia,Daruvar,17.03,45.55,2024-07-20T10:12:29.932973,Loam
-Croatia,Fericanci,17.98,45.53,2024-07-20T10:12:29.934857,Loam
-Croatia,Osijek,18.69,45.55,2024-07-20T10:12:29.937097,Loam
-Croatia,Stagnosols,17.02,45.93,2024-07-20T10:12:29.939306,Loam
-Croatia,Zagreb,17.43,45.83,2024-07-20T10:12:29.941252,Loam
-Czech Republic,"Ivanovice na Hane, Research station of the Research Institute of Plant Production",17.09,49.31,2024-07-20T10:12:29.943320,Loam
-Czech Republic,Milhostov ,21.92,48.76,2024-07-20T10:12:29.945349,Clay loam
-Denmark,Foulum,9.58,56.49,2024-07-20T10:12:29.947383,Sandy loam
-Denmark,Foulum,9.57,56.5,2024-07-20T10:12:29.949667,Sandy loam
-Ethiopia,Bahir Dar,37.38,11.59,2024-07-20T10:12:29.951785,Clay loam
-Ethiopia,Meki,38.85,8.18,2024-07-20T10:12:29.953874,Clay loam
-Finland,Ruuki Research Station of MTT Agrifood Research,25.08,64.68,2024-07-20T10:12:29.956184,Sandy clay loam
-France,Grignon (INRA),1.15,48.15,2024-07-20T10:12:29.958197,Loam
-Germany,"Ihinger Hof, University of Hohenheim experiment station",9.03,48.12,2024-07-20T10:12:29.960082,Loam
-Germany,Mincheberg,14.12,52.85,2024-07-20T10:12:29.962369,Sandy loam
-Germany,Muncheberg,15.12,52.52,2024-07-20T10:12:29.964467,Sandy loam
-Ghana,"Kwadaso, Ashanti",-1.67,6.67,2024-07-20T10:12:29.966369,Sandy clay loam
-Greece,Thessaloniki,22.8,40.63,2024-07-20T10:12:29.968405,Clay loam
-Hungary,"Szent István University,  Gödöllő",19.6,47.68,2024-07-20T10:12:29.970466,Loam
-India,Ballowal Saunkhri,75.91,31.53,2024-07-20T10:12:29.972501,Loam
-India,"Haryana, Karnal",76.97,29.72,2024-07-20T10:12:29.974544,Loam
-India,"Haryana, Kaul",76.68,29.85,2024-07-20T10:12:29.976602,Loam
-India,Jabalpur,79.97,24.5,2024-07-20T10:12:29.980864,Clay loam
-India,Jhansi,78.55,25.45,2024-07-20T10:12:29.982952,Sandy clay loam
-India,"Ludhiana, Punjab Agricultural Research Farm",75.8,30.9,2024-07-20T10:12:29.990819,Loam
-India,"Ludhiana, Punjab Agricultural University",75.87,30.83,2024-07-20T10:12:29.992718,Loam
-India,"Ludhiana, Punjab Agricultural University Farm",75.87,30.93,2024-07-20T10:12:29.995939,Loam
-India,"Madhya Pradesh, Datia (Soil and Water Conservation Research and Training Institute)",78.47,25.67,2024-07-20T10:12:29.998026,Sandy clay loam
-India,New Delhi,77.2,28.67,2024-07-20T10:12:30.003422,Loam
-India,New Delhi,77.16,28.64,2024-07-20T10:12:30.005439,Loam
-India,New Delhi,77.18,28.63,2024-07-20T10:12:30.007714,Loam
-India,"New Delhi (Indian Agricultural Research Institute, Pusa, New Delhi)",77.15,28.63,2024-07-20T10:12:30.013418,Loam
-India,"Odisha, Cuttack",85.87,20.46,2024-07-20T10:12:30.015637,Sandy loam
-India,"Patna, Bihar",85.22,25.62,2024-07-20T10:12:30.017533,Loam
-India,"Samastipus, Bihar",85.4,25.58,2024-07-20T10:12:30.019768,Loam
-India,Tripura ,91.32,23.9,2024-07-20T10:12:30.021823,Loam
-India,"Uttar Banga Krishi Viswavidyalaya, West Bengal",89.38,26.4,2024-07-20T10:12:30.023875,Loam
-India,"Uttar Pradesh, Meerut, Modipuram",77.77,29.07,2024-07-20T10:12:30.030481,Loam
-India,"Uttar Pradesh, SVP University",77.75,29.02,2024-07-20T10:12:30.032801,Loam
-India,"Uttar Pradesh, Varanasi (Banaras Hindu University)",83.02,25.3,2024-07-20T10:12:30.035220,Loam
-India,"Uttarakhand, Pantnagar",79.52,29.02,2024-07-20T10:12:30.037388,Loam
-India,"Uttarakhand, Pantnagar (Govind Ballabh Pant University of Agriculture and Technology)",79.49,29.02,2024-07-20T10:12:30.039563,Loam
-Iran,"East Azerbaijan, Maragheh",46.33,37.2,2024-07-20T10:12:30.044777,Loam
-Iran,"Rasht, Guilan Province Agricultural and Natural Resources Research Center",49.62,37.45,2024-07-20T10:12:30.046956,Clay loam
-Italy,Emilla-Romagna,10.77,44.71,2024-07-20T10:12:30.048902,Loam
-Italy,Foggia,15.53,41.47,2024-07-20T10:12:30.051018,Loam
-Italy,Fruili Venezia Giulia,13.35,46.05,2024-07-20T10:12:30.053083,Loam
-Italy,Piacenza,9.7,45.0,2024-07-20T10:12:30.055044,Loam
-Italy,Piedmont,8.13,45.22,2024-07-20T10:12:30.057312,Loam
-Italy,"Po Valley, Terranova dei Passerini",9.68,45.2,2024-07-20T10:12:30.059455,Loam
-Italy,Policoro,16.65,40.16,2024-07-20T10:12:30.061403,Loam
-Italy,Teramo,13.87,42.7,2024-07-20T10:12:30.063405,Loam
-Italy,Vasto,14.63,42.17,2024-07-20T10:12:30.065401,Loam
-Italy,Veneto,12.76,45.63,2024-07-20T10:12:30.067413,Sandy loam
-Italy,Veneto Region low plain,11.88,45.05,2024-07-20T10:12:30.069298,Loam
-Japan,Fukushima,140.38,37.72,2024-07-20T10:12:30.071348,Loam
-Japan,"Shiga Prefecture, Hikone",136.22,35.25,2024-07-20T10:12:30.073232,Loam
-Japan,Tsukuba,140.1,36.02,2024-07-20T10:12:30.075209,Clay loam
-Kenya,Embu,37.27,-0.52,2024-07-20T10:12:30.077140,Clay
-Kenya,Mbeere,37.75,-0.75,2024-07-20T10:12:30.079241,Clay loam
-Malawi,"Chitedze Research Station, Chitedze",33.65,-13.97,2024-07-20T10:12:30.081107,Sandy clay loam
-Malawi,Mangochi,35.25,-14.49,2024-07-20T10:12:30.083043,Clay loam
-Malawi,"Manjawira EPA, Balaka section",34.88,-14.93,2024-07-20T10:12:30.084897,Sandy clay loam
-Malawi,"Manjawira EPA, Ntonda section",34.73,-14.97,2024-07-20T10:12:30.086848,Sandy loam
-Malawi,Mzimba,33.59,-11.9,2024-07-20T10:12:30.088881,Sandy clay loam
-Malawi,Salima,34.46,-13.78,2024-07-20T10:12:30.091094,Clay loam
-Mexico,Celaya,-101.32,20.73,2024-07-20T10:12:30.093227,Clay loam
-Mexico,Ciudad Obregon,-109.15,27.55,2024-07-20T10:12:30.095191,Loam
-Mexico,Coahuila,-100.98,25.38,2024-07-20T10:12:30.097168,Sandy loam
-Mexico,El Batán,-98.83,19.52,2024-07-20T10:12:30.102521,Loam
-Mexico,"Morelos, Tlaltizapan (CIMMYT)",-99.13,18.68,2024-07-20T10:12:30.104505,Sandy loam
-Morocco,Casablanca,-7.57,33.53,2024-07-20T10:12:30.106629,Clay loam
-New Zealand,"Lincoln, Canterbury",172.45,-42.63,2024-07-20T10:12:30.108757,Sandy loam
-Nigeria,Akure,5.17,7.25,2024-07-20T10:12:30.110679,Sandy clay loam
-Nigeria,Ibadan,3.92,7.58,2024-07-20T10:12:30.114748,Sandy clay loam
-Nigeria,Ibadan (International Institute of Tropical Agriculture),3.9,7.5,2024-07-20T10:12:30.117951,Sandy clay loam
-Nigeria,Kadawa (Irrigation Research Station),8.25,11.13,2024-07-20T10:12:30.119895,Loam
-Nigeria,Onne,7.02,4.72,2024-07-20T10:12:30.122117,Loam
-Norway,"Drobak, Hauer",10.66,59.67,2024-07-20T10:12:30.124364,Sandy loam
-Norway,"Kapp, Apelsvoll Research Centre",10.85,60.7,2024-07-20T10:12:30.126430,Sandy loam
-Pakistan,Faisalabad,73.07,31.42,2024-07-20T10:12:30.128476,Loam
-Pakistan,Faisalabad,72.03,31.38,2024-07-20T10:12:30.130548,Loam
-Pakistan,"Peshawar, Khyber Pakhtunkhwa Agricultural University",71.47,34.02,2024-07-20T10:12:30.132507,Loam
-Philippines,"Los Banos, IRRI",121.23,14.17,2024-07-20T10:12:30.134661,Loam
-Poland,Jelcz-Laskowice,17.35,51.03,2024-07-20T10:12:30.136780,Loam
-Poland,Poznan,16.28,52.43,2024-07-20T10:12:30.138950,Sandy loam
-Poland,"Poznań University of Life Sciences, Poznan",16.9,52.43,2024-07-20T10:12:30.141102,Sandy loam
-Romania,"Cluj County, Turda Agricultural Research and Development Station (Colegiul EMIL NEGRUTIU Turda)",23.79,46.57,2024-07-20T10:12:30.146542,Loam
-Romania,Fundulea,26.52,44.45,2024-07-20T10:12:30.148624,Clay loam
-Rwanda,Bugesera,30.25,-2.35,2024-07-20T10:12:30.150639,Clay
-Serbia,"Belgrade, Zemun Polje",20.33,44.87,2024-07-20T10:12:30.152676,Loam
-South Africa,Eastern Cape,27.83,-32.78,2024-07-20T10:12:30.154929,Loam
-South Africa,KwaZulu-Natal Province,29.55,-28.92,2024-07-20T10:12:30.156962,Clay loam
-South Africa,Langgewewens Experimental Farm,18.7,-33.28,2024-07-20T10:12:30.158988,Sandy loam
-South Africa,Lowveld,32.35,-20.35,2024-07-20T10:12:30.161131,Sandy clay
-South Africa,Pietermaritzburg,30.28,-29.53,2024-07-20T10:12:30.163169,Sandy clay loam
-Spain,Agramunt,1.12,41.8,2024-07-20T10:12:30.165310,Loam
-Spain,Alcala´ de Henares,-3.33,40.53,2024-07-20T10:12:30.167630,Sandy loam
-Spain,Banastas,-0.45,42.18,2024-07-20T10:12:30.169640,Loam
-Spain,Candasnos,0.13,41.5,2024-07-20T10:12:30.171801,Loam
-Spain,"Catalonia, El Canos",0.83,41.17,2024-07-20T10:12:30.173926,Loam
-Spain,Cordoba,-4.52,37.77,2024-07-20T10:12:30.175872,Clay loam
-Spain,El Canos,1.2,41.68,2024-07-20T10:12:30.177909,Clay loam
-Spain,Guissona,1.27,41.77,2024-07-20T10:12:30.180012,Loam
-Spain,Hijar ,-0.45,41.18,2024-07-20T10:12:30.182181,Clay loam
-Spain,Pefiaflor ,-5.33,37.7,2024-07-20T10:12:30.184652,Clay loam
-Spain,Selvanera,1.28,41.82,2024-07-20T10:12:30.186823,Loam
-Spain,"Zaragoza, Estacion Experimental de Aula Dei",-0.77,41.73,2024-07-20T10:12:30.188801,Loam
-Spain,Zuera,-0.78,41.86,2024-07-20T10:12:30.191248,Loam
-Sweden,Uppsala (Säby),17.0,59.9,2024-07-20T10:12:30.193279,Loam
-Sweden,Uppsala (Ultuna),17.66,59.81,2024-07-20T10:12:30.195311,Loam
-Switzerland,Agroscope Changins,6.23,46.4,2024-07-20T10:12:30.197441,Loam
-Syria,Breda,37.17,35.93,2024-07-20T10:12:30.199532,Clay loam
-Tanzania,Dodoma,35.73,-5.17,2024-07-20T10:12:30.201582,Sandy clay loam
-Turkey,"Adana, Cukorova University Ag Experiment Station",35.35,37.0,2024-07-20T10:12:30.204407,Clay loam
-Turkey,Diyarbakir Province,40.27,37.88,2024-07-20T10:12:30.206642,Clay loam
-Turkey,Kahramanmaras province (Kahramanmaras Sutcu Imam Universitesi),36.93,37.58,2024-07-20T10:12:30.208513,Loam
-UK,"Berkshire, Englefield",-1.12,51.42,2024-07-20T10:12:30.210798,Loam
-UK,Dundee,-3.08,56.46,2024-07-20T10:12:30.212845,Loam
-UK,"Edinburgh (Thornton Mains farm, 10 km SE of Edinburgh)",-3.21,55.94,2024-07-20T10:12:30.221916,Sandy loam
-UK,Northampton,0.87,52.58,2024-07-20T10:12:30.224035,Sandy clay loam
-UK,Oxfordshire (SU 248947),-1.64,51.65,2024-07-20T10:12:30.229311,Loam
-UK,Wye,0.93,51.17,2024-07-20T10:12:30.231566,Loam
-USA,"Alabama, Belle Mina",-86.87,34.68,2024-07-20T10:12:30.233808,Loam
-USA,"Alabama, Crossville",-85.97,34.28,2024-07-20T10:12:30.235883,Loam
-USA,"Alabama, Sand Mountain Substation",-86.9,32.32,2024-07-20T10:12:30.237977,Clay
-USA,"Alabama, Sand Mountain Substation",-86.02,34.3,2024-07-20T10:12:30.240245,Loam
-USA,"Alabama, Shorter",-85.88,32.42,2024-07-20T10:12:30.242662,Clay loam
-USA,"Alaska, Delta Junction",-145.33,63.9,2024-07-20T10:12:30.246849,Loam
-USA,"Alaska, Delta Junction (Delta Agricultural Project)",-147.87,64.82,2024-07-20T10:12:30.250037,Loam
-USA,"Arkansas, Colt (Pine Tree Branch Experiment Station)",-90.74,35.14,2024-07-20T10:12:30.252034,Loam
-USA,"Arlington, Wisconsin",-98.33,43.3,2024-07-20T10:12:30.253865,Loam
-USA,"Bossier City, Louisiana",-93.64,32.42,2024-07-20T10:12:30.255848,Loam
-USA,Clarke County (University of Georgia Horseshoe Bend LTREB Agroecosystem),-83.35,33.93,2024-07-20T10:12:30.257905,Loam
-USA,"Colorado, Akron",-103.15,40.15,2024-07-20T10:12:30.259849,Loam
-USA,"Colorado, Fort Collins",-104.98,40.65,2024-07-20T10:12:30.262196,Loam
-USA,"Florida, Gainesville",-82.32,29.69,2024-07-20T10:12:30.264277,Loam
-USA,"Florida, Quincy (Univ of FL North Florida Research and Education Center)",-84.55,30.6,2024-07-20T10:12:30.266256,Sandy loam
-USA,"Georgia, Fort Valley",-83.85,32.53,2024-07-20T10:12:30.268334,Sandy loam
-USA,"Georgia, Watkinsville",-83.0,33.0,2024-07-20T10:12:30.270360,Sandy clay loam
-USA,"Georgia, Watkinsville",-83.42,34.03,2024-07-20T10:12:30.272198,Loam
-USA,"Holdrege, Nebraska",-99.38,40.43,2024-07-20T10:12:30.274361,Loam
-USA,"Hoytville, Ohio",-84.15,41.48,2024-07-20T10:12:30.276478,Loam
-USA,"Idaho, Genesee (University of Idaho Kambitsch Farm)",-116.95,46.59,2024-07-20T10:12:30.278472,Loam
-USA,Illinois,-88.9,40.1,2024-07-20T10:12:30.282681,Loam
-USA,"Illinois, Belleville (Southern Illinois University Belleville Research Center)",-89.84,38.52,2024-07-20T10:12:30.284882,Loam
-USA,"Illinois, Carbondale (Southern Illinois University Agronomy Research Center)",-89.24,37.7,2024-07-20T10:12:30.287008,Loam
-USA,"Illinois, Dixon Springs Ag Research Center",-88.75,37.47,2024-07-20T10:12:30.289111,Loam
-USA,"Indiana, Davis Purdue Agricultural Research Center",-85.15,40.25,2024-07-20T10:12:30.291265,Loam
-USA,"Indiana, Lafayette",-86.87,40.42,2024-07-20T10:12:30.293348,Loam
-USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",-86.98,40.47,2024-07-20T10:12:30.295456,Loam
-USA,"Indiana, Purdue U Agronomy Farm",-86.15,38.08,2024-07-20T10:12:30.297478,Loam
-USA,"Indiana, Southeast Purdue Agricultural Research Center",-85.52,39.03,2024-07-20T10:12:30.299637,Loam
-USA,"Indiana, West Lafayette",-86.92,40.43,2024-07-20T10:12:30.303713,Loam
-USA,"Iowa, Ames",-93.62,42.03,2024-07-20T10:12:30.309262,Loam
-USA,"Iowa, Ames (Marsden Iowa State University research farm)",-93.78,42.02,2024-07-20T10:12:30.314564,Loam
-USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",18.73,45.53,2024-07-20T10:12:30.319911,Loam
-USA,"Iowa, Benton",-94.35,40.7,2024-07-20T10:12:30.321945,Loam
-USA,"Iowa, Carroll",-94.85,42.07,2024-07-20T10:12:30.324033,Loam
-USA,"Iowa, Grundy",-92.85,42.43,2024-07-20T10:12:30.326101,Loam
-USA,"Iowa, Linn",-91.67,42.07,2024-07-20T10:12:30.328125,Loam
-USA,"Iowa, Nashua",-92.5,43.0,2024-07-20T10:12:30.330423,Loam
-USA,"Iowa, Nashua",-82.12,43.02,2024-07-20T10:12:30.333620,Clay
-USA,"Iowa, Nashua",-93.75,42.02,2024-07-20T10:12:30.336845,Loam
-USA,"Iowa, Nashua (Northeast Research and Demonstration Farm)",-92.57,42.94,2024-07-20T10:12:30.341995,Loam
-USA,"Jackson, Tennessee",-88.83,35.62,2024-07-20T10:12:30.344007,Loam
-USA,"Kansas State University Southwest Research-Extension Center near Tribune, Kansas",-101.75,38.47,2024-07-20T10:12:30.346095,Loam
-USA,"Kansas, Bourbon County",-94.9,37.88,2024-07-20T10:12:30.347927,Loam
-USA,"Kansas, Garden City (Southwest Reseach-Extension Center)",-100.82,37.99,2024-07-20T10:12:30.349821,Sandy loam
-USA,"Kansas, Marshall County",-96.5,39.8,2024-07-20T10:12:30.351945,Loam
-USA,"Kansas, Riley County",-96.7,39.3,2024-07-20T10:12:30.353994,Loam
-USA,"Kansas, Saline County",-97.65,38.92,2024-07-20T10:12:30.356041,Loam
-USA,"Kansas, Tribue (Southwest Research and Extension Center)",-101.77,38.47,2024-07-20T10:12:30.357987,Sandy loam
-USA,Kentucky,-84.87,38.19,2024-07-20T10:12:30.361153,Loam
-USA,"Kentucky, Adairville",-86.8,36.6,2024-07-20T10:12:30.363072,Loam
-USA,"Kentucky, Bowling Green",-86.44,36.99,2024-07-20T10:12:30.365042,Loam
-USA,"Kentucky, Frankfort",-80.78,43.15,2024-07-20T10:12:30.367090,Loam
-USA,"Kentucky, Lexington",-84.5,38.0,2024-07-20T10:12:30.369077,Loam
-USA,"Kentucky, Princeton",-84.25,37.87,2024-07-20T10:12:30.371099,Loam
-USA,"Kentucky, Princeton",-81.55,35.92,2024-07-20T10:12:30.373107,Loam
-USA,"Lamberton, Minnesota",-95.27,44.23,2024-07-20T10:12:30.375219,Loam
-USA,"Louisiana, Winnsboro, LSU Macon Ridge Research Station",-92.13,31.28,2024-07-20T10:12:30.377432,Loam
-USA,"Maryland, Beltsville",-76.9,39.05,2024-07-20T10:12:30.379523,Loam
-USA,"Maryland, Beltsville ",-76.65,39.08,2024-07-20T10:12:30.381486,Sandy clay loam
-USA,"Maryland, Wye Mills (Univeristy of Maryland Wye Research and Education Center)",-76.15,38.91,2024-07-20T10:12:30.383634,Loam
-USA,"Michigan, Clarksville (Clarskville Experiment Station)",-85.26,42.87,2024-07-20T10:12:30.385784,Loam
-USA,"Michigan, KBS LTER",-85.4,42.4,2024-07-20T10:12:30.387755,Loam
-USA,"Michigan, KBS LTER",-85.58,44.35,2024-07-20T10:12:30.389890,Sandy loam
-USA,"Minnesota, New Richland",-93.51,43.87,2024-07-20T10:12:30.391977,Loam
-USA,"Minnesota, Rosemount",-93.12,44.73,2024-07-20T10:12:30.393953,Loam
-USA,"Minnesota, Rosemount",-93.07,44.75,2024-07-20T10:12:30.395945,Loam
-USA,"Minnesota, Waseca",-93.52,44.07,2024-07-20T10:12:30.398271,Loam
-USA,"Minnesota, Waseca",-93.54,44.09,2024-07-20T10:12:30.400314,Loam
-USA,"Mississippi, Holly Springs",-89.4,32.45,2024-07-20T10:12:30.402415,Loam
-USA,"Mississippi, Stoneville",-90.92,33.42,2024-07-20T10:12:30.404482,Clay loam
-USA,"Missouri, Columbia",-92.2,38.89,2024-07-20T10:12:30.406535,Loam
-USA,"Missouri, Novelty",-92.19,40.02,2024-07-20T10:12:30.408557,Loam
-USA,"Monmouth, Illinois",-90.72,40.92,2024-07-20T10:12:30.411840,Loam
-USA,"Monmouth, Illinois",-90.72,45.92,2024-07-20T10:12:30.413996,Loam
-USA,"Montana, Culbertson",-104.83,48.55,2024-07-20T10:12:30.416056,Loam
-USA,"Nashua, Iowa",-92.53,42.95,2024-07-20T10:12:30.418128,Loam
-USA,"Nebraska, Clay Center (South Central Research and Extension Center)",-98.06,40.52,2024-07-20T10:12:30.422491,Loam
-USA,"Nebraska, Concord",-99.87,41.55,2024-07-20T10:12:30.424545,Sandy loam
-USA,"Nebraska, Lincoln",-99.87,41.52,2024-07-20T10:12:30.426613,Sandy loam
-USA,"Nebraska, Lincoln",-96.67,40.8,2024-07-20T10:12:30.428683,Loam
-USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",-96.47,40.85,2024-07-20T10:12:30.430684,Loam
-USA,"Nebraska, Mead (University of Nebraska Agricultural Research Center)",-96.5,41.12,2024-07-20T10:12:30.432783,Loam
-USA,"Nebraska, North Platte",-100.75,41.12,2024-07-20T10:12:30.434779,Sandy loam
-USA,"Nebraska, RMF",-96.47,40.83,2024-07-20T10:12:30.437958,Loam
-USA,"New York, Aurora",-76.58,42.75,2024-07-20T10:12:30.440140,Loam
-USA,"New York, Willsboro",-73.26,44.22,2024-07-20T10:12:30.442310,Loam
-USA,"North Carolina, Oxford",-78.58,36.32,2024-07-20T10:12:30.444331,Loam
-USA,"North Carolina, Reidsville",-79.68,36.34,2024-07-20T10:12:30.446465,Loam
-USA,"North Dakota, Carrington (NDSU Research Extension Center)",-99.12,47.46,2024-07-20T10:12:30.448446,Loam
-USA,"North Dakota, Mandan",-100.88,46.82,2024-07-20T10:12:30.450464,Loam
-USA,"Ohio, Hoytville",-83.77,41.22,2024-07-20T10:12:30.452521,Loam
-USA,"Ohio, South Charleston",-83.6,39.75,2024-07-20T10:12:30.454486,Loam
-USA,"Ohio, Wooster",-81.92,45.87,2024-07-20T10:12:30.456551,Loam
-USA,Oklahoma,-98.01,35.54,2024-07-20T10:12:30.458597,Loam
-USA,"Oklahoma (Alfalfa, Garfield, Kingfisher)",-97.13,35.07,2024-07-20T10:12:30.460539,Loam
-USA,"Oklahoma, Altus",-99.33,34.63,2024-07-20T10:12:30.462621,Loam
-USA,"Oklahoma, Efaw",-94.82,33.88,2024-07-20T10:12:30.464913,Loam
-USA,"Oklahoma, El Reno (USDA Grazinglands Research Laboratory)",-97.96,35.54,2024-07-20T10:12:30.466887,Loam
-USA,"Oklahoma, Lahoma",-97.5,35.47,2024-07-20T10:12:30.469074,Loam
-USA,"Oregon, Corvallis",-123.24,44.57,2024-07-20T10:12:30.471145,Loam
-USA,"Oregon, Pendleton",-118.63,45.72,2024-07-20T10:12:30.473103,Loam
-USA,"Oregon, Pendleton, CBARC",-118.6,45.7,2024-07-20T10:12:30.475189,Loam
-USA,"Pennsylvania, Centre County",-77.95,40.73,2024-07-20T10:12:30.477256,Loam
-USA,"Pennsylvania, Kutztown (Rodale Institute Experimental Farm)",-75.78,40.52,2024-07-20T10:12:30.479258,Loam
-USA,"Pennsylvania, State College",-77.87,40.8,2024-07-20T10:12:30.481316,Loam
-USA,"Perry, Illnois",-90.82,39.8,2024-07-20T10:12:30.483474,Loam
-USA,Piedmont,-79.69,36.38,2024-07-20T10:12:30.485461,Loam
-USA,"Sidnet, Montana",-104.27,47.77,2024-07-20T10:12:30.487652,Loam
-USA,"South Carolina, Blackville",-81.55,34.58,2024-07-20T10:12:30.489645,Loam
-USA,"South Carolina, Florence",-79.73,34.3,2024-07-20T10:12:30.491657,Loam
-USA,"South Carolina, Florence",-80.22,34.48,2024-07-20T10:12:30.493735,Loam
-USA,"South Dakota, Brookings",-96.79,44.31,2024-07-20T10:12:30.495758,Loam
-USA,"Tennessee, Jackson (West Tennessee Experiment Station)",-88.85,35.62,2024-07-20T10:12:30.499838,Loam
-USA,"Tennessee, Jackson (West Tennessee Research and Education Center?)",-88.85,35.63,2024-07-20T10:12:30.503073,Loam
-USA,"Texas, Burleson County (Brazos River floodplain)",-96.43,30.54,2024-07-20T10:12:30.505166,Loam
-USA,"Texas, Bushland (Conservation and Production Research Laboratory)",-102.08,35.18,2024-07-20T10:12:30.510716,Loam
-USA,"Texas, Halfway",-101.95,34.18,2024-07-20T10:12:30.512978,Loam
-USA,"Texas, Lubbock (Texas Agricultural Experiment Station)",-101.83,33.69,2024-07-20T10:12:30.514952,Sandy loam
-USA,"Texas, Temple (Grassland Soil and Water Research Lab)",-97.33,31.08,2024-07-20T10:12:30.517031,Clay
-USA,"Washington, Ritzville (Wellsandt farm)",-118.31,47.17,2024-07-20T10:12:30.519337,Loam
-USA,"Wisconsin, Arena",-89.92,43.18,2024-07-20T10:12:30.521325,Loam
-USA,"Wisconsin, Arlington",-89.37,43.33,2024-07-20T10:12:30.523392,Loam
-USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",-89.35,43.3,2024-07-20T10:12:30.528533,Loam
-USA,"Wisconsin, Janesville and Waunakee",-88.77,43.95,2024-07-20T10:12:30.530848,Loam
-USA,"Wooster, Ohio",-83.25,40.42,2024-07-20T10:12:30.533141,Loam
-Zimbabwe,Harare,31.17,-17.62,2024-07-20T10:12:30.535211,Sandy clay loam
-Zimbabwe,"Harare, Domboshawa Training Centre",31.23,-19.58,2024-07-20T10:12:30.537268,Sandy loam
-Zimbabwe,Mashonaland East province,31.65,-17.72,2024-07-20T10:12:30.539229,Sandy clay loam
-Zimbabwe,Murewa,31.57,-17.82,2024-07-20T10:12:30.541142,Sandy loam
+country,name,longitude,latitude,created_at,is_downloading_past_climate_data
+Algeria,Setif,5.33,36.13,2024-08-20T10:57:35.580229,False
+Argentina,"Buenos Aires province, Balcarce",-58.3,-37.75,2024-08-20T10:57:35.583100,False
+Argentina,"Buenos Aires province, Drabble",-62.0,-35.0,2024-08-20T10:57:35.584697,False
+Argentina,"Buenos Aires province, Partido de Esteban Echeverría",-58.47,-34.84,2024-08-20T10:57:35.586326,False
+Argentina,"La Plata, Estacion Experimental J. Hirschhorn",-57.95,-34.92,2024-08-20T10:57:35.587857,False
+Argentina,Pampas,-60.35,-35.37,2024-08-20T10:57:35.589494,False
+Tanzania,Dodoma,35.73,-5.17,2024-08-20T10:57:35.986339,False
+India,New Delhi,77.18,28.63,2024-08-20T10:57:35.832956,False
+India,"New Delhi (Indian Agricultural Research Institute, Pusa, New Delhi)",77.15,28.63,2024-08-20T10:57:35.836858,False
+India,"Odisha, Cuttack",85.87,20.46,2024-08-20T10:57:35.838464,False
+India,"Patna, Bihar",85.22,25.62,2024-08-20T10:57:35.840018,False
+Canada,"Ontario, Kirkton",-81.5,43.32,2024-08-20T10:57:35.666252,False
+China,"Wuxue City, Hubei Province",115.55,29.85,2024-08-20T10:57:35.770790,False
+Italy,Policoro,16.65,40.16,2024-08-20T10:57:35.874959,False
+Turkey,"Adana, Cukorova University Ag Experiment Station",35.35,37.0,2024-08-20T10:57:35.987850,False
+USA,"Texas, Bushland (Conservation and Production Research Laboratory)",-102.08,35.18,2024-08-20T10:57:36.224069,False
+USA,"Texas, Halfway",-101.95,34.18,2024-08-20T10:57:36.225837,False
+USA,"Texas, Lubbock (Texas Agricultural Experiment Station)",-101.83,33.69,2024-08-20T10:57:36.227393,False
+Mexico,Coahuila,-100.98,25.38,2024-08-20T10:57:35.904242,False
+Mexico,El Batán,-98.83,19.52,2024-08-20T10:57:35.908267,False
+Brazil,Lages,-50.3,-27.78,2024-08-20T10:57:35.613169,False
+Sweden,Uppsala (Ultuna),17.66,59.81,2024-08-20T10:57:35.981420,False
+USA,"Indiana, Lafayette, Purdue Univeristy Agronomy Research Center",-86.98,40.47,2024-08-20T10:57:36.057922,False
+Italy,Veneto Region low plain,11.88,45.05,2024-08-20T10:57:35.881367,False
+Italy,Fruili Venezia Giulia,13.35,46.05,2024-08-20T10:57:35.868465,False
+Italy,Piacenza,9.7,45.0,2024-08-20T10:57:35.870094,False
+USA,"Wisconsin, Arlington (Arlington Agricultural Research Station)",-89.35,43.3,2024-08-20T10:57:36.237464,False
+USA,"Wisconsin, Janesville and Waunakee",-88.77,43.95,2024-08-20T10:57:36.239040,False
+USA,"Wooster, Ohio",-83.25,40.42,2024-08-20T10:57:36.241425,False
+Zimbabwe,Harare,31.17,-17.62,2024-08-20T10:57:36.243153,False
+USA,"Illinois, Dixon Springs Ag Research Center",-88.75,37.47,2024-08-20T10:57:36.052798,False
+Italy,Foggia,15.53,41.47,2024-08-20T10:57:35.866723,False
+USA,"Texas, Temple (Grassland Soil and Water Research Lab)",-97.33,31.08,2024-08-20T10:57:36.228939,False
+USA,"Washington, Ritzville (Wellsandt farm)",-118.31,47.17,2024-08-20T10:57:36.230453,False
+USA,"Wisconsin, Arena",-89.92,43.18,2024-08-20T10:57:36.232031,False
+Croatia,Osijek,18.69,45.55,2024-08-20T10:57:35.778915,False
+USA,"Kentucky, Lexington",-84.5,38.0,2024-08-20T10:57:36.115001,False
+USA,"Kentucky, Princeton",-84.25,37.87,2024-08-20T10:57:36.116871,False
+USA,"Alaska, Delta Junction (Delta Agricultural Project)",-147.87,64.82,2024-08-20T10:57:36.021186,False
+USA,"Florida, Quincy (Univ of FL North Florida Research and Education Center)",-84.55,30.6,2024-08-20T10:57:36.035269,False
+Mexico,"Morelos, Tlaltizapan (CIMMYT)",-99.13,18.68,2024-08-20T10:57:35.910157,False
+USA,"Kansas, Saline County",-97.65,38.92,2024-08-20T10:57:36.103367,False
+UK,Wye,0.93,51.17,2024-08-20T10:57:36.007855,False
+India,"Uttarakhand, Pantnagar (Govind Ballabh Pant University of Agriculture and Technology)",79.49,29.02,2024-08-20T10:57:35.857523,False
+Germany,Mincheberg,14.12,52.85,2024-08-20T10:57:35.798337,False
+Turkey,Kahramanmaras province (Kahramanmaras Sutcu Imam Universitesi),36.93,37.58,2024-08-20T10:57:35.990905,False
+UK,"Berkshire, Englefield",-1.12,51.42,2024-08-20T10:57:35.992487,False
+UK,Dundee,-3.08,56.46,2024-08-20T10:57:35.993961,False
+UK,"Edinburgh (Thornton Mains farm, 10 km SE of Edinburgh)",-3.21,55.94,2024-08-20T10:57:35.999824,False
+Poland,Jelcz-Laskowice,17.35,51.03,2024-08-20T10:57:35.935325,False
+Poland,Poznan,16.28,52.43,2024-08-20T10:57:35.938006,False
+USA,"Iowa, Nashua",-92.5,43.0,2024-08-20T10:57:36.084040,False
+China,"Dongping, Shandong Province",116.36,35.89,2024-08-20T10:57:35.713186,False
+Canada,Ottwa,-75.72,45.37,2024-08-20T10:57:35.674343,False
+New Zealand,"Lincoln, Canterbury",172.45,-42.63,2024-08-20T10:57:35.913619,False
+Nigeria,Akure,5.17,7.25,2024-08-20T10:57:35.915147,False
+Nigeria,Ibadan,3.92,7.58,2024-08-20T10:57:35.918509,False
+Nigeria,Ibadan (International Institute of Tropical Agriculture),3.9,7.5,2024-08-20T10:57:35.920485,False
+Nigeria,Kadawa (Irrigation Research Station),8.25,11.13,2024-08-20T10:57:35.922044,False
+Nigeria,Onne,7.02,4.72,2024-08-20T10:57:35.923846,False
+Norway,"Drobak, Hauer",10.66,59.67,2024-08-20T10:57:35.925435,False
+Norway,"Kapp, Apelsvoll Research Centre",10.85,60.7,2024-08-20T10:57:35.926984,False
+USA,"Iowa, Grundy",-92.85,42.43,2024-08-20T10:57:36.080697,False
+Canada,"Quebec, Ste. Anne de Bellevue",-73.93,45.42,2024-08-20T10:57:35.685060,False
+Canada,"Quebec, Ste. Anne de Bellevue (MacDonald Farm)",-73.75,45.47,2024-08-20T10:57:35.686770,False
+Canada,"Saskatchewan, Cantuar",-108.0,50.38,2024-08-20T10:57:35.688290,False
+Canada,"Saskatchewan, Melfort",-104.6,52.85,2024-08-20T10:57:35.692120,False
+Canada,"Saskatchewan, Star City",-104.33,52.87,2024-08-20T10:57:35.696191,False
+Canada,"Saskatchewan, Star City",-104.85,53.35,2024-08-20T10:57:35.698534,False
+Greece,Thessaloniki,22.8,40.63,2024-08-20T10:57:35.803420,False
+Japan,Fukushima,140.38,37.72,2024-08-20T10:57:35.882887,False
+Japan,"Shiga Prefecture, Hikone",136.22,35.25,2024-08-20T10:57:35.884398,False
+Malawi,"Chitedze Research Station, Chitedze",33.65,-13.97,2024-08-20T10:57:35.890634,False
+USA,"Arkansas, Colt (Pine Tree Branch Experiment Station)",-90.74,35.14,2024-08-20T10:57:36.022901,False
+USA,"Arlington, Wisconsin",-98.33,43.3,2024-08-20T10:57:36.024671,False
+USA,"Bossier City, Louisiana",-93.64,32.42,2024-08-20T10:57:36.026535,False
+USA,"Indiana, West Lafayette",-86.92,40.43,2024-08-20T10:57:36.064361,False
+USA,"Wisconsin, Arlington",-89.37,43.33,2024-08-20T10:57:36.233776,False
+USA,"Georgia, Fort Valley",-83.85,32.53,2024-08-20T10:57:36.036817,False
+USA,"Georgia, Watkinsville",-83.0,33.0,2024-08-20T10:57:36.038491,False
+USA,"Georgia, Watkinsville",-83.42,34.03,2024-08-20T10:57:36.040080,False
+USA,"Holdrege, Nebraska",-99.38,40.43,2024-08-20T10:57:36.041705,False
+USA,"Hoytville, Ohio",-84.15,41.48,2024-08-20T10:57:36.043485,False
+USA,"Idaho, Genesee (University of Idaho Kambitsch Farm)",-116.95,46.59,2024-08-20T10:57:36.045057,False
+USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",18.73,45.53,2024-08-20T10:57:36.075781,False
+Canada,"Alberta, Beaverlodge",-119.53,55.18,2024-08-20T10:57:35.625239,False
+Morocco,Casablanca,-7.57,33.53,2024-08-20T10:57:35.911999,False
+USA,"Indiana, Davis Purdue Agricultural Research Center",-85.15,40.25,2024-08-20T10:57:36.054558,False
+India,"Uttar Pradesh, Varanasi (Banaras Hindu University)",83.02,25.3,2024-08-20T10:57:35.853685,False
+India,"Uttarakhand, Pantnagar",79.52,29.02,2024-08-20T10:57:35.855823,False
+USA,"Colorado, Akron",-103.15,40.15,2024-08-20T10:57:36.030163,False
+USA,Piedmont,-79.69,36.38,2024-08-20T10:57:36.205063,False
+USA,"South Carolina, Florence",-79.73,34.3,2024-08-20T10:57:36.210350,False
+Zimbabwe,"Harare, Domboshawa Training Centre",31.23,-19.58,2024-08-20T10:57:36.244912,False
+Zimbabwe,Murewa,31.57,-17.82,2024-08-20T10:57:36.247964,False
+USA,"Iowa, Nashua",-93.75,42.02,2024-08-20T10:57:36.088041,False
+Brazil,Planaltina,-47.7,-15.59,2024-08-20T10:57:35.616223,False
+Brazil,"Rio Grande do Sul state, Rio Grande do Sul (Federal University)",-51.65,-30.08,2024-08-20T10:57:35.617736,False
+Brazil,"Santa Catarina, Lages",-50.32,-27.8,2024-08-20T10:57:35.619231,False
+Burkina Faso,Gampela,-1.35,12.42,2024-08-20T10:57:35.620758,False
+Canada,"Alberta, Elk Point",-110.9,53.9,2024-08-20T10:57:35.632347,False
+Canada,"Alberta, Ellerslie",-113.55,53.42,2024-08-20T10:57:35.634075,False
+Canada,"Alberta, Hairy Hill",-111.98,53.76,2024-08-20T10:57:35.635687,False
+USA,"Iowa, Nashua",-82.12,43.02,2024-08-20T10:57:36.085996,False
+USA,"Iowa, Nashua (Northeast Research and Demonstration Farm)",-92.57,42.94,2024-08-20T10:57:36.091441,False
+USA,"Jackson, Tennessee",-88.83,35.62,2024-08-20T10:57:36.092964,False
+USA,"Kansas State University Southwest Research-Extension Center near Tribune, Kansas",-101.75,38.47,2024-08-20T10:57:36.094527,False
+Canada,"Saskatchewan, Stewart Valley",-107.81,50.6,2024-08-20T10:57:35.700680,False
+Canada,"Saskatchewan, Swift Current",-106.4,53.02,2024-08-20T10:57:35.703857,False
+Canada,"Saskatchewan, Swift Current (clay site, 50 km north of Swift Current)",-107.79,50.29,2024-08-20T10:57:35.706067,False
+Canada,"Saskatchewan, Tisdale",-106.5,50.78,2024-08-20T10:57:35.708471,False
+Canada,"Woodslee, Ontario",-87.75,42.21,2024-08-20T10:57:35.710039,False
+China,Chongming Island,121.56,31.68,2024-08-20T10:57:35.711615,False
+China,Gansu,102.94,37.34,2024-08-20T10:57:35.716152,False
+USA,"Kansas, Tribue (Southwest Research and Extension Center)",-101.77,38.47,2024-08-20T10:57:36.104927,False
+USA,Kentucky,-84.87,38.19,2024-08-20T10:57:36.107708,False
+USA,"Kentucky, Adairville",-86.8,36.6,2024-08-20T10:57:36.109604,False
+USA,"Kentucky, Bowling Green",-86.44,36.99,2024-08-20T10:57:36.111259,False
+USA,"Kentucky, Frankfort",-80.78,43.15,2024-08-20T10:57:36.113064,False
+USA,"Kentucky, Princeton",-81.55,35.92,2024-08-20T10:57:36.118462,False
+India,New Delhi,77.16,28.64,2024-08-20T10:57:35.831300,False
+Italy,Teramo,13.87,42.7,2024-08-20T10:57:35.876418,False
+Italy,Vasto,14.63,42.17,2024-08-20T10:57:35.878352,False
+Italy,Veneto,12.76,45.63,2024-08-20T10:57:35.879834,False
+India,Ballowal Saunkhri,75.91,31.53,2024-08-20T10:57:35.806629,False
+Pakistan,"Peshawar, Khyber Pakhtunkhwa Agricultural University",71.47,34.02,2024-08-20T10:57:35.931931,False
+Australia,"Queensland, Gindie",148.15,-23.48,2024-08-20T10:57:35.596109,False
+Australia,"Victoria, Boxwood",145.75,-36.3,2024-08-20T10:57:35.598151,False
+India,"Samastipus, Bihar",85.4,25.58,2024-08-20T10:57:35.841589,False
+Japan,Tsukuba,140.1,36.02,2024-08-20T10:57:35.885952,False
+Kenya,Embu,37.27,-0.52,2024-08-20T10:57:35.887551,False
+Canada,"Ontario, Woodslee",-82.73,42.22,2024-08-20T10:57:35.671139,False
+Iran,"Rasht, Guilan Province Agricultural and Natural Resources Research Center",49.62,37.45,2024-08-20T10:57:35.862611,False
+Spain,Hijar ,-0.45,41.18,2024-08-20T10:57:35.971901,False
+Croatia,Stagnosols,17.02,45.93,2024-08-20T10:57:35.780618,False
+Croatia,Zagreb,17.43,45.83,2024-08-20T10:57:35.782294,False
+Czech Republic,"Ivanovice na Hane, Research station of the Research Institute of Plant Production",17.09,49.31,2024-08-20T10:57:35.783881,False
+Czech Republic,Milhostov ,21.92,48.76,2024-08-20T10:57:35.785441,False
+Canada,"Ontario, Delhi",-80.52,42.87,2024-08-20T10:57:35.662071,False
+Spain,Zuera,-0.78,41.86,2024-08-20T10:57:35.978337,False
+Syria,Breda,37.17,35.93,2024-08-20T10:57:35.984680,False
+USA,"Iowa, Carroll",-94.85,42.07,2024-08-20T10:57:36.079131,False
+USA,"Indiana, Southeast Purdue Agricultural Research Center",-85.52,39.03,2024-08-20T10:57:36.061192,False
+Croatia,Daruvar,17.03,45.55,2024-08-20T10:57:35.775697,False
+Croatia,Fericanci,17.98,45.53,2024-08-20T10:57:35.777293,False
+USA,"Sidnet, Montana",-104.27,47.77,2024-08-20T10:57:36.206735,False
+USA,"South Carolina, Blackville",-81.55,34.58,2024-08-20T10:57:36.208284,False
+Spain,Cordoba,-4.52,37.77,2024-08-20T10:57:35.966694,False
+Spain,El Canos,1.2,41.68,2024-08-20T10:57:35.968828,False
+Spain,Guissona,1.27,41.77,2024-08-20T10:57:35.970384,False
+UK,Northampton,0.87,52.58,2024-08-20T10:57:36.001670,False
+USA,"Alaska, Delta Junction",-145.33,63.9,2024-08-20T10:57:36.018870,False
+India,Jhansi,78.55,25.45,2024-08-20T10:57:35.815202,False
+USA,"Colorado, Fort Collins",-104.98,40.65,2024-08-20T10:57:36.031773,False
+Brazil,"Parana, Londrina, Embrapa Soybean experiment station",-51.18,-23.18,2024-08-20T10:57:35.614696,False
+Canada,"Quebec, L'Acadie Experimental farm",-73.35,45.3,2024-08-20T10:57:35.675880,False
+Canada,"Quebec, Ormstown",-73.83,45.12,2024-08-20T10:57:35.678942,False
+Canada,"Quebec, Quebec City",-71.38,47.38,2024-08-20T10:57:35.680452,False
+Cameroon,Mfou,11.8,3.95,2024-08-20T10:57:35.622259,False
+Canada,"Alberta, Alliance",-111.78,52.44,2024-08-20T10:57:35.623741,False
+USA,"Iowa, Benton",-94.35,40.7,2024-08-20T10:57:36.077438,False
+USA,"Iowa, Linn",-91.67,42.07,2024-08-20T10:57:36.082336,False
+USA,"Kansas, Bourbon County",-94.9,37.88,2024-08-20T10:57:36.096168,False
+USA,"Kansas, Garden City (Southwest Reseach-Extension Center)",-100.82,37.99,2024-08-20T10:57:36.098080,False
+USA,"Maryland, Beltsville",-76.9,39.05,2024-08-20T10:57:36.123140,False
+USA,"Maryland, Beltsville ",-76.65,39.08,2024-08-20T10:57:36.124698,False
+USA,"Maryland, Wye Mills (Univeristy of Maryland Wye Research and Education Center)",-76.15,38.91,2024-08-20T10:57:36.126238,False
+USA,"Michigan, Clarksville (Clarskville Experiment Station)",-85.26,42.87,2024-08-20T10:57:36.127742,False
+USA,"Michigan, KBS LTER",-85.4,42.4,2024-08-20T10:57:36.129271,False
+China,Henan Province,113.9,35.3,2024-08-20T10:57:35.724784,False
+China,Henan Province,114.4,35.0,2024-08-20T10:57:35.726346,False
+China,"Henan Province, Henan University",112.98,33.58,2024-08-20T10:57:35.728009,False
+China,"Henan Province, Luoyang, Songzhuang village",113.0,34.5,2024-08-20T10:57:35.731717,False
+China,"Henan province, Yuzhou",113.25,34.27,2024-08-20T10:57:35.733418,False
+India,"Haryana, Karnal",76.97,29.72,2024-08-20T10:57:35.808220,False
+India,"Haryana, Kaul",76.68,29.85,2024-08-20T10:57:35.809829,False
+India,Jabalpur,79.97,24.5,2024-08-20T10:57:35.813398,False
+Canada,"Alberta, Lethbridge",-112.8,49.7,2024-08-20T10:57:35.637656,False
+Canada,"Alberta, Plamondon",-112.34,54.85,2024-08-20T10:57:35.639659,False
+Canada,"Alberta, Rycroft",-118.68,55.72,2024-08-20T10:57:35.641342,False
+Canada,"Alberta, Three Hills",-113.22,51.7,2024-08-20T10:57:35.643032,False
+Canada,"Alberta, Vauxhall",-112.11,50.07,2024-08-20T10:57:35.644852,False
+Canada,"Quebec, Ste. Anne de Bellevue",-73.58,45.5,2024-08-20T10:57:35.683483,False
+Canada,"Alberta, Vegreville (Agriculture Canada, Soils and Crops Substation, east-central Alberta)",-112.1,53.5,2024-08-20T10:57:35.646751,False
+Canada,"Alberta, Wainwright",-110.86,52.83,2024-08-20T10:57:35.648644,False
+USA,"Illinois, Belleville (Southern Illinois University Belleville Research Center)",-89.84,38.52,2024-08-20T10:57:36.049664,False
+USA,"Illinois, Carbondale (Southern Illinois University Agronomy Research Center)",-89.24,37.7,2024-08-20T10:57:36.051194,False
+Australia,"Western Australia, Merredin",118.37,-30.5,2024-08-20T10:57:35.603544,False
+Bangladesh,Dhaka city,90.13,24.38,2024-08-20T10:57:35.605088,False
+Bangladesh,Rajshahi,88.0,25.0,2024-08-20T10:57:35.606693,False
+Belgium,Bottelare,3.75,50.96,2024-08-20T10:57:35.608335,False
+Belgium,Maulde,3.57,50.62,2024-08-20T10:57:35.609878,False
+Bolivia,Santa Cruz,-63.0,-17.85,2024-08-20T10:57:35.611397,False
+India,"Ludhiana, Punjab Agricultural Research Farm",75.8,30.9,2024-08-20T10:57:35.820855,False
+India,"Ludhiana, Punjab Agricultural University",75.87,30.83,2024-08-20T10:57:35.822401,False
+India,"Ludhiana, Punjab Agricultural University Farm",75.87,30.93,2024-08-20T10:57:35.824372,False
+India,"Madhya Pradesh, Datia (Soil and Water Conservation Research and Training Institute)",78.47,25.67,2024-08-20T10:57:35.826012,False
+India,New Delhi,77.2,28.67,2024-08-20T10:57:35.829629,False
+India,Tripura ,91.32,23.9,2024-08-20T10:57:35.843167,False
+India,"Uttar Banga Krishi Viswavidyalaya, West Bengal",89.38,26.4,2024-08-20T10:57:35.844691,False
+India,"Uttar Pradesh, Meerut, Modipuram",77.77,29.07,2024-08-20T10:57:35.849802,False
+India,"Uttar Pradesh, SVP University",77.75,29.02,2024-08-20T10:57:35.851706,False
+USA,"South Dakota, Brookings",-96.79,44.31,2024-08-20T10:57:36.213584,False
+China,"Xifeng, Qingyang City",107.87,35.67,2024-08-20T10:57:35.772550,False
+Croatia,Central Pannonian agricultural subregion,17.86,45.61,2024-08-20T10:57:35.774179,False
+Canada,"Ontario, Milton",-79.94,43.52,2024-08-20T10:57:35.667782,False
+Canada,"Ontario, Paris",-80.08,43.0,2024-08-20T10:57:35.669536,False
+Italy,Emilla-Romagna,10.77,44.71,2024-08-20T10:57:35.864164,False
+Ethiopia,Meki,38.85,8.18,2024-08-20T10:57:35.791610,False
+France,Grignon (INRA),1.15,48.15,2024-08-20T10:57:35.794916,False
+Iran,"East Azerbaijan, Maragheh",46.33,37.2,2024-08-20T10:57:35.861101,False
+USA,"Indiana, Lafayette",-86.87,40.42,2024-08-20T10:57:36.056262,False
+USA,"Indiana, Purdue U Agronomy Farm",-86.15,38.08,2024-08-20T10:57:36.059485,False
+USA,"Alabama, Belle Mina",-86.87,34.68,2024-08-20T10:57:36.009525,False
+USA,"Alabama, Crossville",-85.97,34.28,2024-08-20T10:57:36.011095,False
+USA,"Alabama, Sand Mountain Substation",-86.9,32.32,2024-08-20T10:57:36.012649,False
+USA,"Alabama, Sand Mountain Substation",-86.02,34.3,2024-08-20T10:57:36.014190,False
+USA,"Alabama, Shorter",-85.88,32.42,2024-08-20T10:57:36.015756,False
+Canada,"British Columbia, Dawson Creek",-120.35,55.7,2024-08-20T10:57:35.650744,False
+Canada,"Manitoba, Brandon Research and Development Center?",-99.96,49.86,2024-08-20T10:57:35.655849,False
+Canada,"Ontario, Acton",-80.03,43.63,2024-08-20T10:57:35.657499,False
+Canada,"Ontario, Centralia",-81.47,43.28,2024-08-20T10:57:35.660499,False
+Pakistan,Faisalabad,73.07,31.42,2024-08-20T10:57:35.928482,False
+Pakistan,Faisalabad,72.03,31.38,2024-08-20T10:57:35.930267,False
+Romania,Fundulea,26.52,44.45,2024-08-20T10:57:35.945023,False
+Rwanda,Bugesera,30.25,-2.35,2024-08-20T10:57:35.946546,False
+Canada,"Quebec, Rosalie",-72.9,45.63,2024-08-20T10:57:35.681997,False
+Serbia,"Belgrade, Zemun Polje",20.33,44.87,2024-08-20T10:57:35.948097,False
+South Africa,Eastern Cape,27.83,-32.78,2024-08-20T10:57:35.949816,False
+South Africa,KwaZulu-Natal Province,29.55,-28.92,2024-08-20T10:57:35.951643,False
+USA,"Kansas, Marshall County",-96.5,39.8,2024-08-20T10:57:36.100112,False
+USA,"Kansas, Riley County",-96.7,39.3,2024-08-20T10:57:36.101801,False
+USA,"Texas, Burleson County (Brazos River floodplain)",-96.43,30.54,2024-08-20T10:57:36.220276,False
+Spain,Pefiaflor ,-5.33,37.7,2024-08-20T10:57:35.973587,False
+Spain,Selvanera,1.28,41.82,2024-08-20T10:57:35.975189,False
+Spain,"Zaragoza, Estacion Experimental de Aula Dei",-0.77,41.73,2024-08-20T10:57:35.976745,False
+Sweden,Uppsala (Säby),17.0,59.9,2024-08-20T10:57:35.979894,False
+USA,Clarke County (University of Georgia Horseshoe Bend LTREB Agroecosystem),-83.35,33.93,2024-08-20T10:57:36.028607,False
+USA,"Florida, Gainesville",-82.32,29.69,2024-08-20T10:57:36.033563,False
+Germany,"Ihinger Hof, University of Hohenheim experiment station",9.03,48.12,2024-08-20T10:57:35.796641,False
+Malawi,"Manjawira EPA, Balaka section",34.88,-14.93,2024-08-20T10:57:35.893839,False
+Malawi,"Manjawira EPA, Ntonda section",34.73,-14.97,2024-08-20T10:57:35.895416,False
+Malawi,Mzimba,33.59,-11.9,2024-08-20T10:57:35.896987,False
+Malawi,Salima,34.46,-13.78,2024-08-20T10:57:35.899059,False
+Mexico,Celaya,-101.32,20.73,2024-08-20T10:57:35.900942,False
+Mexico,Ciudad Obregon,-109.15,27.55,2024-08-20T10:57:35.902671,False
+Canada,"Ontario, Fingal",-85.33,51.33,2024-08-20T10:57:35.664348,False
+Australia,"Victoria, Rutherglen",146.42,-36.1,2024-08-20T10:57:35.600329,False
+Australia,"Victoria, Walpeup (Mallee Research Station)",141.98,-35.12,2024-08-20T10:57:35.601984,False
+Poland,"Poznań University of Life Sciences, Poznan",16.9,52.43,2024-08-20T10:57:35.939680,False
+Romania,"Cluj County, Turda Agricultural Research and Development Station (Colegiul EMIL NEGRUTIU Turda)",23.79,46.57,2024-08-20T10:57:35.943438,False
+UK,Oxfordshire (SU 248947),-1.64,51.65,2024-08-20T10:57:36.006137,False
+South Africa,Langgewewens Experimental Farm,18.7,-33.28,2024-08-20T10:57:35.953348,False
+Switzerland,Agroscope Changins,6.23,46.4,2024-08-20T10:57:35.982981,False
+USA,"Tennessee, Jackson (West Tennessee Research and Education Center?)",-88.85,35.63,2024-08-20T10:57:36.218657,False
+Germany,Muncheberg,15.12,52.52,2024-08-20T10:57:35.800225,False
+Ghana,"Kwadaso, Ashanti",-1.67,6.67,2024-08-20T10:57:35.801820,False
+Kenya,Mbeere,37.75,-0.75,2024-08-20T10:57:35.889113,False
+Hungary,"Szent István University,  Gödöllő",19.6,47.68,2024-08-20T10:57:35.805101,False
+Malawi,Mangochi,35.25,-14.49,2024-08-20T10:57:35.892289,False
+Argentina,"Semiarid Pampean Region, Anguil Experimental Station ",-63.82,-36.5,2024-08-20T10:57:35.591047,False
+Australia,Biloela,150.87,-24.62,2024-08-20T10:57:35.592790,False
+Australia,Munglinup (south coast western australia),120.8,-33.58,2024-08-20T10:57:35.594489,False
+USA,"Lamberton, Minnesota",-95.27,44.23,2024-08-20T10:57:36.120039,False
+USA,"Louisiana, Winnsboro, LSU Macon Ridge Research Station",-92.13,31.28,2024-08-20T10:57:36.121627,False
+Spain,Banastas,-0.45,42.18,2024-08-20T10:57:35.961357,False
+Spain,Candasnos,0.13,41.5,2024-08-20T10:57:35.962930,False
+Spain,"Catalonia, El Canos",0.83,41.17,2024-08-20T10:57:35.964530,False
+Finland,Ruuki Research Station of MTT Agrifood Research,25.08,64.68,2024-08-20T10:57:35.793169,False
+USA,"Iowa, Ames",-93.62,42.03,2024-08-20T10:57:36.068275,False
+USA,"Iowa, Ames (Marsden Iowa State University research farm)",-93.78,42.02,2024-08-20T10:57:36.072142,False
+Italy,Piedmont,8.13,45.22,2024-08-20T10:57:35.871704,False
+Italy,"Po Valley, Terranova dei Passerini",9.68,45.2,2024-08-20T10:57:35.873249,False
+Denmark,Foulum,9.58,56.49,2024-08-20T10:57:35.786989,False
+Denmark,Foulum,9.57,56.5,2024-08-20T10:57:35.788507,False
+Ethiopia,Bahir Dar,37.38,11.59,2024-08-20T10:57:35.790081,False
+Turkey,Diyarbakir Province,40.27,37.88,2024-08-20T10:57:35.989411,False
+South Africa,Lowveld,32.35,-20.35,2024-08-20T10:57:35.954976,False
+South Africa,Pietermaritzburg,30.28,-29.53,2024-08-20T10:57:35.956490,False
+Spain,Agramunt,1.12,41.8,2024-08-20T10:57:35.958209,False
+Spain,Alcala´ de Henares,-3.33,40.53,2024-08-20T10:57:35.959727,False
+Canada,"Alberta, Beaverlodge",-119.38,55.2,2024-08-20T10:57:35.626778,False
+Canada,"Alberta, Breton",-114.47,53.12,2024-08-20T10:57:35.630556,False
+USA,"South Carolina, Florence",-80.22,34.48,2024-08-20T10:57:36.212022,False
+USA,"Tennessee, Jackson (West Tennessee Experiment Station)",-88.85,35.62,2024-08-20T10:57:36.216677,False
+USA,Illinois,-88.9,40.1,2024-08-20T10:57:36.048191,False
+China,"Heyang, Shaanxi",110.1,35.33,2024-08-20T10:57:35.734982,False
+China,"Gansu, Dingxi Experiment Station",136.93,35.15,2024-08-20T10:57:35.717808,False
+Philippines,"Los Banos, IRRI",121.23,14.17,2024-08-20T10:57:35.933716,False
+USA,"Michigan, KBS LTER",-85.58,44.35,2024-08-20T10:57:36.130804,False
+USA,"Minnesota, New Richland",-93.51,43.87,2024-08-20T10:57:36.132543,False
+USA,"Minnesota, Rosemount",-93.12,44.73,2024-08-20T10:57:36.134318,False
+USA,"Minnesota, Rosemount",-93.07,44.75,2024-08-20T10:57:36.135911,False
+USA,"Minnesota, Waseca",-93.52,44.07,2024-08-20T10:57:36.137512,False
+USA,"Minnesota, Waseca",-93.54,44.09,2024-08-20T10:57:36.139115,False
+USA,"Mississippi, Holly Springs",-89.4,32.45,2024-08-20T10:57:36.140758,False
+USA,"Mississippi, Stoneville",-90.92,33.42,2024-08-20T10:57:36.142340,False
+USA,"Missouri, Columbia",-92.2,38.89,2024-08-20T10:57:36.143883,False
+USA,"Missouri, Novelty",-92.19,40.02,2024-08-20T10:57:36.145461,False
+USA,"Monmouth, Illinois",-90.72,40.92,2024-08-20T10:57:36.147433,False
+USA,"Monmouth, Illinois",-90.72,45.92,2024-08-20T10:57:36.149017,False
+USA,"Montana, Culbertson",-104.83,48.55,2024-08-20T10:57:36.150556,False
+USA,"Nashua, Iowa",-92.53,42.95,2024-08-20T10:57:36.152217,False
+USA,"Nebraska, Clay Center (South Central Research and Extension Center)",-98.06,40.52,2024-08-20T10:57:36.155422,False
+USA,"Nebraska, Concord",-99.87,41.55,2024-08-20T10:57:36.157053,False
+USA,"Oklahoma (Alfalfa, Garfield, Kingfisher)",-97.13,35.07,2024-08-20T10:57:36.185276,False
+USA,"Oklahoma, Altus",-99.33,34.63,2024-08-20T10:57:36.186852,False
+USA,"Oklahoma, Efaw",-94.82,33.88,2024-08-20T10:57:36.188498,False
+USA,"Oklahoma, El Reno (USDA Grazinglands Research Laboratory)",-97.96,35.54,2024-08-20T10:57:36.190037,False
+USA,"Oklahoma, Lahoma",-97.5,35.47,2024-08-20T10:57:36.191546,False
+USA,"Oregon, Corvallis",-123.24,44.57,2024-08-20T10:57:36.193072,False
+USA,"Oregon, Pendleton",-118.63,45.72,2024-08-20T10:57:36.194585,False
+USA,"Oregon, Pendleton, CBARC",-118.6,45.7,2024-08-20T10:57:36.196103,False
+USA,"Pennsylvania, Centre County",-77.95,40.73,2024-08-20T10:57:36.198020,False
+USA,"Pennsylvania, Kutztown (Rodale Institute Experimental Farm)",-75.78,40.52,2024-08-20T10:57:36.200097,False
+USA,"Pennsylvania, State College",-77.87,40.8,2024-08-20T10:57:36.201790,False
+Zimbabwe,Mashonaland East province,31.65,-17.72,2024-08-20T10:57:36.246433,False
+China,"Gansu, Dingxi Experiment Station",104.73,35.47,2024-08-20T10:57:35.719372,False
+China,"Gansu, Gansu Agricultural University",103.08,37.5,2024-08-20T10:57:35.721341,False
+China,"Gansu, Zhangye",100.75,39.55,2024-08-20T10:57:35.723010,False
+China,"Hubei province, Xiaonan County, Xushan Village",113.93,30.98,2024-08-20T10:57:35.738209,False
+China,"Hunan Province, Changsha",113.07,28.18,2024-08-20T10:57:35.742615,False
+China,"Jiangsu Province, Changshu agro-ecological experiment station",120.68,31.53,2024-08-20T10:57:35.745129,False
+China,"Jiangxi province, Yujiang county",116.92,28.25,2024-08-20T10:57:35.746800,False
+China,"Jianyang, Sichuan",104.6,30.4,2024-08-20T10:57:35.748408,False
+China,Lanzhou,107.85,35.65,2024-08-20T10:57:35.750002,False
+China,"Ningxiang, hunan",112.6,28.6,2024-08-20T10:57:35.751529,False
+China,Shaanxi,106.07,35.32,2024-08-20T10:57:35.753635,False
+China,Shandong,117.98,36.97,2024-08-20T10:57:35.755213,False
+China,Shanxi,111.28,35.33,2024-08-20T10:57:35.758522,False
+China,Shanxi Province,110.13,35.55,2024-08-20T10:57:35.760154,False
+China,"Shanxi Province, Linfen, Chenghuang",112.07,37.53,2024-08-20T10:57:35.761754,False
+China,"Shanxi Province, Shouyang",112.5,37.5,2024-08-20T10:57:35.763426,False
+China,"Shanxi Province, Tunliu",113.0,36.0,2024-08-20T10:57:35.765098,False
+China,Shouyang,113.17,37.9,2024-08-20T10:57:35.766813,False
+China,"Tai'an, Shandong Province",117.15,36.15,2024-08-20T10:57:35.769007,False
+USA,"Perry, Illnois",-90.82,39.8,2024-08-20T10:57:36.203471,False
+USA,"Nebraska, Lincoln",-99.87,41.52,2024-08-20T10:57:36.158932,False
+USA,"Nebraska, Lincoln",-96.67,40.8,2024-08-20T10:57:36.160606,False
+USA,"Nebraska, Lincoln (University of Nebraska Rogers Memorial Farm)",-96.47,40.85,2024-08-20T10:57:36.162228,False
+USA,"Nebraska, Mead (University of Nebraska Agricultural Research Center)",-96.5,41.12,2024-08-20T10:57:36.163806,False
+USA,"Nebraska, North Platte",-100.75,41.12,2024-08-20T10:57:36.165581,False
+USA,"Nebraska, RMF",-96.47,40.83,2024-08-20T10:57:36.167715,False
+USA,"New York, Aurora",-76.58,42.75,2024-08-20T10:57:36.169515,False
+USA,"New York, Willsboro",-73.26,44.22,2024-08-20T10:57:36.171226,False
+USA,"North Carolina, Oxford",-78.58,36.32,2024-08-20T10:57:36.172787,False
+USA,"North Carolina, Reidsville",-79.68,36.34,2024-08-20T10:57:36.174400,False
+USA,"North Dakota, Carrington (NDSU Research Extension Center)",-99.12,47.46,2024-08-20T10:57:36.175995,False
+USA,"North Dakota, Mandan",-100.88,46.82,2024-08-20T10:57:36.177618,False
+USA,"Ohio, Hoytville",-83.77,41.22,2024-08-20T10:57:36.179155,False
+USA,"Ohio, South Charleston",-83.6,39.75,2024-08-20T10:57:36.180702,False
+USA,"Ohio, Wooster",-81.92,45.87,2024-08-20T10:57:36.182255,False
+USA,Oklahoma,-98.01,35.54,2024-08-20T10:57:36.183760,False
