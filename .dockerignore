@@ -1,0 +1,10 @@
+training_data/
+.venv/
+data/
+docs/
+logs/
+tmp/
+
+*.ipynb
+
+frontend/

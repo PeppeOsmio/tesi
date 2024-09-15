@@ -1,5 +1,6 @@
 import argparse
 import asyncio
+import logging
 
 from tesi.database.di import get_session_maker
 from tesi.users.di import get_user_repository
@@ -11,9 +12,9 @@ async def main():
     )
 
     # Add the file path argument
-    parser.add_argument("--username", type=str)
-    parser.add_argument("--password", type=str)
-    parser.add_argument("--name", type=str)
+    parser.add_argument("--username", type=str, required=True)
+    parser.add_argument("--password", type=str, required=True)
+    parser.add_argument("--name", type=str, required=True)
     parser.add_argument("--email", type=str)
 
     args = parser.parse_args()
@@ -24,6 +25,8 @@ async def main():
     async with session_maker() as session:
         await user_repository.create_user(session=session, username=args.username, password=args.password, name=args.name, email=args.email)
         await session.commit()
+    
+    logging.info(f"User {args.username} created!")
 
 if __name__ == "__main__":
     asyncio.run(main())

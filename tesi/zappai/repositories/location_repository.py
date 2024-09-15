@@ -157,8 +157,7 @@ class LocationRepository:
                     & (Location.country == dct["country"])
                 )
             )
-            stmt = insert(Location).values(id=uuid.uuid4(), **dct)
-            await session.execute(stmt)
+            await self.create_location(session=session, country=dct["country"], name=dct["name"], longitude=dct["longitude"], latitude=dct["latitude"], is_visible=False)
 
     def __location_model_to_dto(self, location: Location) -> LocationDTO:
         return LocationDTO(
