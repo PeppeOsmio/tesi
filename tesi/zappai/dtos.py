@@ -76,7 +76,7 @@ class LocationDTO:
             "longitude": self.longitude,
             "latitude": self.latitude,
             "created_at": self.created_at.isoformat(),
-            "is_downloading_past_climate_data": self.is_downloading_past_climate_data
+            "is_downloading_past_climate_data": self.is_downloading_past_climate_data,
         }
 
 
@@ -196,6 +196,7 @@ class ClimateDataDTO:
             result.append(ClimateDataDTO(year=year, month=month, **row.to_dict()))
         return result
 
+
 @dataclass
 class PastClimateDataDTO(ClimateDataDTO):
     u_component_of_wind_10m: float
@@ -205,7 +206,9 @@ class PastClimateDataDTO(ClimateDataDTO):
     snowfall: float
 
     @staticmethod
-    def from_list_to_dataframe(lst: list[PastClimateDataDTO]) -> pd.DataFrame:
+    def from_list_to_dataframe(
+        lst: list[PastClimateDataDTO], index_keys: list[str] | None = None, ascending: list[bool] | None = None
+    ) -> pd.DataFrame:
         df = pd.DataFrame([item.__dict__ for item in lst])
         df = df.rename(
             columns={
@@ -215,8 +218,14 @@ class PastClimateDataDTO(ClimateDataDTO):
                 "dewpoint_temperature_2m": "2m_dewpoint_temperature",
             },
         )
-        df = df.set_index(keys=["year", "month"], drop=True)
-        df = df.sort_index(ascending=[True, True])
+        if index_keys is None:
+            df = df.set_index(keys=["year", "month"], drop=True)
+            df = df.sort_index(ascending=[True, True])
+            return df
+        if len(index_keys) == 0:
+            return df
+        df = df.set_index(keys=index_keys, drop=True)
+        df = df.sort_index(ascending=cast(list[bool], ascending))
         return df
 
     @staticmethod

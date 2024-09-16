@@ -102,7 +102,15 @@ class LocationRepository:
         if location is None:
             return None
         return self.__location_model_to_dto(location)
-
+    
+    async def get_location_by_country_name_coordinates(self, session: AsyncSession, country: str, name: str, latitude: float, longitude: float) -> LocationDTO | None:
+        stmt = select(Location).where(
+            (Location.country == country) & (Location.name == name) & (Location.latitude == latitude) & (Location.longitude == longitude))
+        location = await session.scalar(stmt)
+        if location is None:
+            return None
+        return self.__location_model_to_dto(location)
+    
     async def get_location_by_id(
         self, session: AsyncSession, location_id: UUID
     ) -> LocationDTO | None:

@@ -15,6 +15,7 @@ from tesi.zappai.dtos import (
     CropYieldDataDTO,
     LocationClimateYearsDTO,
     ClimateDataDTO,
+    LocationDTO,
     PastClimateDataDTO,
 )
 from tesi.zappai.models import PastClimateData
@@ -202,7 +203,7 @@ class PastClimateDataRepository:
         )
         results = list(await session.scalars(stmt))
         if len(results) == 0:
-            raise Exception(f"Can't find past climate data for location {location_id}")
+            raise PastClimateDataNotFoundError(f"Can't find past climate data for location {location_id}")
         return [self.__past_climate_data_model_to_dto(result) for result in results]
 
     async def get_past_climate_data(
@@ -302,73 +303,71 @@ class PastClimateDataRepository:
         self,
         session: AsyncSession,
         csv_path: str,
-        crop_yield_data: list[CropYieldDataDTO],
+        location_ids: set[UUID],
     ):
-
-        def open_csv_file():
-            return open(csv_path, "w")
-
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
-            csv_file = await loop.run_in_executor(executor=pool, func=open_csv_file)
-            total_past_climate_data: list[PastClimateDataDTO] = []
-            for item in crop_yield_data:
-                past_climate_data = await self.get_past_climate_data(
-                    session=session,
-                    location_id=item.location_id,
-                    year_from=item.sowing_year,
-                    month_from=item.sowing_month,
-                    year_to=item.harvest_year,
-                    month_to=item.harvest_month,
+            total_past_climate_datas: list[list[PastClimateDataDTO]] = []
+            for location_id in location_ids:
+                past_climate_data = await self.get_all_past_climate_data(
+                    session=session, location_id=location_id
                 )
-                total_past_climate_data.extend(past_climate_data)
-            total_past_climate_data_df = PastClimateDataDTO.from_list_to_dataframe(
-                total_past_climate_data
+                total_past_climate_datas.append(past_climate_data)
+            total_past_climate_data_dfs = [
+                PastClimateDataDTO.from_list_to_dataframe(past_climate_data)
+                for past_climate_data in total_past_climate_datas
+            ]
+            total_past_climate_data_df = pd.concat(
+                [df.reset_index() for df in total_past_climate_data_dfs],
+                ignore_index=True,
             )
-            total_past_climate_data_df = total_past_climate_data_df.reset_index()
-            dicts = cast(
-                list[dict[str, Any]],
-                total_past_climate_data_df.to_dict(orient="records"),
-            )
-            with csv_file:
-                csv_writer: DictWriter | None = None
-                location_id_to_country_name: dict[UUID, tuple[str, str]] = {}
+            locations_dict: dict[UUID, LocationDTO] = {}
 
-                for dct in dicts:
-                    location_tuple = location_id_to_country_name.get(dct["location_id"])
-                    if location_tuple is None:
-                        location = await self.location_repository.get_location_by_id(
-                            session=session, location_id=dct["location_id"]
-                        )
-                        if location is None:
-                            raise LocationNotFoundError(str(dct["location_id"]))
-                        location_tuple = location.country, location.name
-                        location_id_to_country_name.update(
-                            {dct["location_id"]: location_tuple}
-                        )
-                    dct.pop("location_id")
-                    location_country, location_name = location_tuple
-                    dct.update(
-                        {
-                            "location_country": location_country,
-                            "location_name": location_name,
-                        }
+            async def get_location_callback(location_id: UUID) -> tuple[str, str, float, float]:
+                location = locations_dict.get(location_id)
+                if location is not None:
+                    return location.country, location.name, location.latitude, location.longitude
+                location = await self.location_repository.get_location_by_id(
+                    session=session, location_id=location_id
+                )
+                if location is None:
+                    raise LocationNotFoundError(str(location_id))
+                return location.country, location.name, location.latitude, location.longitude
+
+            def write_to_csv():
+                nonlocal total_past_climate_data_df
+                total_past_climate_data_df[
+                    [
+                        "location_country",
+                        "location_name",
+                        "location_latitude",
+                        "location_longitude"
+                    ]
+                ] = total_past_climate_data_df["location_id"].apply(
+                    lambda loc_id: pd.Series(
+                        asyncio.run_coroutine_threadsafe(
+                            coro=get_location_callback(loc_id), loop=loop
+                        ).result()
                     )
+                )
+                total_past_climate_data_df = total_past_climate_data_df.drop(
+                    columns=["location_id"]
+                )
+                total_past_climate_data_df.to_csv(csv_path, index=False)
 
-                def write_to_csv():
-                    nonlocal csv_writer
-                    if csv_writer is None:
-                        csv_writer = DictWriter(
-                            csv_file,
-                            fieldnames=dicts[0].keys(),
-                        )
-                        csv_writer.writeheader()
-                    csv_writer.writerows(dicts)
+            await loop.run_in_executor(executor=pool, func=write_to_csv)
 
-                await loop.run_in_executor(executor=pool, func=write_to_csv)
-
-        logging.info(len(location_id_to_country_name.keys()))
         logging.info(f"TOTAL: {len(total_past_climate_data_df)}")
+
+    async def delete_locations_without_past_climate_data(self, session: AsyncSession):
+        locations = await self.location_repository.get_locations(session=session, is_visible=False)
+        for location in locations:
+            try:
+                past_climate_data = await self.get_all_past_climate_data(session=session, location_id=location.id)
+            except PastClimateDataNotFoundError:
+                await self.location_repository.delete_location(session=session, location_id=location.id)
+                logging.info(f"Deleted location without past climate data {location.id}")
+
 
     async def import_from_csv(self, session: AsyncSession, csv_path: str):
         def read_csv() -> pd.DataFrame:
@@ -378,22 +377,29 @@ class PastClimateDataRepository:
         with ThreadPoolExecutor() as pool:
             data = await loop.run_in_executor(executor=pool, func=read_csv)
 
+        deleted_locations: set[UUID] = set()
+
         dicts = cast(list[dict[str, Any]], data.to_dict(orient="records"))
         for dct in dicts:
-            location = await self.location_repository.get_location_by_country_and_name(
+            location = await self.location_repository.get_location_by_country_name_coordinates(
                 session=session,
                 country=dct["location_country"],
                 name=dct["location_name"],
+                latitude=dct["latitude"],
+                longitude=dct["longitude"]
             )
             if location is None:
                 raise LocationNotFoundError()
-            await session.execute(
-                delete(PastClimateData).where(
-                    (PastClimateData.location_id == location.id)
-                    & (PastClimateData.year == dct["year"])
-                    & (PastClimateData.month == dct["month"])
+            if location.id not in deleted_locations:
+                logging.info(f"Deleting past climate data for location {location.id}")
+                result = await session.execute(
+                    delete(PastClimateData)
+                    .where((PastClimateData.location_id == location.id))
+                    .returning(PastClimateData.id)
                 )
-            )
+                ids = list(result)
+                logging.info(f"Deleted {len(ids)} past climate data")
+                deleted_locations.add(location.id)
             columns_mappings = {
                 "10m_u_component_of_wind": "u_component_of_wind_10m",
                 "10m_v_component_of_wind": "v_component_of_wind_10m",

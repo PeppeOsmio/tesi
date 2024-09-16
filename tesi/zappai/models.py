@@ -6,15 +6,6 @@ from tesi.database.base import Base
 from geoalchemy2 import Geography
 
 
-# class SoilType(Base):
-#     __tablename__ = "soil_type"
-# 
-#     id: Mapped[UUID] = mapped_column(primary_key=True)
-#     name: Mapped[str]
-# 
-#     __table_args__ = (UniqueConstraint("name", name="_name_nc"),)
-
-
 class Location(Base):
     __tablename__ = "location"
 
@@ -27,9 +18,9 @@ class Location(Base):
     is_visible: Mapped[bool] = mapped_column(server_default="false")
     is_downloading_past_climate_data: Mapped[bool] = mapped_column(server_default="false")
 
-    # __table_args__ = (
-    #     UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
-    # )
+    #__table_args__ = (
+    #    UniqueConstraint("longitude", "latitude", name="_longitude_latitude_uc"),
+    #)
 
 
 class ClimateGenerativeModel(Base):

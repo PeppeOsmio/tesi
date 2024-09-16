@@ -21,21 +21,17 @@ async def main():
         cds_api=cds_api,
         location_repository=location_repository,
     )
-    crop_yield_data_repository = get_crop_yield_data_repository(
-        crop_repository=crop_repository,
-        location_repository=location_repository,
-        past_climate_data_repository=past_climate_data_repository,
-    )
     async with session_maker() as session:
         os.makedirs("training_data", exist_ok=True)
 
         logging.info("Exporting past climate data")
+        await past_climate_data_repository.delete_locations_without_past_climate_data(session=session)
+        await session.commit()
         locations = await location_repository.get_locations(session=session, is_visible=False)
-        crop_yield_data = await crop_yield_data_repository.get_crop_yield_data_for_locations(session=session, location_ids=[location.id for location in locations])
         await past_climate_data_repository.export_to_csv(
             session=session,
             csv_path="training_data/past_climate_data.csv",
-            crop_yield_data=crop_yield_data,
+            location_ids=set([location.id for location in locations]),
         )
 
 if __name__ == "__main__":

@@ -121,6 +121,29 @@ class CopernicusDataStoreAPI:
             # verify=1,
         )
 
+    import subprocess
+
+    # this is needed because of a super weird bug that gives OSError -101 from NetCDF when opening a .nc file after
+    # downloaded by cds_api, maybe because of a lock problem.
+    def __run_conversion_script(self, source_file_path: str, limit: int | None) -> pd.DataFrame:
+        # Create the base command
+        command = ["python", "tesi/zappai/utils/nc_to_csv.py", "--path", source_file_path]
+        
+        # Add the limit argument if provided
+        if limit is not None:
+            command += ["--limit", str(limit)]
+
+        # Run the script as a subprocess
+        result = subprocess.run(command, check=True)
+        print(result.stdout)
+        print(result.stderr)
+        print(f"Conversion completed for {source_file_path}")
+        csv_path = f"{source_file_path}.csv"
+        result_df = pd.read_csv(csv_path)
+        os.remove(csv_path)
+        return result_df
+            
+
     def get_future_climate_data(self, on_save_chunk: Callable[[pd.DataFrame], None]):
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
@@ -161,12 +184,12 @@ class CopernicusDataStoreAPI:
             result_df = pd.DataFrame()
 
             for extracted_file in os.listdir(dest_dir):
-                extracted_file_path = os.path.join(dest_dir, extracted_file)
+                extracted_nc_file_path = os.path.join(dest_dir, extracted_file)
                 if not extracted_file.endswith(".nc"):
                     continue
-                logging.info(f"Converting {extracted_file_path}")
-                df = convert_nc_file_to_dataframe(
-                    source_file_path=extracted_file_path, limit=None
+                logging.info(f"Converting {extracted_nc_file_path}")
+                df = self.__run_conversion_script(
+                    source_file_path=extracted_nc_file_path, limit=None
                 )
                 # take only the first segment of each measurement for each day and location
                 df = df[df["bnds"] == 1.0]
@@ -196,7 +219,7 @@ class CopernicusDataStoreAPI:
                         result_df[value] = df[key]
                         result_df.reset_index()
                         break
-                os.remove(extracted_file_path)
+                os.remove(extracted_nc_file_path)
             result_df = process_copernicus_climate_data(
                 df=result_df, columns_mappings={}
             )
@@ -208,28 +231,7 @@ class CopernicusDataStoreAPI:
             result_df = result_df.drop(columns=["mean_precipitation_flux"])
             on_save_chunk(result_df)
 
-    import subprocess
-
-    # this is needed because of a super weird bug that gives OSError -101 from NetCDF when opening a .nc file after
-    # downloaded by cds_api, maybe because of a lock problem.
-    def run_conversion_script(self, file_path: str, limit: int | None):
-        # Create the base command
-        command = ["python", "tesi/zappai/utils/nc_to_csv.py", "--path", file_path]
-        
-        # Add the limit argument if provided
-        if limit is not None:
-            command += ["--limit", str(limit)]
-
-        # Run the script as a subprocess
-        try:
-            result = subprocess.run(command, check=True)
-            print(result.stdout)
-            print(result.stderr)
-            print(f"Conversion completed for {file_path}")
-        except subprocess.CalledProcessError as e:
-            print(f"Error occurred during conversion: {e}")
-
-    # @retry_on_error(max_retries=10, wait_time=10)
+    @retry_on_error(max_retries=10, wait_time=10)
     def get_past_climate_data_for_years(
         self,
         longitude: float,
@@ -253,7 +255,7 @@ class CopernicusDataStoreAPI:
             logging.info(
                 f"Getting data for years {years_to_fetch} and coordinates ({longitude} {latitude})"
             )
-            tmp_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
+            tmp_nc_file_path = os.path.join(tmp_dir, f"{random.randbytes(32).hex()}.nc")
             self.cds_client.retrieve(
                 name="reanalysis-era5-single-levels-monthly-means",
                 request={
@@ -273,21 +275,18 @@ class CopernicusDataStoreAPI:
                     ],
                     "download_format": "unarchived",
                 },
-                target=tmp_file_path,
+                target=tmp_nc_file_path,
             )
 
-            self.run_conversion_script(file_path=tmp_file_path, limit=None)
+            tmp_df = self.__run_conversion_script(source_file_path=tmp_nc_file_path, limit=None)
 
-            tmp_file_path_csv = f"{tmp_file_path}.csv"
+            os.remove(tmp_nc_file_path)
 
-            tmp_df = pd.read_csv(tmp_file_path_csv)
 
             tmp_df = process_copernicus_climate_data(
                 df=tmp_df,
                 columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
-
-            os.remove(tmp_file_path_csv)
 
             on_save_chunk(tmp_df)
             processed += len(years_to_fetch)
