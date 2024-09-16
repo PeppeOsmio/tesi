@@ -304,6 +304,7 @@ class CropYieldDataRepository:
                 name=location_name,
                 longitude=longitude,
                 latitude=latitude,
+                is_visible=False
             )
             location_coordinates_to_ids.update(
                 {str((longitude, latitude)): location.id}
@@ -384,12 +385,19 @@ class CropYieldDataRepository:
             CropYieldData.sowing_month,
             CropYieldData.harvest_year,
             CropYieldData.harvest_month,
-        ).distinct()
+        )
         results = list(row.tuple() for row in await session.execute(stmt))
-        print(len(results))
+        logging.info(len(set([tpl[0] for tpl in results])))
         if len(results) == 0:
             raise CropYieldDataNotFoundError()
         return results
+
+    async def get_crop_yield_data_for_locations(
+        self, session: AsyncSession, location_ids: list[uuid.UUID]
+    ) -> list[CropYieldDataDTO]:
+        stmt = select(CropYieldData).where(CropYieldData.location_id.in_(location_ids))
+        results = list(await session.scalars(stmt))
+        return [self.__crop_yield_data_model_to_dto(item) for item in results]
 
     def __crop_yield_data_model_to_dto(
         self, crop_yield_data: CropYieldData

@@ -28,4 +28,4 @@ if __name__ == "__main__":
     limit = cast(int | None, args.limit)
 
     df = convert_nc_file_to_dataframe(source_file_path=file_to_convert, limit=limit)
-    df.to_csv(file_to_convert + ".csv")
+    df.to_csv(file_to_convert + ".csv", index=False)

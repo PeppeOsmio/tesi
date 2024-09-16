@@ -44,6 +44,7 @@ async def create_location(
             name=data.name,
             longitude=data.longitude,
             latitude=data.latitude,
+            is_visible=True
         )
         await session.commit()
     return LocationDetailsResponse(
@@ -76,7 +77,7 @@ async def get_locations(
     ],
 ) -> list[LocationDetailsResponse]:
     async with session_maker() as session:
-        result = await location_repository.get_locations(session=session)
+        result = await location_repository.get_locations(session=session, is_visible=True)
         response: list[LocationDetailsResponse] = []
         for location in result:
             try:

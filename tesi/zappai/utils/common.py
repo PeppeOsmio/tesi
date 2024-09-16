@@ -144,7 +144,7 @@ def convert_nc_file_to_dataframe(
 def process_copernicus_climate_data(
     df: pd.DataFrame, columns_mappings: dict[str, str]
 ) -> pd.DataFrame:
-
+    
     df = df.dropna()
 
     # Renaming columns
@@ -172,8 +172,8 @@ def process_copernicus_climate_data(
     df = df.sort_index(ascending=[True, True])
     if "expver" in df.columns:
 
-        df_expver1 = df[df["expver"] == "0001"].drop(columns=["expver"])
-        df_expver5 = df[df["expver"] == "0005"].drop(columns=["expver"])
+        df_expver1 = df[(df["expver"] == "0001") | (df["expver"] == 1)].drop(columns=["expver"])
+        df_expver5 = df[(df["expver"] == "0005") | (df["expver"] == 5)].drop(columns=["expver"])
     
         df = df_expver1.combine_first(df_expver5)
 

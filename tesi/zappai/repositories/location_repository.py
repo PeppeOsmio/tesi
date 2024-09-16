@@ -31,7 +31,7 @@ class LocationRepository:
         name: str,
         longitude: float,
         latitude: float,
-        is_visible: bool = True,
+        is_visible: bool,
     ) -> LocationDTO:
         location_id = uuid.uuid4()
         now = datetime.now(tz=timezone.utc).replace(tzinfo=None)
@@ -54,27 +54,41 @@ class LocationRepository:
             latitude=latitude,
             created_at=now,
             is_downloading_past_climate_data=False,
-            is_visible=is_visible
+            is_visible=is_visible,
         )
 
     async def set_locations_to_not_downloading(self, session: AsyncSession):
         stmt = update(Location).values(is_downloading_past_climate_data=False)
         await session.execute(stmt)
 
-    async def set_location_to_downloading(self, session: AsyncSession, location_id: UUID):
-        stmt = update(Location).where(Location.id == location_id).values(is_downloading_past_climate_data=True)
+    async def set_location_to_downloading(
+        self, session: AsyncSession, location_id: UUID
+    ):
+        stmt = (
+            update(Location)
+            .where(Location.id == location_id)
+            .values(is_downloading_past_climate_data=True)
+        )
         await session.execute(stmt)
 
-    async def set_location_to_not_downloading(self, session: AsyncSession, location_id: UUID):
-        stmt = update(Location).where(Location.id == location_id).values(is_downloading_past_climate_data=False)
+    async def set_location_to_not_downloading(
+        self, session: AsyncSession, location_id: UUID
+    ):
+        stmt = (
+            update(Location)
+            .where(Location.id == location_id)
+            .values(is_downloading_past_climate_data=False)
+        )
         await session.execute(stmt)
 
     async def get_locations(
-        self, session: AsyncSession, all: bool = False
+        self, session: AsyncSession, is_visible: bool
     ) -> list[LocationDTO]:
-        stmt = select(Location).order_by(Location.created_at)
-        if not all:
-            stmt = stmt.where(Location.is_visible == True)
+        stmt = (
+            select(Location)
+            .where(Location.is_visible == is_visible)
+            .order_by(Location.created_at)
+        )
         locations = await session.scalars(stmt)
         return [self.__location_model_to_dto(location) for location in locations]
 
@@ -113,7 +127,6 @@ class LocationRepository:
         self,
         session: AsyncSession,
         csv_path: str,
-        location_ids: set[UUID],
     ):
 
         def open_csv_file():
@@ -123,11 +136,9 @@ class LocationRepository:
         with ThreadPoolExecutor() as pool:
             csv_file = await loop.run_in_executor(executor=pool, func=open_csv_file)
             with csv_file:
-                stmt = select(Location).where(Location.id.in_(location_ids))
-                results = list(await session.scalars(stmt))
-                if len(results) == 0:
+                locations = await self.get_locations(session=session, is_visible=False)
+                if len(locations) == 0:
                     raise LocationNotFoundError(f"No locations found")
-                locations = [self.__location_model_to_dto(model) for model in results]
                 dicts: list[dict[str, Any]] = []
                 for location in locations:
                     dct = location.to_dict()
@@ -157,7 +168,14 @@ class LocationRepository:
                     & (Location.country == dct["country"])
                 )
             )
-            await self.create_location(session=session, country=dct["country"], name=dct["name"], longitude=dct["longitude"], latitude=dct["latitude"], is_visible=False)
+            await self.create_location(
+                session=session,
+                country=dct["country"],
+                name=dct["name"],
+                longitude=dct["longitude"],
+                latitude=dct["latitude"],
+                is_visible=False,
+            )
 
     def __location_model_to_dto(self, location: Location) -> LocationDTO:
         return LocationDTO(
@@ -168,5 +186,5 @@ class LocationRepository:
             latitude=location.latitude,
             created_at=location.created_at,
             is_downloading_past_climate_data=location.is_downloading_past_climate_data,
-            is_visible=location.is_visible
+            is_visible=location.is_visible,
         )

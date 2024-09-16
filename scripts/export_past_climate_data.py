@@ -6,7 +6,6 @@ from tesi.zappai.di import (
     get_cds_api,
     get_crop_repository,
     get_crop_yield_data_repository,
-    get_future_climate_data_repository,
     get_location_repository,
     get_past_climate_data_repository,
 )
@@ -28,19 +27,15 @@ async def main():
         past_climate_data_repository=past_climate_data_repository,
     )
     async with session_maker() as session:
-        location_ids_and_periods = (
-            await crop_yield_data_repository.get_unique_location_and_period_tuples(
-                session=session
-            )
-        )
-
         os.makedirs("training_data", exist_ok=True)
 
         logging.info("Exporting past climate data")
+        locations = await location_repository.get_locations(session=session, is_visible=False)
+        crop_yield_data = await crop_yield_data_repository.get_crop_yield_data_for_locations(session=session, location_ids=[location.id for location in locations])
         await past_climate_data_repository.export_to_csv(
             session=session,
             csv_path="training_data/past_climate_data.csv",
-            location_id_and_periods=location_ids_and_periods,
+            crop_yield_data=crop_yield_data,
         )
 
 if __name__ == "__main__":

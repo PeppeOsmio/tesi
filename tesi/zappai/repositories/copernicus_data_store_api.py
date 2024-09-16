@@ -214,7 +214,7 @@ class CopernicusDataStoreAPI:
     # downloaded by cds_api, maybe because of a lock problem.
     def run_conversion_script(self, file_path: str, limit: int | None):
         # Create the base command
-        command = ["python", "tesi/utils/nc_to_csv.py", "--path", file_path]
+        command = ["python", "tesi/zappai/utils/nc_to_csv.py", "--path", file_path]
         
         # Add the limit argument if provided
         if limit is not None:
@@ -222,7 +222,9 @@ class CopernicusDataStoreAPI:
 
         # Run the script as a subprocess
         try:
-            subprocess.run(command, check=True)
+            result = subprocess.run(command, check=True)
+            print(result.stdout)
+            print(result.stderr)
             print(f"Conversion completed for {file_path}")
         except subprocess.CalledProcessError as e:
             print(f"Error occurred during conversion: {e}")

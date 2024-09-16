@@ -86,12 +86,12 @@ USA,"Idaho, Genesee (University of Idaho Kambitsch Farm)",-116.95,46.59,2024-08-
 USA,"Iowa, Ames, Boone (Iowa State Agronomy and Ag Engineering Research Farm)",18.73,45.53,2024-08-20T10:57:36.075781,False
 Canada,"Alberta, Beaverlodge",-119.53,55.18,2024-08-20T10:57:35.625239,False
 Morocco,Casablanca,-7.57,33.53,2024-08-20T10:57:35.911999,False
-USA,"Indiana, Davis Purdue Agricultural Research Center",-85.15,40.25,2024-08-20T10:57:36.054558,False
 India,"Uttar Pradesh, Varanasi (Banaras Hindu University)",83.02,25.3,2024-08-20T10:57:35.853685,False
-India,"Uttarakhand, Pantnagar",79.52,29.02,2024-08-20T10:57:35.855823,False
 USA,"Colorado, Akron",-103.15,40.15,2024-08-20T10:57:36.030163,False
 USA,Piedmont,-79.69,36.38,2024-08-20T10:57:36.205063,False
 USA,"South Carolina, Florence",-79.73,34.3,2024-08-20T10:57:36.210350,False
+USA,"Indiana, Davis Purdue Agricultural Research Center",-85.15,40.25,2024-08-20T10:57:36.054558,False
+India,"Uttarakhand, Pantnagar",79.52,29.02,2024-08-20T10:57:35.855823,False
 Zimbabwe,"Harare, Domboshawa Training Centre",31.23,-19.58,2024-08-20T10:57:36.244912,False
 Zimbabwe,Murewa,31.57,-17.82,2024-08-20T10:57:36.247964,False
 USA,"Iowa, Nashua",-93.75,42.02,2024-08-20T10:57:36.088041,False
@@ -288,6 +288,11 @@ USA,Illinois,-88.9,40.1,2024-08-20T10:57:36.048191,False
 China,"Heyang, Shaanxi",110.1,35.33,2024-08-20T10:57:35.734982,False
 China,"Gansu, Dingxi Experiment Station",136.93,35.15,2024-08-20T10:57:35.717808,False
 Philippines,"Los Banos, IRRI",121.23,14.17,2024-08-20T10:57:35.933716,False
+USA,"Mississippi, Stoneville",-90.92,33.42,2024-08-20T10:57:36.142340,False
+USA,"Missouri, Columbia",-92.2,38.89,2024-08-20T10:57:36.143883,False
+USA,"Missouri, Novelty",-92.19,40.02,2024-08-20T10:57:36.145461,False
+USA,"Monmouth, Illinois",-90.72,40.92,2024-08-20T10:57:36.147433,False
+USA,"Monmouth, Illinois",-90.72,45.92,2024-08-20T10:57:36.149017,False
 USA,"Michigan, KBS LTER",-85.58,44.35,2024-08-20T10:57:36.130804,False
 USA,"Minnesota, New Richland",-93.51,43.87,2024-08-20T10:57:36.132543,False
 USA,"Minnesota, Rosemount",-93.12,44.73,2024-08-20T10:57:36.134318,False
@@ -295,11 +300,6 @@ USA,"Minnesota, Rosemount",-93.07,44.75,2024-08-20T10:57:36.135911,False
 USA,"Minnesota, Waseca",-93.52,44.07,2024-08-20T10:57:36.137512,False
 USA,"Minnesota, Waseca",-93.54,44.09,2024-08-20T10:57:36.139115,False
 USA,"Mississippi, Holly Springs",-89.4,32.45,2024-08-20T10:57:36.140758,False
-USA,"Mississippi, Stoneville",-90.92,33.42,2024-08-20T10:57:36.142340,False
-USA,"Missouri, Columbia",-92.2,38.89,2024-08-20T10:57:36.143883,False
-USA,"Missouri, Novelty",-92.19,40.02,2024-08-20T10:57:36.145461,False
-USA,"Monmouth, Illinois",-90.72,40.92,2024-08-20T10:57:36.147433,False
-USA,"Monmouth, Illinois",-90.72,45.92,2024-08-20T10:57:36.149017,False
 USA,"Montana, Culbertson",-104.83,48.55,2024-08-20T10:57:36.150556,False
 USA,"Nashua, Iowa",-92.53,42.95,2024-08-20T10:57:36.152217,False
 USA,"Nebraska, Clay Center (South Central Research and Extension Center)",-98.06,40.52,2024-08-20T10:57:36.155422,False
