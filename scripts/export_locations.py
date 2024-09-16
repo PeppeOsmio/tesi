@@ -37,7 +37,7 @@ async def main():
         os.makedirs("training_data", exist_ok=True)
 
         logging.info("Exporting locations")
-        await location_repository.export_to_csv(session=session, csv_path="training_data/locations.csv", location_ids=[location_id for location_id, _, _, _, _ in location_ids_and_periods])
+        await location_repository.export_to_csv(session=session, csv_path="training_data/locations.csv", location_ids=set([location_id for location_id, _, _, _, _ in location_ids_and_periods]))
 
 
 if __name__ == "__main__":

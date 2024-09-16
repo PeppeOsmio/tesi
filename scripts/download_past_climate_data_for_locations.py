@@ -81,17 +81,4 @@ async def main():
 
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())
-    try:
-        asyncio.run(main())
-    except:
-        print(traceback.format_exc())
-
-    # Get the current and peak memory usage
-    current, peak = tracemalloc.get_traced_memory()
-
-    # Convert bytes to MB
-    print(f"Current memory usage: {current / 10**6} MB")
-    print(f"Peak memory usage: {peak / 10**6} MB")
-
-    # Stop tracing
-    tracemalloc.stop()
+    asyncio.run(main())

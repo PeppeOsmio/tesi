@@ -1,11 +1,12 @@
 import asyncio
 import logging
+from multiprocessing import Process
+import multiprocessing
+import random
 from typing import Any, Callable, TypeVar
 import pandas as pd
 import os
 
-os.environ.setdefault(key="HDF5_USE_FILE_LOCKING", value="FALSE") 
-import xarray
 from io import BytesIO
 import joblib
 import time
@@ -119,10 +120,9 @@ def get_previous_n_months(n: int, month: int, year: int) -> tuple[int, int]:
 def coordinates_to_well_known_text(longitude: float, latitude: float) -> str:
     return f"POINT({longitude} {latitude})"
 
-def convert_nc_file_to_dataframe(
-    source_file_path: str, limit: int | None
-) -> pd.DataFrame:
-    with xarray.open_dataset(source_file_path) as ds:
+def convert_callback(source_file_path: str, limit: int | None):
+    import xarray
+    with xarray.open_dataset(source_file_path, mode="r") as ds:
         for name, index in ds.indexes.items():
             if isinstance(index, xarray.CFTimeIndex):
                 ds[name] = index.to_datetimeindex()
@@ -130,6 +130,14 @@ def convert_nc_file_to_dataframe(
     if limit is not None:
         df = df[:limit]
     df = df.reset_index()
+    return df
+
+def convert_nc_file_to_dataframe(
+    source_file_path: str, limit: int | None
+) -> pd.DataFrame:
+    
+    df = convert_callback(source_file_path=source_file_path, limit=limit)
+
     return df
 
 

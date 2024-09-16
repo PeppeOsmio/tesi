@@ -208,7 +208,26 @@ class CopernicusDataStoreAPI:
             result_df = result_df.drop(columns=["mean_precipitation_flux"])
             on_save_chunk(result_df)
 
-    @retry_on_error(max_retries=10, wait_time=10)
+    import subprocess
+
+    # this is needed because of a super weird bug that gives OSError -101 from NetCDF when opening a .nc file after
+    # downloaded by cds_api, maybe because of a lock problem.
+    def run_conversion_script(self, file_path: str, limit: int | None):
+        # Create the base command
+        command = ["python", "tesi/utils/nc_to_csv.py", "--path", file_path]
+        
+        # Add the limit argument if provided
+        if limit is not None:
+            command += ["--limit", str(limit)]
+
+        # Run the script as a subprocess
+        try:
+            subprocess.run(command, check=True)
+            print(f"Conversion completed for {file_path}")
+        except subprocess.CalledProcessError as e:
+            print(f"Error occurred during conversion: {e}")
+
+    # @retry_on_error(max_retries=10, wait_time=10)
     def get_past_climate_data_for_years(
         self,
         longitude: float,
@@ -227,7 +246,6 @@ class CopernicusDataStoreAPI:
         processed = 0
 
         while processed < len(_years):
-            print(f"PROCESSED: {processed}")
             years_to_fetch = _years[processed : processed + STEP]
 
             logging.info(
@@ -256,16 +274,18 @@ class CopernicusDataStoreAPI:
                 target=tmp_file_path,
             )
 
-            tmp_df = convert_nc_file_to_dataframe(
-                source_file_path=tmp_file_path, limit=None
-            )
+            self.run_conversion_script(file_path=tmp_file_path, limit=None)
+
+            tmp_file_path_csv = f"{tmp_file_path}.csv"
+
+            tmp_df = pd.read_csv(tmp_file_path_csv)
 
             tmp_df = process_copernicus_climate_data(
                 df=tmp_df,
                 columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
 
-            os.remove(tmp_file_path)
+            os.remove(tmp_file_path_csv)
 
             on_save_chunk(tmp_df)
             processed += len(years_to_fetch)

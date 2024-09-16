@@ -113,7 +113,7 @@ class LocationRepository:
         self,
         session: AsyncSession,
         csv_path: str,
-        location_ids: list[UUID],
+        location_ids: set[UUID],
     ):
 
         def open_csv_file():

@@ -386,6 +386,7 @@ class CropYieldDataRepository:
             CropYieldData.harvest_month,
         ).distinct()
         results = list(row.tuple() for row in await session.execute(stmt))
+        print(len(results))
         if len(results) == 0:
             raise CropYieldDataNotFoundError()
         return results
