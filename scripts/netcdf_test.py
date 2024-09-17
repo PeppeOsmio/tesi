@@ -45,7 +45,7 @@ async def main():
     async with session_maker() as session:
         def func():
             df = convert_nc_file_to_dataframe("test.nc", None)
-            df = process_copernicus_climate_data(df=df, columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING)
+            df = process_copernicus_climate_data(df=df, is_cmip5_data=False, columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING)
             df.to_csv("test.csv")
 
         loop = asyncio.get_running_loop()

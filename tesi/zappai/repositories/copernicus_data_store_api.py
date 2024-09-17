@@ -125,10 +125,17 @@ class CopernicusDataStoreAPI:
 
     # this is needed because of a super weird bug that gives OSError -101 from NetCDF when opening a .nc file after
     # downloaded by cds_api, maybe because of a lock problem.
-    def __run_conversion_script(self, source_file_path: str, limit: int | None) -> pd.DataFrame:
+    def __run_conversion_script(
+        self, source_file_path: str, limit: int | None
+    ) -> pd.DataFrame:
         # Create the base command
-        command = ["python", "tesi/zappai/utils/nc_to_csv.py", "--path", source_file_path]
-        
+        command = [
+            "python",
+            "tesi/zappai/utils/nc_to_csv.py",
+            "--path",
+            source_file_path,
+        ]
+
         # Add the limit argument if provided
         if limit is not None:
             command += ["--limit", str(limit)]
@@ -142,7 +149,6 @@ class CopernicusDataStoreAPI:
         result_df = pd.read_csv(csv_path)
         os.remove(csv_path)
         return result_df
-            
 
     def get_future_climate_data(self, on_save_chunk: Callable[[pd.DataFrame], None]):
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
@@ -221,7 +227,7 @@ class CopernicusDataStoreAPI:
                         break
                 os.remove(extracted_nc_file_path)
             result_df = process_copernicus_climate_data(
-                df=result_df, columns_mappings={}
+                df=result_df, is_cmip5_data=True, columns_mappings={}
             )
 
             # convert from mm/s (aggregated over 24 hours) to m
@@ -278,13 +284,15 @@ class CopernicusDataStoreAPI:
                 target=tmp_nc_file_path,
             )
 
-            tmp_df = self.__run_conversion_script(source_file_path=tmp_nc_file_path, limit=None)
+            tmp_df = self.__run_conversion_script(
+                source_file_path=tmp_nc_file_path, limit=None
+            )
 
             os.remove(tmp_nc_file_path)
 
-
             tmp_df = process_copernicus_climate_data(
                 df=tmp_df,
+                is_cmip5_data=False,
                 columns_mappings=_ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING,
             )
 

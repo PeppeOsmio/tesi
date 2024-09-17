@@ -12,4 +12,4 @@ COPY . /app
 
 EXPOSE 8000
 
-CMD ["poetry", "run", "uvicorn", "tesi.main:app", "--host", "0.0.0.0", "--port", "7000"]
+ENTRYPOINT [ "./entrypoint.sh" ]

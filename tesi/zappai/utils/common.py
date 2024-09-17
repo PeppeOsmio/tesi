@@ -142,8 +142,10 @@ def convert_nc_file_to_dataframe(
 
 
 def process_copernicus_climate_data(
-    df: pd.DataFrame, columns_mappings: dict[str, str]
+    df: pd.DataFrame, is_cmip5_data: bool, columns_mappings: dict[str, str]
 ) -> pd.DataFrame:
+    
+    DATE_FORMAT = "mixed" if is_cmip5_data else "%Y%m%d"
     
     df = df.dropna()
 
@@ -152,12 +154,12 @@ def process_copernicus_climate_data(
 
     # Converting and extracting date parts
     if "date" in df.columns:
-        df["date"] = pd.to_datetime(df["date"], format="%Y%m%d")
+        df["date"] = pd.to_datetime(df["date"], format=DATE_FORMAT)
         df["year"] = df["date"].dt.year
         df["month"] = df["date"].dt.month
         df = df.drop(columns=["date"])
     elif "time" in df.columns:
-        df["time"] = pd.to_datetime(df["time"], format="%Y%m%d")
+        df["time"] = pd.to_datetime(df["time"], format=DATE_FORMAT)
         df["year"] = df["time"].dt.year
         df["month"] = df["time"].dt.month
         df = df.drop(columns=["time"])

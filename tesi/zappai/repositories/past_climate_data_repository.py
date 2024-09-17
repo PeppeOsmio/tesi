@@ -385,20 +385,22 @@ class PastClimateDataRepository:
                 session=session,
                 country=dct["location_country"],
                 name=dct["location_name"],
-                latitude=dct["latitude"],
-                longitude=dct["longitude"]
+                latitude=dct["location_latitude"],
+                longitude=dct["location_longitude"]
             )
+            dct.pop("location_country")
+            dct.pop("location_name")
+            dct.pop("location_latitude")
+            dct.pop("location_longitude")
             if location is None:
                 raise LocationNotFoundError()
             if location.id not in deleted_locations:
-                logging.info(f"Deleting past climate data for location {location.id}")
                 result = await session.execute(
                     delete(PastClimateData)
                     .where((PastClimateData.location_id == location.id))
                     .returning(PastClimateData.id)
                 )
                 ids = list(result)
-                logging.info(f"Deleted {len(ids)} past climate data")
                 deleted_locations.add(location.id)
             columns_mappings = {
                 "10m_u_component_of_wind": "u_component_of_wind_10m",
@@ -410,8 +412,6 @@ class PastClimateDataRepository:
                 dct[value] = dct[key]
                 dct.pop(key)
             dct["location_id"] = location.id
-            dct.pop("location_country")
-            dct.pop("location_name")
             dct.update({"id": uuid.uuid4()})
             stmt = insert(PastClimateData).values(**dct)
             await session.execute(stmt)

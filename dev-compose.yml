@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgis/postgis:16-3.4
+    environment:
+      - POSTGRES_USER=g.bosa
+      - POSTGRES_PASSWORD=1234
+      - POSTGRES_DB=db
+    volumes:
+      - ${POSTGRES_DATA_BIND_MOUNT}:/var/lib/postgresql/data
+    ports:
+      - 5432:5432       
+  
+  adminer:
+    image: adminer:latest
+    ports:
+      - 8080:8080

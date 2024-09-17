@@ -1,9 +1,18 @@
 import argparse
+import logging
+import os
+import multiprocessing
 from typing import cast
-
 from tesi.zappai.utils.common import convert_nc_file_to_dataframe
+from tesi import logging_conf
 
-if __name__ == "__main__":
+def process_file(file_path: str, limit: int | None):
+    csv_path = file_path + ".csv"
+    logging.info(f"Converting {csv_path}")
+    df = convert_nc_file_to_dataframe(source_file_path=file_path, limit=limit)
+    df.to_csv(csv_path, index=False)
+
+def main():
     # Create the ArgumentParser object
     parser = argparse.ArgumentParser(
         description="Process a file path and an optional limit."
@@ -24,8 +33,23 @@ if __name__ == "__main__":
     # Parse the arguments
     args = parser.parse_args()
 
-    file_to_convert = cast(str, args.path)
+    path = cast(str, args.path)
     limit = cast(int | None, args.limit)
 
-    df = convert_nc_file_to_dataframe(source_file_path=file_to_convert, limit=limit)
-    df.to_csv(file_to_convert + ".csv", index=False)
+    files_to_process: list[str] = []
+
+    if os.path.isdir(path):
+        for file in os.listdir(path):
+            if file.endswith(".nc"):
+                full_path = os.path.join(path, file)
+                files_to_process.append(full_path)
+    else:
+        files_to_process.append(path)
+
+    num_cores = multiprocessing.cpu_count()
+    with multiprocessing.Pool(processes=num_cores) as pool:
+        pool.starmap(process_file, [(file, limit) for file in files_to_process])
+
+if __name__ == "__main__":
+    logging_conf.create_logger(config=logging_conf.get_default_conf())
+    main()
