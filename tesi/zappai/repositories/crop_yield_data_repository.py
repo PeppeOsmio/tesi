@@ -1,30 +1,21 @@
 import asyncio
 from concurrent.futures import ThreadPoolExecutor
-from csv import DictWriter
-from datetime import datetime
-from io import StringIO
 import logging
-import os
 from typing import Any, cast
 import uuid
 import numpy as np
 import pandas as pd
-import requests
 from sqlalchemy import delete, insert, select
 from tesi.zappai.exceptions import (
     CropNotFoundError,
     CropYieldDataNotFoundError,
-    LocationNotFoundError,
-    PastClimateDataNotFoundError,
 )
 from tesi.zappai.dtos import (
-    ClimateDataDTO,
-    CropDTO,
     CropYieldDataDTO,
     LocationClimateYearsDTO,
 )
-from tesi.zappai.models import Crop, CropYieldData
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
+from tesi.zappai.models import CropYieldData
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from tesi.zappai.repositories.crop_repository import CropRepository
 from tesi.zappai.repositories.location_repository import LocationRepository
@@ -126,7 +117,7 @@ class CropYieldDataRepository:
         self.location_repository = location_repository
         self.past_climate_data_repository = past_climate_data_repository
 
-    def __download_crops_yield_data(self) -> pd.DataFrame:
+    def __import_crops_yield_data(self) -> pd.DataFrame:
 
         # got from "https://figshare.com/ndownloader/files/26690678"
         file_path = "./training_data/raw/crops_yield_data.csv"
@@ -250,11 +241,11 @@ class CropYieldDataRepository:
 
         return agg_df
 
-    async def download_crop_yield_data(self, session: AsyncSession):
+    async def import_crop_yield_data(self, session: AsyncSession):
         loop = asyncio.get_running_loop()
         with ThreadPoolExecutor() as pool:
             crop_yield_data_df = await loop.run_in_executor(
-                executor=pool, func=self.__download_crops_yield_data
+                executor=pool, func=self.__import_crops_yield_data
             )
 
         await session.execute(delete(CropYieldData))

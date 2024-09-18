@@ -226,13 +226,14 @@ async def download_past_climate_data_for_location(
                 await climate_generative_model_repository.create_model_for_location(
                     session=session, location_id=location_id
                 )
+                await session.commit()
             except Exception as e:
                 error = e
-        async with session_maker() as session:
-            await location_repository.set_location_to_not_downloading(
-                session=session, location_id=location_id
-            )
-            await session.commit()
+            finally:
+                await location_repository.set_location_to_not_downloading(
+                    session=session, location_id=location_id
+                )
+                await session.commit()          
         if error is not None:
             raise error
 

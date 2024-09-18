@@ -64,16 +64,20 @@ const LocationCard: React.FC<LocationCardProps> = ({ location, onDelete, onDownl
                         >
                             Download data and create AI model
                         </Button>}
-                    
-                    {/* "Make Predictions" button at the bottom right */}
-                    <Button
-                        variant="contained"
-                        color="secondary"
-                        onClick={() => onMakePrediction(location)}
-                        sx={{ ml: 2 }}  // Adds some space between the buttons
-                    >
-                        Make Prediction
-                    </Button>
+
+                    {
+                        isModelReady ?
+                            <Button
+                                variant="contained"
+                                color="secondary"
+                                onClick={() => onMakePrediction(location)}
+                                sx={{ ml: 2 }}  // Adds some space between the buttons
+                            >
+                                Make Prediction
+                            </Button>
+                            : <></>
+                    }
+
                 </Box>
             </CardContent>
         </Card>
