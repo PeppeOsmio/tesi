@@ -1,5 +1,5 @@
 import React, { useState, ChangeEvent, FormEvent } from 'react';
-import { TextField, Button, Grid, Container, Typography, Box, Alert } from '@mui/material';
+import { TextField, Button, Grid, Typography, Box, Alert } from '@mui/material';
 import axios from 'axios';
 import { ZappaiLocation } from '../utils/types';
 import { useNavigate } from 'react-router-dom';
@@ -51,7 +51,7 @@ const LocationForm: React.FC = () => {
                 headers: {
                     Authorization: `Bearer ${zappaiAccessToken}`
                 }
-            }).then((response) => {
+            }).then(() => {
                 navigate("/locations");
             }).catch((error) => {
                 console.log(error);

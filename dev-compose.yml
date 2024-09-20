@@ -6,7 +6,7 @@ services:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=db
     volumes:
-      - ${POSTGRES_DATA_BIND_MOUNT}:/var/lib/postgresql/data
+      - ./docker_volumes/postgres_data_dev:/var/lib/postgresql/data
     ports:
       - 5432:5432       
   

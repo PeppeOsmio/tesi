@@ -4,13 +4,6 @@ import { Typography, Grid, Card, CardContent, CardMedia, Button, Box, CardAction
 import { Crop, ZappaiLocation } from '../utils/types';
 import axios from 'axios';
 
-// Mock data for demonstration purposes
-const location = {
-    id: '1',
-    name: 'Sample Location',
-    country: 'Sample Country',
-};
-
 const cropPhotoMap = new Map<string, string>([
     ['sunflower', '/images/crops/sunflower.png'],
     ['soybean', '/images/crops/soybean.png'],

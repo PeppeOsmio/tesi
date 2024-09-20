@@ -12,7 +12,7 @@ export async function getUserInfo(): Promise<User | null> {
         if (token === null) {
             return null;
         }
-        const result = await axios.get<GetUserInfoResponse>(`${import.meta.env.VITE_API_URL!}/auth/me`, {
+        const result = await axios.get<GetUserInfoResponse>(`${import.meta.env.VITE_API_URL!}/api/auth/me`, {
             headers: {
                 Authorization: `Bearer ${token}`
             }

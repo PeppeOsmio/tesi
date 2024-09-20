@@ -38,7 +38,7 @@ const Login: React.FC = () => {
                     return;
                 }
                 try {
-                    const response = await axios.post<LoginResponse>(`${import.meta.env.VITE_API_URL}/auth/`, new URLSearchParams({ username: username, password: password }), { withCredentials: true });
+                    const response = await axios.post<LoginResponse>(`${import.meta.env.VITE_API_URL}/api/auth/`, new URLSearchParams({ username: username, password: password }));
                     localStorage.setItem('zappaiAccessToken', response.data.access_token);
                     const user = await getUserInfo();
                     authContext!.setCurrentUser(user);

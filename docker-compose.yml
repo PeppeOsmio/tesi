@@ -2,13 +2,13 @@ services:
   postgres:
     image: postgis/postgis:16-3.4
     environment:
-      - POSTGRES_USER=g.bosa
+      - POSTGRES_USER=zappai
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=db
     volumes:
-      - ${POSTGRES_DATA_BIND_MOUNT}:/var/lib/postgresql/data
+      - ./docker_volumes/postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -U zappai -d db"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -16,10 +16,16 @@ services:
   backend:
     build:
       context: .
-      dockerfile: Dockefile
-  depends_on:
-    postgres-database:
-      condition: service_healthy
+      dockerfile: Dockerfile
+    environment:
+      - ZAPPAI_DB_HOST=postgres
+      - ZAPPAI_DB_PORT=5432
+      - ZAPPAI_DB_USER=zappai
+      - ZAPPAI_DB_PASSWORD=1234
+      - ZAPPAI_DB_NAME=db
+    depends_on:
+      postgres:
+        condition: service_healthy
 
   frontend:
     build:

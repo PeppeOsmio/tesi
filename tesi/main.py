@@ -32,13 +32,17 @@ async def lifespan(
     yield
 
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    docs_url="/api/docs",
+    openapi_url="/api/openapi.json",
+    lifespan=lifespan
+)
 
 
 # Configure CORS middleware
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,7 +50,7 @@ app.add_middleware(
 
 
 app.include_router(user_router, prefix="/api", tags=["User"])
-app.include_router(auth_token_router, prefix="", tags=["Auth"])
+app.include_router(auth_token_router, prefix="/api", tags=["Auth"])
 app.include_router(zappai_router, prefix="/api", tags=["Zappai"])
 
 

@@ -12,7 +12,7 @@ from tesi.users.models import User
 from tesi.users.repositories.user_repository import UserRepository
 
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth", auto_error=False)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth", auto_error=False)
 
 
 def get_auth_token_repository(
