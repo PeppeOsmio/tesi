@@ -32,15 +32,10 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from tesi.zappai.utils.common import bytes_to_object, get_next_n_months, object_to_bytes
 
 TARGET = [
-    # "10m_u_component_of_wind",
-    # "10m_v_component_of_wind",
-    # "evaporation",
-    # "surface_pressure",
     "surface_solar_radiation_downwards",
     "surface_thermal_radiation_downwards",
     "surface_net_solar_radiation",
     "surface_net_thermal_radiation",
-    # "snowfall",
     "total_cloud_cover",
     "2m_dewpoint_temperature",
     "soil_temperature_level_3",

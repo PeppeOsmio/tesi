@@ -136,9 +136,9 @@ const ChooseCrop: React.FC = () => {
                             sx={{ position: 'fixed', bottom: '32px', right: '32px' }}
                         >
                             Make Prediction
-                        </Button></>
+                        </Button>
+                    </>
             }
-
         </Box>
     );
 };

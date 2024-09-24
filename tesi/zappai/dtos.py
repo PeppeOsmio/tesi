@@ -6,7 +6,7 @@ from uuid import UUID
 from keras.src.models import Sequential
 import pandas as pd
 
-from typing import Any, cast
+from typing import Any, Sequence, cast
 
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.preprocessing import StandardScaler
@@ -122,7 +122,7 @@ class FutureClimateDataDTO:
     surface_thermal_radiation_downwards: float
 
     @staticmethod
-    def from_list_to_dataframe(lst: list[FutureClimateDataDTO]) -> pd.DataFrame:
+    def from_list_to_dataframe(lst: Sequence[FutureClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([obj.__dict__ for obj in lst])
         df = df.rename(
             columns={
@@ -170,7 +170,7 @@ class ClimateDataDTO:
     volumetric_soil_water_layer_3: float
 
     @staticmethod
-    def from_list_to_dataframe(lst: list[ClimateDataDTO]) -> pd.DataFrame:
+    def from_list_to_dataframe(lst: Sequence[ClimateDataDTO]) -> pd.DataFrame:
         df = pd.DataFrame([item.__dict__ for item in lst])
         df = df.rename(
             columns={
