@@ -86,23 +86,12 @@ columns_to_include: dict[str, str] = {
     "Location": "location",
     "Latitude": "latitude",
     "Longitude": "longitude",
-    # "Soil information recorded in the paper": "soil",
-    # "pH (surface layer)": "ph",
-    "Soil cover in CT": "surface",
     "Crop": "crop",
     "Sowing year": "sowing_year",
     "Sowing month": "sowing_month",
     "Harvest year": "harvest_year",
     "Harvesting month": "harvest_month",
     "Yield of CT": "yield_per_hectar",
-    # "ST": "soil_type",
-    # "Yield of NT": "yield",
-    # "P": "P",
-    # "E": "E",
-    # "PB": "PB",
-    # "Tave": "Tave",
-    # "Tmax": "Tmax",
-    # "Tmin": "Tmin",
 }
 
 
@@ -120,7 +109,7 @@ class CropYieldDataRepository:
     def __import_crops_yield_data(self) -> pd.DataFrame:
 
         # got from "https://figshare.com/ndownloader/files/26690678"
-        file_path = "./training_data/raw/crops_yield_data.csv"
+        file_path = "./training_data/crops_yield_data.csv"
 
         df = pd.read_csv(
             file_path,
