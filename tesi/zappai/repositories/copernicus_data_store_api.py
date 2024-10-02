@@ -150,6 +150,7 @@ class CopernicusDataStoreAPI:
         os.remove(csv_path)
         return result_df
 
+    @retry_on_error(max_retries=10, wait_time=10)
     def get_future_climate_data(self, on_save_chunk: Callable[[pd.DataFrame], None]):
         """https://cds.climate.copernicus.eu/cdsapp#!/dataset/sis-hydrology-meteorology-derived-projections?tab=form
 
