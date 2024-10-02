@@ -69,12 +69,8 @@ const UsersPage: React.FC = () => {
     };
 
     return (
-        <Container sx={{marginTop: 4, marginLeft: 16, marginRight: 16}}>
-            <Typography variant="h4" component="h1" gutterBottom>
-                User List
-            </Typography>
+        <Container sx={{ marginTop: 4, marginLeft: 16, marginRight: 16 }}>
 
-            {/* Search Bar */}
             <TextField
                 label="Search Users"
                 variant="outlined"

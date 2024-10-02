@@ -16,7 +16,7 @@ from tesi.zappai.repositories.past_climate_data_repository import (
 from uuid import UUID
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_squared_error, r2_score
-from tesi.zappai.utils.common import calc_months_delta, create_stats_dataframe
+from tesi.zappai.utils.common import create_stats_dataframe
 
 FEATURES = [
     "sowing_year",
