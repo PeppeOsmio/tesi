@@ -9,14 +9,11 @@ from zappai.users.di import get_user_repository
 async def main():
     # Create the ArgumentParser object
     parser = argparse.ArgumentParser(
-        description="Create a user"
+        description="Delete a user"
     )
 
     # Add the file path argument
     parser.add_argument("--username", type=str, required=True)
-    parser.add_argument("--password", type=str, required=True)
-    parser.add_argument("--name", type=str, required=True)
-    parser.add_argument("--email", type=str)
 
     args = parser.parse_args()
 
@@ -24,10 +21,10 @@ async def main():
     session_maker = get_session_maker()
 
     async with session_maker() as session:
-        await user_repository.create_user(session=session, username=args.username, password=args.password, name=args.name, email=args.email)
+        await user_repository.delete_user(session=session, username=args.username)
         await session.commit()
     
-    print(f"User {args.username} created!")
+    print(f"User {args.username} deleted!")
 
 if __name__ == "__main__":
     logging_conf.create_logger(config=logging_conf.get_default_conf())

@@ -4,7 +4,7 @@ from uuid import UUID
 import uuid
 
 import bcrypt
-from sqlalchemy import select
+from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.sql.functions import count
 from zappai.users.repositories.dtos import UserDTO
@@ -124,6 +124,12 @@ class UserRepository:
             email=user.email,
             is_active=user.is_active,
         )
+    
+    async def delete_user(self, session: AsyncSession, username: str):
+        user_id = await self.get_user_id_from_username(session=session, username=username)
+        if user_id is None:
+            raise UserNotFoundError(username=username)
+        await session.execute(delete(User).where(User.username == username))
 
     async def check_password(
         self, session: AsyncSession, username: str, password: str
