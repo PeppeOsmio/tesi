@@ -1,9 +1,9 @@
 import asyncio
 import logging
 
-from tesi import logging_conf
-from tesi.database.di import get_session_maker
-from tesi.zappai.di import (
+from zappai import logging_conf
+from zappai.database.di import get_session_maker
+from zappai.zappai.di import (
     get_cds_api,
     get_location_repository,
     get_past_climate_data_repository,

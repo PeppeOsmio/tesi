@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "tesi"
+name = "zappai"
 version = "0.1.0"
 description = ""
 authors = ["PeppeOsmio <bosius00@gmail.com>"]

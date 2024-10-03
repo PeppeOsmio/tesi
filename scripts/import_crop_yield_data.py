@@ -2,8 +2,8 @@ import asyncio
 import logging
 import traceback
 
-from tesi import logging_conf
-from tesi.zappai.di import (
+from zappai import logging_conf
+from zappai.zappai.di import (
     get_cds_api,
     get_crop_repository,
     get_crop_yield_data_repository,
@@ -11,7 +11,7 @@ from tesi.zappai.di import (
     get_location_repository,
     get_past_climate_data_repository,
 )
-from tesi.database.di import get_session_maker
+from zappai.database.di import get_session_maker
 
 
 async def main():

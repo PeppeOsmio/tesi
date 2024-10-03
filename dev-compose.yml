@@ -2,11 +2,11 @@ services:
   postgres:
     image: postgis/postgis:16-3.4
     environment:
-      - POSTGRES_USER=g.bosa
+      - POSTGRES_USER=zappai
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=db
     volumes:
-      - ./docker_volumes/postgres_data_dev:/var/lib/postgresql/data
+      - ./docker_volumes/postgres_data:/var/lib/postgresql/data
     ports:
       - 5432:5432       
   

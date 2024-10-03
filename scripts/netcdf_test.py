@@ -3,12 +3,12 @@ from concurrent.futures import ThreadPoolExecutor
 import os
 import cdsapi
 import pandas as pd
-from tesi import logging_conf
-from tesi.database.di import get_session_maker
+from zappai import logging_conf
+from zappai.database.di import get_session_maker
 import xarray
 
-from tesi.zappai.utils.common import convert_nc_file_to_dataframe, process_copernicus_climate_data
-from tesi.zappai.repositories.copernicus_data_store_api import _ERA5_VARIABLES, _ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING
+from zappai.zappai.utils.common import convert_nc_file_to_dataframe, process_copernicus_climate_data
+from zappai.zappai.repositories.copernicus_data_store_api import _ERA5_VARIABLES, _ERA5_VARIABLES_RESPONSE_TO_DATAFRAME_MAPPING
 
 async def main():
 

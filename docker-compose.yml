@@ -23,6 +23,8 @@ services:
       - ZAPPAI_DB_USER=zappai
       - ZAPPAI_DB_PASSWORD=1234
       - ZAPPAI_DB_NAME=db
+    volumes:
+      - ./logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy

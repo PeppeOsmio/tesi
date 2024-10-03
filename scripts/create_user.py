@@ -2,8 +2,8 @@ import argparse
 import asyncio
 import logging
 
-from tesi.database.di import get_session_maker
-from tesi.users.di import get_user_repository
+from zappai.database.di import get_session_maker
+from zappai.users.di import get_user_repository
 
 async def main():
     # Create the ArgumentParser object
