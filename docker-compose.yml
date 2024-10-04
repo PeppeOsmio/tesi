@@ -6,7 +6,7 @@ services:
       - POSTGRES_PASSWORD=1234
       - POSTGRES_DB=db
     volumes:
-      - ./docker_volumes/postgres_data:/var/lib/postgresql/data
+      - postgres_data:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U zappai -d db"]
       interval: 10s
@@ -24,7 +24,7 @@ services:
       - ZAPPAI_DB_PASSWORD=1234
       - ZAPPAI_DB_NAME=db
     volumes:
-      - ./logs:/app/logs
+      - backend_logs:/app/logs
     depends_on:
       postgres:
         condition: service_healthy
@@ -42,3 +42,7 @@ services:
     image: adminer:latest
     ports:
       - 8080:8080
+      
+volumes:
+  postgres_data:
+  backend_logs:

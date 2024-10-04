@@ -128,7 +128,7 @@ class UserRepository:
     async def delete_user(self, session: AsyncSession, username: str):
         user_id = await self.get_user_id_from_username(session=session, username=username)
         if user_id is None:
-            raise UserNotFoundError(username=username)
+            raise UserNotFoundError(username)
         await session.execute(delete(User).where(User.username == username))
 
     async def check_password(

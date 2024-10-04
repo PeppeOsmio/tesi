@@ -2,18 +2,15 @@ from uuid import UUID
 
 
 class UserNotFoundError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
+    pass
 
 
 class UsernameExistsError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
+    pass
 
 
 class EmailExistsError(Exception):
-    def __init__(self) -> None:
-        super().__init__()
+    pass
 
 
 class InvalidCursorError(Exception):

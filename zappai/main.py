@@ -1,17 +1,14 @@
 from contextlib import asynccontextmanager
-from typing import Annotated
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker
 from starlette.middleware.cors import CORSMiddleware
 from zappai import logging_conf
 from zappai.database.di import get_session_maker
 from zappai.zappai.di import get_location_repository
-from zappai.zappai.repositories.location_repository import LocationRepository
 
 logging_conf.create_logger(config=logging_conf.get_default_conf())
 
 import logging
 import traceback
-from fastapi import Depends, FastAPI, Request
+from fastapi import FastAPI, Request
 from starlette.responses import JSONResponse
 
 from zappai.users.routers import user_router
@@ -33,6 +30,8 @@ async def lifespan(
 
 
 app = FastAPI(
+    title="ZappAI",
+    version="1.0.0",
     docs_url="/api/docs",
     openapi_url="/api/openapi.json",
     lifespan=lifespan

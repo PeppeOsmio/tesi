@@ -153,7 +153,7 @@ class AuthTokenRepository:
         )
         await session.execute(stmt)
 
-    async def revoke_all_tokens(self, session: AsyncSession, user_id: UUID):
+    async def revoke_all_tokens_by_username(self, session: AsyncSession, username: str):
         """
 
         Args:
@@ -162,10 +162,9 @@ class AuthTokenRepository:
         Raises:
             UserNotFoundError:
         """
-        if not await self.user_repository.check_user_exists(
-            session=session, user_id=user_id
-        ):
-            raise UserNotFoundError()
+        user_id = await self.user_repository.get_user_id_from_username(session=session, username=username)
+        if user_id is None:
+            raise UserNotFoundError(username)
         stmt = (
             delete(AuthToken)
             .where(AuthToken.user_id == user_id)

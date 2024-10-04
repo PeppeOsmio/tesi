@@ -143,10 +143,10 @@ class CopernicusDataStoreAPI:
         # Run the script as a subprocess
         try:
             result = subprocess.run(command, check=True)
-        except Exception as e:
-            logging.error(traceback.format_exc())
             print(result.stdout)
             print(result.stderr)
+        except Exception as e:
+            logging.error(traceback.format_exc())
             raise e
         print(result.stdout)
         print(result.stderr)
