@@ -1,6 +1,5 @@
 import argparse
 import asyncio
-import logging
 
 from zappai import logging_conf
 from zappai.database.di import get_session_maker
