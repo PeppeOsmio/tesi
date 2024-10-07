@@ -41,16 +41,6 @@ const ChooseCrop: React.FC = () => {
         }).catch((error) => {
             setErrorMessage(error.toString());
         });
-        axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
-            headers: {
-                Authorization: `Bearer ${zappaiAccessToken}`
-            }
-        }).then((response) => {
-            setCrops(response.data);
-            setErrorMessage(null);
-        }).catch((error) => {
-            setErrorMessage(error.toString());
-        })
 
         await axios.get<ZappaiLocation>(`${import.meta.env.VITE_API_URL!}/api/locations/${locationId}`, {
             headers: {
@@ -58,16 +48,6 @@ const ChooseCrop: React.FC = () => {
             }
         }).then((response) => {
             setLocation(response.data);
-            setErrorMessage(null);
-        }).catch((error) => {
-            setErrorMessage(error.toString());
-        });
-        axios.get<Crop[]>(`${import.meta.env.VITE_API_URL!}/api/crops`, {
-            headers: {
-                Authorization: `Bearer ${zappaiAccessToken}`
-            }
-        }).then((response) => {
-            setCrops(response.data);
             setErrorMessage(null);
         }).catch((error) => {
             setErrorMessage(error.toString());
