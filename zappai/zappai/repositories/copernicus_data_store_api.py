@@ -2,18 +2,15 @@ from datetime import datetime, timezone
 import logging
 import os
 import random
-import time
 from typing import Callable
 import cdsapi
 import zipfile
 import pandas as pd
 from zappai.zappai.utils.common import (
-    convert_nc_file_to_dataframe,
     process_copernicus_climate_data,
     retry_on_error,
 )
 from uuid import UUID
-import shutil
 import traceback
 import subprocess
 
@@ -115,13 +112,9 @@ ERA5_EXCLUSIVE_VARIABLES = list(set(ERA5_VARIABLES) - set(CMIP5_VARIABLES))
 class CopernicusDataStoreAPI:
     def __init__(self, api_token: UUID) -> None:
         self.cds_client = cdsapi.Client(
-            # url="https://cds.climate.copernicus.eu/api/v2",
             url="https://cds.climate.copernicus.eu/api",
             key=str(api_token),
-            # verify=1,
         )
-
-    import subprocess
 
     # this is needed because of a super weird bug that gives OSError -101 from NetCDF when opening a .nc file after
     # downloaded by cds_api, maybe because of a lock problem.
@@ -334,10 +327,3 @@ class CopernicusDataStoreAPI:
             years=years,
             on_save_chunk=on_save_chunk,
         )
-
-
-def main(): ...
-
-
-if __name__ == "__main__":
-    main()

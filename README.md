@@ -13,6 +13,8 @@ seminare o raccogliere colture locali, considerando dati ambientali e stagionali
 
 L’installazione dell’app richiede una macchina su cui è installato Docker e Docker Compose . Di seguito i passi per l’installazione (da eseguire una sola volta):
 
+1. Creare un account su Copernicus Data Store e copiare il Personal Access Token nella variabile d’ambiente `ZAPPAI_CDS_API_KEY` nel file `env_files/backend.env`. Compilare il resto delle variabili d’ambiente secondo gli esempi trovati in `docs/env_files_examples`, creando quindi anche un file `env_files/postgres.env`.
+
 1. Avviare il progetto Docker Compose:
 
 ```bash

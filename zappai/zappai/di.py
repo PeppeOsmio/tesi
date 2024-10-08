@@ -20,7 +20,7 @@ from zappai.zappai.repositories.past_climate_data_repository import (
     PastClimateDataRepository,
 )
 from zappai.zappai.repositories.copernicus_data_store_api import CopernicusDataStoreAPI
-from zappai.database.di import get_session_maker
+from zappai.config import settings
 
 
 def get_location_repository() -> LocationRepository:
@@ -32,8 +32,8 @@ def get_crop_repository() -> CropRepository:
 
 
 def get_cds_api() -> CopernicusDataStoreAPI:
-    return CopernicusDataStoreAPI(
-        api_token=UUID(hex="01a739b2-eed9-4756-850a-564d0a2bb5f4"),
+    return CopernicusDataStoreAPI( 
+        api_token=settings.cds_api_key,
     )
 
 

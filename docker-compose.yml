@@ -1,10 +1,8 @@
 services:
   postgres:
     image: postgis/postgis:16-3.4
-    environment:
-      - POSTGRES_USER=zappai
-      - POSTGRES_PASSWORD=1234
-      - POSTGRES_DB=db
+    env_file:
+      - env_files/postgres.env
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
@@ -17,12 +15,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    environment:
-      - ZAPPAI_DB_HOST=postgres
-      - ZAPPAI_DB_PORT=5432
-      - ZAPPAI_DB_USER=zappai
-      - ZAPPAI_DB_PASSWORD=1234
-      - ZAPPAI_DB_NAME=db
+    env_file:
+      - env_files/backend.env
     volumes:
       - backend_logs:/app/logs
     depends_on:
