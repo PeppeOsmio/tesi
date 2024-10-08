@@ -235,6 +235,14 @@ class CopernicusDataStoreAPI:
                 (result_df["mean_precipitation_flux"] / 1000) * 60 * 60 * 24
             )
             result_df = result_df.drop(columns=["mean_precipitation_flux"])
+            utc_now = datetime.now(tz=timezone.utc)
+            result_df = result_df[
+                (result_df["year"] > utc_now.year)
+                | (
+                    (result_df["year"] == utc_now.year)
+                    & (result_df["month"] > utc_now.month)
+                )
+            ]
             on_save_chunk(result_df)
 
     @retry_on_error(max_retries=10, wait_time=10)
